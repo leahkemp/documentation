@@ -1,6 +1,8 @@
 # How to build VCF-DART from GitHub repositories
 
-This document describes how I set up and ran VCF-DART on the research server (Methead). This invloved building VCF-DART from two github repositories.
+**Aim:** Build and run [VCF-DART](https://www.sciencedirect.com/science/article/abs/pii/S1525157819303538?via%3Dihub) from two github repositories ([here](https://github.com/sirselim/diagnostics_exome_reporting.git) and [here](https://github.com/sirselim/WES_ShinyDiscover.git))
+**Prerequisite software:** Conda 4.8.2
+**OS:** Ubuntu 16.04 (Wintermute - research server)
 
 ## Clone repositories
 

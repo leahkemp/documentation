@@ -1,8 +1,8 @@
-# Install scout on a linux server
+# Install and run scout
 
-This document describes how I installed and ran a demo instance of [scout](http://www.clinicalgenomics.se/scout/) on a 16.04 Ubuntu research server (Wintermute).
-
-*This tutorial assumes [anaconda 2019.10 (Python 3.7 version)](https://repo.anaconda.com/archive/Anaconda3-2019.10-Linux-x86_64.sh) has been downloaded*
+**Aim:** Install [scout](http://www.clinicalgenomics.se/scout/) and run a demo instance
+**Prerequisite software:** Conda 4.8.2
+**OS:** Ubuntu 16.04 (Wintermute - research server)
 
 ## Install scout
 

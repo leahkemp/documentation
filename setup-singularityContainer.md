@@ -1,12 +1,12 @@
-# How to install and create a singularity container
+# Install singularity and create a singularity container
 
-This document describes everything I did to install [singularity](https://singularity.lbl.gov/install-linux) and create a singularity container on ESR's research server "Wintermute".
-
-**System:** Ubuntu 16.04.6 LTS research server
+**Aim:** Install [singularity](https://singularity.lbl.gov/install-linux) and create a singularity container
+**Prerequisite software:** Conda 4.8.2
+**OS:** Ubuntu 16.04 (Wintermute - research server)
 
 ## Install singularity
 
-Need root access
+Requires root access
 
 ```bash
 VERSION=2.5.2

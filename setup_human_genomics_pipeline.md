@@ -1,8 +1,8 @@
-# How to set up and run human_genomics_pipeline
+# Set up and run human_genomics_pipeline
 
-This document describes everything I did to set up and run the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) found on [ESR's github](https://github.com/ESR-NZ) on ESR's research server "Wintermute" (Ubuntu 16.04).
-
-This tutorial assumes you have anaconda installed
+**Aim:** Set up and run the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline)
+**Prerequisite software:** Conda 4.8.2
+**OS:** Ubuntu 16.04 (Wintermute - research server)
 
 ## Download data/repository
 
