@@ -16,7 +16,7 @@ cd singularity-$VERSION
 ./configure --prefix=/usr/local
 ```
 
-I then recieved an error stating that I needed to install the [libarchive-devel](https://packages.debian.org/sid/libarchive-dev) package:
+I then received an error stating that I needed to install the [libarchive-devel](https://packages.debian.org/sid/libarchive-dev) package:
 
 ```bash
 configure: error: Unable to find the libarchive headers, need package libarchive-devel (libarchive-dev on Debian/Ubuntu)
@@ -39,7 +39,7 @@ sudo make install
 squashfs-tools is not required for configuring singularity, however it is required for full functionality. To install squashfs-tools:
 
 ```bash
-sudo apt-get update && sudo apt-get install squashfs-tools 
+sudo apt-get update && sudo apt-get install squashfs-tools
 ```
 
 ## Pull an image from docker

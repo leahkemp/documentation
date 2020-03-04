@@ -17,7 +17,7 @@ Make sure:
 
 ## Create database
 
-Create a mongodb database
+Create a mongoDB database
 
 ```bash
 scout -db test-database setup

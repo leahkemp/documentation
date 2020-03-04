@@ -6,7 +6,7 @@
 
 ## Clone repositories
 
-VCF-DART is composed of two modules publically available on GitHub
+VCF-DART is composed of two modules publicly available on GitHub
 
 - diagnostics_exome_reporting
 - WES_ShinyDiscover
@@ -39,7 +39,7 @@ The following software is required to run VCF-DART successfully:
 - [snpEFF](snpeff.sourceforge.net/) version 4.3t (for SNPSift dbNSFP annotation)
 - [tabix](www.htslib.org/doc/tabix.html) version 1.7-2 (compression and indexing)
 - parallel version 20161222
-- [bedops](https://bedops.readthedocs.io/) version 2.4.26 (for vcf-sort) (vcf-sort is a fuction in the package vcftools?)
+- [bedops](https://bedops.readthedocs.io/) version 2.4.26 (for vcf-sort) (vcf-sort is a function in the package vcftools?)
 - [bcftools](https://samtools.github.io/bcftools/bcftools.html) version 1.7-2
 - [R](https://www.r-project.org/) version 3.4.4
 - [Shiny Server](https://www.rstudio.com/products/shiny/shiny-server/) version 1.5.7.907
@@ -53,7 +53,7 @@ Create a conda environment
 conda create --name vcfdart_env
 ```
 
-Use conda to install the software dependancies
+Use conda to install the software dependencies
 
 ```bash
 conda install --channel bioconda ensembl-vep # VEP
@@ -219,7 +219,7 @@ ERROR: DBI module not found. VEP requires the DBI perl module to function
 
 - So I installed the missing module:
 
-```bash 
+```bash
 # Check that perl and cpan are installed
 which perl
 which cpan
@@ -275,7 +275,7 @@ n
 ```bash
 The VEP can use plugins to add functionality and data.
 Plugins will be installed in /home/lkemp/.vep/Plugins
-Do you want to install any plugins (y/n)? 
+Do you want to install any plugins (y/n)?
 n
 ```
 
@@ -332,7 +332,7 @@ wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/human_9606_b151_GRCh37p13/VCF/All_2
 wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/human_9606_b151_GRCh38p7/VCF/All_20180418.vcf.gz
 ```
 
-*See the file "setup_human_genomics_pipeline" for a more detailed decription of this step*
+*See the file "setup_human_genomics_pipeline" for a more detailed description of this step*
 
 ### VEP
 
@@ -344,9 +344,9 @@ wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/human_9606_b151_GRCh38p7/VCF/All_20
 
 Change the file paths of all the software, databases and raw data in diagnostics_exome_reporting/WESdiag_pipeline_dev.sh
 
-## Run Rshiny app
+## Run RShiny app
 
-- Open Rstudio
+- Open RStudio
 - Open server.R from diagnostics_exome_reporting
 - Run app
 - Input data the app asks for

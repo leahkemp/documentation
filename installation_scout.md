@@ -6,7 +6,7 @@
 
 ## Install scout
 
-Their [website](http://www.clinicalgenomics.se/scout/install/) describes the overall installation process. The easiest way I found to install scout was to create a conda environment in which to install scout and it's dependant software is installed. This saves you from *some* python dependancy issues.
+Their [website](http://www.clinicalgenomics.se/scout/install/) describes the overall installation process. The easiest way I found to install scout was to create a conda environment in which to install scout and it's dependant software is installed. This saves you from *some* python dependency issues.
 
 ### Create a conda environment with python3.7
 
@@ -25,9 +25,9 @@ conda activate scout_env
 
 Now install software in this environment
 
-### Mongodb
+### MongoDB
 
-Install [Mongobd](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/) (I used db version v4.2.3)
+Install [MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/) (I used db version v4.2.3)
 
 ```bash
 wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
@@ -51,7 +51,7 @@ sudo systemctl stop mongod
 
 ### Scout
 
-Clone the scout repository and install it's dependancies (I used Scout version 4.12.3, this code will download the lastest stable release)
+Clone the scout repository and install it's dependencies (I used Scout version 4.12.3, this code will download the latest stable release)
 
 ```bash
 git clone https://github.com/Clinical-Genomics/scout
@@ -79,7 +79,7 @@ Setup a fully working Scout demo. This will setup an instance of scout with a da
 scout setup demo
 ```
 
-Pysically move to use Wintermute so that we can use it's GUI
+Physically move to use Wintermute so that we can use it's GUI
 
 From the command line, access the conda environment we created for scout
 

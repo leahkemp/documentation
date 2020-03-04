@@ -8,7 +8,7 @@
 
 ### Clone repository
 
-Clone the human_genomics_pipeline git repository
+Clone the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) git repository
 
 ```bash
 git clone https://github.com/ESR-NZ/human_genomics_pipeline.git
@@ -16,27 +16,51 @@ git clone https://github.com/ESR-NZ/human_genomics_pipeline.git
 
 ### Reference human genome
 
-There are many places you can download the reference human genome (and many ways to download it).
+There are many places you can download the reference human genome (and many ways to download it). Here I will describe two methods I used to download and prepare reference human genomes.
 
-TODO: add info on how I initially produced the reference human genome
+#### Option one: download fasta file from UCSC and make index files
 
-Make dict file using picard (within GATK)
+Download from [UCSC](https://hgdownload.soe.ucsc.edu/downloads.html) over the ftp server
+
+- Download and unzip the reference human genome sequence
+
+```bash
+# GRCh37/hg19
+wget ftp://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.fa.gz
+gunzip hg19.fa.gz
+```
+
+- Create an index files for the genome sequence
+
+```bash
+bwa index -a bwtsw hg19.fa
+```
+
+'bwtsw' is required so that bwa uses the correct algorithm (no the default) to handle a large whole genome sequence (explained [here](http://seqanswers.com/forums/showthread.php?t=3547))
+
+- Make the fasta sequence dictionary file (hg19.dict) using picard within GATK
 
 ```bash
 java -jar /store/mbenton/software/gatk-4.1.4.1/gatk-package-4.1.4.1-local.jar CreateSequenceDictionary -R /store/lkemp/publicData/referenceGenome/GRCh37/hg19.fa
 ```
 
-Make index file using samtools
+- Make the fasta index file (hg19.fa.fai) with samtools
 
 ```bash
 samtools faidx /store/lkemp/publicData/referenceGenome/GRCh37/hg19.fa
 ```
 
-We will download it from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle) over the ftp server.
+#### Option two: download from the GATK resource bundle
 
-*Downloading the fasta files from the GATK bundle allows us to also download their associated fasta sequence dictionary file (.dict) and fasta index file (.fai) files that would otherwise [need to be created](https://gatkforums.broadinstitute.org/gatk/discussion/1601/how-can-i-prepare-a-fasta-file-to-use-as-reference) for GATK to use in the pipeline*
+Download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle) over the ftp server.
 
-Download and unzip
+---
+
+*Downloading the reference human genome from the GATK bundle allows us to also download their associated fasta sequence dictionary file (.dict) and fasta index file (.fai) files that would otherwise [need to be created](https://gatkforums.broadinstitute.org/gatk/discussion/1601/how-can-i-prepare-a-fasta-file-to-use-as-reference) for GATK to use in the pipeline*
+
+---
+
+- Download and unzip the reference human genome sequence as well as the .dict and .fai files
 
 ```bash
 # GRCh37/hg19
@@ -54,7 +78,7 @@ wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg38/Homo_sapiens_a
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg38/Homo_sapiens_assembly38.fasta.fai
 ```
 
-Index the reference human genomes
+- Create an index files for the genome sequence
 
 ```bash
 bwa index -a bwtsw ucsc.hg19.fasta
@@ -63,15 +87,13 @@ bwa index -a bwtsw Homo_sapiens_assembly38.fasta
 
 ### dbSNP database
 
-Information on dbSNP files can be found on the [NCBI website](https://www.ncbi.nlm.nih.gov/variation/docs/human_variation_vcf/). You can also download small index files of the ftp site using the command line so that you can see what is available for download. For example:
+#### Option one: download from NCBI
 
-```bash
-wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/
-wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/human_9606_b151_GRCh37p13/VCF/
-wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/human_9606_b151_GRCh38p7/VCF/
-```
+Information on dbSNP files can be found on the [NCBI website](https://www.ncbi.nlm.nih.gov/variation/docs/human_variation_vcf/).
 
 Then download the [appropriate](https://bioinformatics.stackexchange.com/questions/4578/how-to-download-dbsnp-database) dbSNP database. b151 is the current newest version of the database.
+
+Note: *these are large files and make take some time to download*
 
 ```bash
 # GRCh37/hg19
@@ -83,7 +105,19 @@ wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/human_9606_b151_GRCh38p7/VCF/All_20
 wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/human_9606_b151_GRCh38p7/VCF/All_20180418.vcf.gz.tbi
 ```
 
-Note: *these are large files and make take some time to download*
+#### Option two: download from GATK resource bundle
+
+```bash
+# GRCh37/hg19
+wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/dbsnp_138.hg19.vcf.gz
+wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/dbsnp_138.hg19.vcf.idx.gz
+
+# GRCh38/hg38
+wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz
+wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz.tbi
+```
+
+TODO: find out if you need to create .tbi files when you download the dbSNP database from the GATK resource bundle
 
 ### Example WGS data
 
@@ -100,9 +134,25 @@ This downloads WGS data for the mother of the AshkenazimTrio ([sample HG004](htt
 
 ### Set the working directories
 
-Set the working directories of the human_genomics_pipeline by manually editing the first section of 'Snakefile' and 'Merge_QC.snakemake'.
+Set the working directories of the human_genomics_pipeline by manually editing the first section of 'Snakefile' and 'Merge_QC.snakemake'. Ensure that the pipeline can find the:
 
-Ensure that your fastq files are within a fastq directory within your working directory. eg. ../yourWorkingDirectory/fastq/4001_1.fastq.gz
+- reference human genome
+- dbSNP database
+- WGS or WES data
+
+Also, make sure that the global wildcard function (page 23 of the snakefile) that finds your sample names will find/capture your sample name. For example, I needed to change this...
+
+```python
+SAMPLES, = glob_wildcards("fastq/{sample}_1.fastq.gz")
+```
+
+...to this...
+
+```python
+SAMPLES, = glob_wildcards("..fastq/{sample}_R1.fastq.gz")
+```
+
+...in order for it to find my WES labelled 'CH_13BL2450_S1_R1.fastq.gz' and 'CH_13BL2450_S1_R2.fastq.gz'
 
 ### Create a conda environment
 
@@ -159,9 +209,9 @@ snakemake --use-conda
 To run the multiqc step, direct to the qc/fastqc directory created by the pipeline and run:
 
 ```bash
-# check mutliqc is installed
+# check multiqc is installed
 which multiqc
-# install if neccesary
+# install if necessary
 conda install channel --bioconda multiqc
 multiqc .
 ```
