@@ -4,9 +4,9 @@ This document describes how I installed VEP locally. VEP is difficult to install
 
 *Note - there is also a [docker container available for VEP](https://hub.docker.com/r/ensemblorg/ensembl-vep/)*
 
-**Aim:** Install VEP locally (using the conda ensembl-vep package) to ensure it works before integrating it into a snakemake workflow
-**Prerequisite software:** Conda 4.8.2
-**OS:** Ubuntu 16.04 (Wintermute - research server)
+- **Aim:** Install VEP locally (using the conda ensembl-vep package) to ensure it works before integrating it into a snakemake workflow
+- **Prerequisite software:** Conda 4.8.2
+- **OS:** Ubuntu 16.04 (Wintermute - research server)
 
 ## Create environment
 
