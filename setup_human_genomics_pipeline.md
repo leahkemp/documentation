@@ -6,11 +6,11 @@
 
 ## Steps
 
-[1. Download data/repository](#step-1)
-[2. Set up the working environment](#step-2)
-[3. Run the pipeline](#step-3)
+1. Download data/repository
+2. Set up the working environment
+3. Run the pipeline
 
-## 1. Download data/repository {: #step-1 }
+## 1. Download data/repository
 
 ### Clone repository
 
@@ -198,7 +198,7 @@ wget ftp://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/
 
 This downloads WGS data for the mother of the AshkenazimTrio ([sample HG004](https://github.com/genome-in-a-bottle/giab_data_indexes))
 
-## 2. Set up the working environment {: #step-2 }
+## 2. Set up the working environment
 
 ### Set the working directories
 
@@ -260,7 +260,7 @@ Install snakemake in your conda environment
 conda install --channel bioconda snakemake
 ```
 
-## 3. Run the pipeline  {: #step-3 }
+## 3. Run the pipeline
 
 Start a dry run
 
