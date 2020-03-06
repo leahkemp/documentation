@@ -8,13 +8,20 @@ This document describes how I installed VEP locally. VEP is difficult to install
 - **Prerequisite software:** Conda 4.8.2
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
 
-## Create environment
+## Steps
+
+1. Create environment
+2. Install VEP
+3. Download VEP database
+4. Run VEP
+
+## 1. Create environment
 
 Create a conda environment
 
 ```bash
-conda create --name vepLocalTest python=3.8
-conda activate vepLocalTest
+conda create --name vep python=3.7 # note. there were dependency conflicts when I used python version 3.8
+conda activate vep
 ```
 
 Create a VEP folder in the publicData directory
@@ -24,26 +31,33 @@ cd /store/lkemp
 mkdir vep
 ```
 
-## Install VEP
+## 2. Install VEP
 
 Install conda package of VEP
 
 ```bash
-conda install -c bioconda ensembl-vep
+conda install -c bioconda ensembl-vep=99.2
 ```
 
-This installed ensembl-vep version 92.4
+This installs only the variant effect predictor (VEP) library code. We will need to install data libraries.
 
-## Download VEP database
+## 3. Download VEP database
 
-See instructions [here](http://asia.ensembl.org/info/docs/tools/vep/script/vep_cache.html#cache)
+[Download using a command installed with the ensembl-vep conda package](https://github.com/bioconda/bioconda-recipes/blob/master/recipes/ensembl-vep/meta.yaml)
 
-*Make sure you install the VEP cache data that is the same version as the VEP you downloaded*
+*These are very large files and will likely take some time to download*
 
 ```bash
-cd /store/lkemp/publicData/vep/
-# GRCh37
-wget ftp://ftp.ensembl.org:21/pub/release-92/variation/VEP/homo_sapiens_merged_vep_92_GRCh37.tar.gz
-# GRCh38
-wget ftp://ftp.ensembl.org:21/pub/release-92/variation/VEP/homo_sapiens_merged_vep_92_GRCh38.tar.gz
+# GRCh37/hg19
+vep_install -a cf -s homo_sapiens -y GRCh37 -c /store/lkemp/publicData/vep/GRCh37 --CONVERT
+# GRCh38/hg38
+vep_install -a cf -s homo_sapiens -y GRCh38 -c /store/lkemp/publicData/vep/GRCh38 --CONVERT
+```
+
+## 4. Run VEP
+
+See the 'cache options' section cache options at [emsembl-vep](http://asia.ensembl.org/info/docs/tools/vep/script/vep_options.html)
+
+```bash
+vep --assembly GRCh37 --cache --dir /store/lkemp/publicData/vep/ --fasta /store/lkemp/publicData/referenceGenome/hg19/ucsc.hg19.fasta -i /store/lkemp/exome_project/human_genomics_pipeline_official/vcf/MS_16BL0795_S5.raw.snps.indels.AS.g.vcf --stats_text --everything -o /store/lkemp/exome_project/human_genomics_pipeline_official/vcf/MS_16BL0795_S5.raw.snps.indels.AS.g.VEP.vcf --vcf --force_overwrite
 ```
