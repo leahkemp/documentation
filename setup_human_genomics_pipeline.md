@@ -120,9 +120,33 @@ These tools do NOT require known sites, but if SNPs are provided with the -dbsnp
 
 ---
 
-#### Option one: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle) (recommended)
+#### Option one: download from [NCBI](https://www.ncbi.nlm.nih.gov/variation/docs/human_variation_vcf/) (recommended)
+
+This option is recommended since the latest release of the dbSNP database was available on this site (current latest release: build 153)
 
 *These are large files and make take some time to download*
+
+Information on dbSNP files can be found on the [NCBI website](https://www.ncbi.nlm.nih.gov/variation/docs/human_variation_vcf/) and how to download them is described [here](https://bioinformatics.stackexchange.com/questions/4578/how-to-download-dbsnp-database).
+
+- Download the latest dbSNP database.
+
+```bash
+# Build 153
+
+# GRCh37/hg19
+wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.25.gz
+wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.25.gz.tbi
+
+# GRCh38/hg38
+wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.38.gz
+wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.38.gz.tbi
+```
+
+#### Option two: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle)
+
+*These are large files and make take some time to download*
+
+These are old releases of the dbSNP database so downloading these is not recommended
 
 ```bash
 # GRCh37/hg19
@@ -166,26 +190,6 @@ Once you have the correct file format, you can create a tabix file (.tbi) with t
 tabix dbsnp_138.hg19.vcf.gz
 # GRCh38/hg38 (already downloaded the .tbi file, don;t need to create one)
 ```
-
-#### Option two: download from [NCBI](https://www.ncbi.nlm.nih.gov/variation/docs/human_variation_vcf/)
-
-*These are large files and make take some time to download*
-
-Information on dbSNP files can be found on the [NCBI website](https://www.ncbi.nlm.nih.gov/variation/docs/human_variation_vcf/).
-
-- Download the [appropriate](https://bioinformatics.stackexchange.com/questions/4578/how-to-download-dbsnp-database) dbSNP database. b151 is the current newest version of the database.
-
-```bash
-# GRCh37/hg19
-wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/human_9606_b151_GRCh37p13/VCF/All_20180423.vcf.gz
-wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/human_9606_b151_GRCh37p13/VCF/All_20180423.vcf.gz.tbi
-
-# GRCh38/hg38
-wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/human_9606_b151_GRCh38p7/VCF/All_20180418.vcf.gz
-wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/human_9606_b151_GRCh38p7/VCF/All_20180418.vcf.gz.tbi
-```
-
-TODO: find out if you need to create the additional files (Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz and 1000G_phase1.indels.hg19.sites.vcf.gz if you download the dbsnp database from NCBI)
 
 ### Example WGS data
 
