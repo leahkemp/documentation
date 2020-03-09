@@ -59,5 +59,5 @@ vep_install -a cf -s homo_sapiens -y GRCh38 -c /store/lkemp/publicData/vep/GRCh3
 See the 'cache options' section cache options at [emsembl-vep](http://asia.ensembl.org/info/docs/tools/vep/script/vep_options.html)
 
 ```bash
-vep --assembly GRCh37 --cache --dir /store/lkemp/publicData/vep/ --fasta /store/lkemp/publicData/referenceGenome/hg19/ucsc.hg19.fasta -i /store/lkemp/exome_project/human_genomics_pipeline_official/vcf/MS_16BL0795_S5.raw.snps.indels.AS.g.vcf --stats_text --everything -o /store/lkemp/exome_project/human_genomics_pipeline_official/vcf/MS_16BL0795_S5.raw.snps.indels.AS.g.VEP.vcf --vcf --force_overwrite
+vep --assembly GRCh37 --cache --dir /store/lkemp/publicData/vep/GRCh37/ --fasta /store/lkemp/publicData/referenceGenome/hg19/ucsc.hg19.fasta -i /store/lkemp/exome_project/human_genomics_pipeline_official/vcf/MS_16BL0795_S5.raw.snps.indels.AS.g.vcf --stats_text --everything -o /store/lkemp/exome_project/human_genomics_pipeline_official/vcf/MS_16BL0795_S5.raw.snps.indels.AS.g.VEP.vcf --vcf --force_overwrite --offline
 ```

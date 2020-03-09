@@ -12,9 +12,11 @@
 
 ## 1. Download data/repository
 
+Note. it's a good idea to use data such as reference human genome, it's associated files and dbSNP database downloaded from the same source since different sources may label data differently (eg. [chromosome labeling and length](https://gatkforums.broadinstitute.org/gatk/discussion/11359/input-files-reference-and-features-have-incompatible-contigs)
+
 ### Clone repository
 
-Clone the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) git repository
+Clone the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) repository
 
 ```bash
 git clone https://github.com/ESR-NZ/human_genomics_pipeline.git
@@ -142,6 +144,15 @@ wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.38.gz
 wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.38.gz.tbi
 ```
 
+extra files needed (Mills and 1000G)
+
+Although this file is named 'snps', [it does contain indels required for baseRecalibrator](https://gatkforums.broadinstitute.org/gatk/discussion/6800/known-sites-for-indel-realignment-and-bqsr-in-hg38-bundle)
+
+```bash
+wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/1000G_phase1.snps.high_confidence.hg38.vcf.gz
+wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi
+```
+
 #### Option two: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle)
 
 *These are large files and make take some time to download*
@@ -238,24 +249,11 @@ If not, install anaconda, directions for doing this on Ubuntu 16.04 can be found
 
 Update conda if necessary
 
-```bash
-conda update -n base -c defaults conda
-```
-
-Add conda channels (note. the order you run these commands is important)
-
-```bash
-conda config --add channels defaults
-conda config --add channels bioconda
-conda config --add channels conda-forge
-```
-
 Create a conda environment including python, then activate it
 
 ```bash
-cd /home/lkemp/human_genomics_pipeline
 conda create --name pipeline_env python=3.7
-activate pipeline_env
+conda activate pipeline_env
 ```
 
 Install snakemake in your conda environment
