@@ -4,16 +4,17 @@
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip)
 - **Prerequisite data** Reference human genome and dbSNP database
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
+- **Date**: 11/03/2020
 
 The vcf_annotation_pipeline is designed to accept data outputted by the ['human_genomics_pipeline'](https://github.com/ESR-NZ/human_genomics_pipeline). Therefore it assumes that a reference human genome and dbSNP database has been downloaded. The ["Setup and run human_genomics_pipeline"](https://github.com/leahkemp/documentation/blob/master/setup_human_genomics_pipeline.md) documentation provides instructions on how to download this data.
 
-## Steps
+## Table of contents
 
-1. Download data/repository
-2. Set up the working environment
-3. Run the pipeline
+Download data/repository(#download-data/repository)
+Set up the working environment (#set-up-the-working-environment)
+Run the pipeline (run-the-pipeline)
 
-## 1. Download data/repository
+## Download data/repository
 
 ### VEP database
 
@@ -147,7 +148,7 @@ Clone the [vcf_annotation_pipeline](https://github.com/leahkemp/vcf_annotation_p
 git clone https://github.com/leahkemp/vcf_annotation_pipeline.git
 ```
 
-## 2. Set up the working environment
+## Set up the working environment
 
 ### Set the working directories
 
@@ -166,7 +167,7 @@ Install snakemake in your conda environment
 conda install --channel bioconda snakemake
 ```
 
-## 3. Run the pipeline
+## Run the pipeline
 
 Start a dry run
 
