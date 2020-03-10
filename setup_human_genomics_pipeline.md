@@ -1,7 +1,7 @@
 # Set up and run human_genomics_pipeline
 
 - **Aim:** Set up and run the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline)
-- **Prerequisite software:** Conda 4.8.2
+- **Prerequisite software:**  [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [gatk](https://gatk.broadinstitute.org/hc/en-us)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
 
 ## Steps
