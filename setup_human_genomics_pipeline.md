@@ -107,21 +107,6 @@ samtools faidx /store/lkemp/publicData/referenceGenome/GRCh38/hg38.fa
 
 See [here](https://gatkforums.broadinstitute.org/gatk/discussion/1247/what-should-i-use-as-known-variants-sites-for-running-tool-x) for information on what files you will need for GATK portions of the pipeline. Below is a summary of the files needed for two GATK functions called by the pipeline:
 
----
-
-**BaseRecalibrator** requires known SNPs and indels passed with the -knownSites argument to function properly. We use all the following files:
-
-- The most recent dbSNP release (build ID > 132)
-- Mills_and_1000G_gold_standard.indels.b37.vcf
-- 1000G_phase1.indels.b37.vcf (currently from the 1000 Genomes Phase I indel calls)
-
-**HaplotypeCaller**
-These tools do NOT require known sites, but if SNPs are provided with the -dbsnp argument they will use them for variant annotation. We use this file:
-
-- The most recent dbSNP release (build ID > 132)
-
----
-
 #### Option one: download from [NCBI](https://www.ncbi.nlm.nih.gov/variation/docs/human_variation_vcf/) (recommended)
 
 This option is recommended since the latest release of the dbSNP database was available on this site (current latest release: build 153)
@@ -130,11 +115,10 @@ This option is recommended since the latest release of the dbSNP database was av
 
 Information on dbSNP files can be found on the [NCBI website](https://www.ncbi.nlm.nih.gov/variation/docs/human_variation_vcf/) and how to download them is described [here](https://bioinformatics.stackexchange.com/questions/4578/how-to-download-dbsnp-database).
 
-- Download the latest dbSNP database.
+- Download the latest dbSNP database
 
 ```bash
 # Build 153
-
 # GRCh37/hg19
 wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.25.gz
 wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.25.gz.tbi
@@ -142,15 +126,6 @@ wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.25.gz.tb
 # GRCh38/hg38
 wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.38.gz
 wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.38.gz.tbi
-```
-
-extra files needed (Mills and 1000G)
-
-Although this file is named 'snps', [it does contain indels required for baseRecalibrator](https://gatkforums.broadinstitute.org/gatk/discussion/6800/known-sites-for-indel-realignment-and-bqsr-in-hg38-bundle)
-
-```bash
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/1000G_phase1.snps.high_confidence.hg38.vcf.gz
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi
 ```
 
 #### Option two: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle)
@@ -162,17 +137,10 @@ These are old releases of the dbSNP database so downloading these is not recomme
 ```bash
 # GRCh37/hg19
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/dbsnp_138.hg19.vcf.gz
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/dbsnp_138.hg19.vcf.idx.gz # Might not need?
-# Additional data required for BaseRecalibrator
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/1000G_phase1.indels.hg19.sites.vcf.gz
 
 # GRCh38/hg38
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz.tbi
-# Additional data required for BaseRecalibrator
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
-# No indel file available?
 ```
 
 - Create tabix file (.tbi) if not downloaded. In order to do this, our dbsnp vcf file [needs to be bgzf-compressed file](https://github.com/samtools/bcftools/issues/668) (also see [here](https://www.biostars.org/p/138514/)). Check the format of your dbsnp file with:
@@ -199,7 +167,6 @@ Once you have the correct file format, you can create a tabix file (.tbi) with t
 ```bash
 # GRCh37/hg19
 tabix dbsnp_138.hg19.vcf.gz
-# GRCh38/hg38 (already downloaded the .tbi file, don;t need to create one)
 ```
 
 ### Example WGS data
@@ -239,16 +206,6 @@ SAMPLES, = glob_wildcards("..fastq/{sample}_R1.fastq.gz")
 
 ### Create a conda environment
 
-Make sure conda is installed
-
-```bash
-which conda
-```
-
-If not, install anaconda, directions for doing this on Ubuntu 16.04 can be found [here](https://www.digitalocean.com/community/tutorials/how-to-install-the-anaconda-python-distribution-on-ubuntu-16-04)
-
-Update conda if necessary
-
 Create a conda environment including python, then activate it
 
 ```bash
@@ -279,9 +236,7 @@ snakemake --use-conda
 To run the multiqc step, direct to the qc/fastqc directory created by the pipeline and run:
 
 ```bash
-# check multiqc is installed
-which multiqc
-# install if necessary
+# install multiqc and run on files in the current directory
 conda install channel --bioconda multiqc
 multiqc .
 ```
