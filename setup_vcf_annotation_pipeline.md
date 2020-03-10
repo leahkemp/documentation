@@ -1,10 +1,12 @@
 # Set up and run vcf_annotation_pipeline
 
+Created: 2020/03/11 11:25:43
+Last modified: 2020/03/11 11:26:03
+
 - **Aim:** Set up and run the [vcf_annotation_pipeline](https://github.com/leahkemp/vcf_annotation_pipeline.git)
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip)
 - **Prerequisite data** Reference human genome and dbSNP database
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
-- **Date**: 11/03/2020
 
 The vcf_annotation_pipeline is designed to accept data outputted by the ['human_genomics_pipeline'](https://github.com/ESR-NZ/human_genomics_pipeline). Therefore it assumes that a reference human genome and dbSNP database has been downloaded. The ["Setup and run human_genomics_pipeline"](https://github.com/leahkemp/documentation/blob/master/setup_human_genomics_pipeline.md) documentation provides instructions on how to download this data.
 

@@ -1,9 +1,11 @@
 # Create a scout database
 
+Created: 2020/03/11 11:25:43
+Last modified: 2020/03/11 11:28:02
+
 - **Aim:** Create a [scout](http://www.clinicalgenomics.se/scout/) database
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
-- **Date:** 2020-03-11
 
 These notes are adapted/extended from documentation written by Miles Benton
 

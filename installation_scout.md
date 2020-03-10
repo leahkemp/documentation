@@ -1,9 +1,11 @@
 # Install and run scout
 
+Created: 2020/03/11 11:25:43
+Last modified: 2020/03/11 11:26:29
+
 - **Aim:** Install [scout](http://www.clinicalgenomics.se/scout/) and run a demo instance
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
-- **Date:** 2020-03-11
 
 ## Table of contents
 
