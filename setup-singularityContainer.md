@@ -3,6 +3,15 @@
 - **Aim:** Install [singularity](https://singularity.lbl.gov/install-linux) and create a singularity container
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
+- **Date:** 2020-03-11
+
+## Table of contents
+
+- [Install singularity and create a singularity container](#install-singularity-and-create-a-singularity-container)
+  - [Table of contents](#table-of-contents)
+  - [Install singularity](#install-singularity)
+  - [Pull an image from docker](#pull-an-image-from-docker)
+  - [Build a container from scratch](#build-a-container-from-scratch)
 
 ## Install singularity
 

@@ -3,8 +3,25 @@
 - **Aim:** Create a [scout](http://www.clinicalgenomics.se/scout/) database
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
+- **Date:** 2020-03-11
 
 These notes are adapted/extended from documentation written by Miles Benton
+
+## Table of contents
+
+- [Create a scout database](#create-a-scout-database)
+  - [Table of contents](#table-of-contents)
+  - [Setup](#setup)
+  - [Create database](#create-database)
+  - [Populate database](#populate-database)
+  - [Index the database](#index-the-database)
+  - [Create a case](#create-a-case)
+    - [Load cases from a config file](#load-cases-from-a-config-file)
+    - [Load cases from the command line](#load-cases-from-the-command-line)
+  - [Testing](#testing)
+  - [Create madeline pedigree drawing](#create-madeline-pedigree-drawing)
+    - [Peddy test](#peddy-test)
+  - [OMIM access](#omim-access)
 
 ## Setup
 

@@ -3,14 +3,27 @@
 - **Aim:** Set up and run the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline)
 - **Prerequisite software:**  [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [gatk](https://gatk.broadinstitute.org/hc/en-us)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
+- **Date:** 2020-03-11
 
-## Steps
+## Table of contents
 
-1. Download data/repository
-2. Set up the working environment
-3. Run the pipeline
+- [Set up and run human_genomics_pipeline](#set-up-and-run-humangenomicspipeline)
+  - [Table of contents](#table-of-contents)
+  - [Download data/repository](#download-datarepository)
+    - [Clone repository](#clone-repository)
+    - [Reference human genome](#reference-human-genome)
+      - [Option one: download from the GATK resource bundle (recommended)](#option-one-download-from-the-gatk-resource-bundle-recommended)
+      - [Option two: download from UCSC](#option-two-download-from-ucsc)
+    - [dbSNP database](#dbsnp-database)
+      - [Option one: download from NCBI (recommended)](#option-one-download-from-ncbi-recommended)
+      - [Option two: download from the GATK resource bundle](#option-two-download-from-the-gatk-resource-bundle)
+    - [Example WGS data](#example-wgs-data)
+  - [Set up the working environment](#set-up-the-working-environment)
+    - [Set the working directories](#set-the-working-directories)
+    - [Create a conda environment](#create-a-conda-environment)
+  - [Run the pipeline](#run-the-pipeline)
 
-## 1. Download data/repository
+## Download data/repository
 
 Note. it's a good idea to use data such as reference human genome, it's associated files and dbSNP database downloaded from the same source since different sources may label data differently (eg. [chromosome labeling and length](https://gatkforums.broadinstitute.org/gatk/discussion/11359/input-files-reference-and-features-have-incompatible-contigs)
 
@@ -180,7 +193,7 @@ wget ftp://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/
 
 This downloads WGS data for the mother of the AshkenazimTrio ([sample HG004](https://github.com/genome-in-a-bottle/giab_data_indexes))
 
-## 2. Set up the working environment
+## Set up the working environment
 
 ### Set the working directories
 
@@ -219,7 +232,7 @@ Install snakemake in your conda environment
 conda install --channel bioconda snakemake
 ```
 
-## 3. Run the pipeline
+## Run the pipeline
 
 Start a dry run
 

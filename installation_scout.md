@@ -3,12 +3,23 @@
 - **Aim:** Install [scout](http://www.clinicalgenomics.se/scout/) and run a demo instance
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
+- **Date:** 2020-03-11
+
+## Table of contents
+
+- [Install and run scout](#install-and-run-scout)
+  - [Table of contents](#table-of-contents)
+  - [Install scout](#install-scout)
+    - [Create a conda environment](#create-a-conda-environment)
+    - [Install/run MongoDB](#installrun-mongodb)
+    - [Install scout](#install-scout-1)
+  - [Setup/run an example scout database](#setuprun-an-example-scout-database)
 
 ## Install scout
 
 Their [website](http://www.clinicalgenomics.se/scout/install/) describes the overall installation process. The easiest way I found to install scout was to create a conda environment in which to install scout and it's dependant software is installed. This saves you from *some* python dependency issues.
 
-### Create a conda environment with python3.7
+### Create a conda environment
 
 Create the conda environment and list all the environments
 
@@ -25,7 +36,7 @@ conda activate scout_env
 
 Now install software in this environment
 
-### MongoDB
+### Install/run MongoDB
 
 Install [MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/) (I used db version v4.2.3)
 
@@ -49,7 +60,7 @@ If you need to stop a mongod process
 sudo systemctl stop mongod
 ```
 
-### Scout
+### Install scout
 
 Clone the scout repository and install it's dependencies (I used Scout version 4.12.3, this code will download the latest stable release)
 

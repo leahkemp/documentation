@@ -3,6 +3,29 @@
 - **Aim:** Build and run [VCF-DART](https://www.sciencedirect.com/science/article/abs/pii/S1525157819303538?via%3Dihub) from two github repositories ([here](https://github.com/sirselim/diagnostics_exome_reporting.git) and [here](https://github.com/sirselim/WES_ShinyDiscover.git))
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
+- **Date**: 2020-03-11
+
+## Table of contents
+
+- [How to build VCF-DART from GitHub repositories](#how-to-build-vcf-dart-from-github-repositories)
+  - [Table of contents](#table-of-contents)
+  - [Clone repositories](#clone-repositories)
+  - [Install software](#install-software)
+    - [USING CONDA (much easier that doing this manually)](#using-conda-much-easier-that-doing-this-manually)
+    - [WITHOUT CONDA (MANUAL INSTALLATION)](#without-conda-manual-installation)
+    - [snpEFF](#snpeff)
+    - [bcftools, tabix and bgzip](#bcftools-tabix-and-bgzip)
+    - [parallel](#parallel)
+    - [bedops](#bedops)
+    - [VEP](#vep)
+  - [Install R libraries](#install-r-libraries)
+  - [Download data](#download-data)
+    - [dbSNP](#dbsnp)
+    - [VEP](#vep-1)
+    - [dbNSFP](#dbnsfp)
+  - [Set file directories](#set-file-directories)
+  - [Run RShiny app](#run-rshiny-app)
+  - [Further information](#further-information)
 
 ## Clone repositories
 
@@ -31,7 +54,7 @@ Example data can also be cloned
 git clone https://github.com/sirselim/VCF-DART_example_exomes.git
 ```
 
-## Install required software 
+## Install software
 
 The following software is required to run VCF-DART successfully:
 
@@ -99,7 +122,7 @@ wget
 ```
 
 See http://snpeff.sourceforge.net/download.html for more information on how to download and install snpEFF
-lkem
+
 ### bcftools, tabix and bgzip
 
 tabix and bgzip is bundled within HTSlib which is bundled within BCFtools. Therefore, you can download bcftools and install HTSlib from it (which provides the tabix and bgzip utility)
@@ -340,7 +363,7 @@ wget ftp://ftp.ncbi.nih.gov:21/snp/organisms/human_9606_b151_GRCh38p7/VCF/All_20
 
 ### dbNSFP
 
-## Set file paths
+## Set file directories
 
 Change the file paths of all the software, databases and raw data in diagnostics_exome_reporting/WESdiag_pipeline_dev.sh
 

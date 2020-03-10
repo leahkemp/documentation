@@ -12,7 +12,7 @@ The vcf_annotation_pipeline is designed to accept data outputted by the ['human_
 
 * [Download data/repository](#download-data/repository)
 * [Set up the working environment](#set-up-the-working-environment)
-* [Run the pipeline](run-the-pipeline)
+* [Run the pipeline](#run-the-pipeline)
 
 ## Download data/repository
 

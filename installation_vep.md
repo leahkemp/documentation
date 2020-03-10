@@ -3,19 +3,22 @@
 - **Aim:** Install [VEP](https://asia.ensembl.org/info/docs/tools/vep/index.html) locally (using the [conda ensembl-vep package](https://anaconda.org/bioconda/ensembl-vep)) to ensure it works before integrating it into a snakemake workflow
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
+- **Date:** 2020-03-11
 
 This document describes how I installed VEP locally. VEP is difficult to install locally ([instructions here](https://asia.ensembl.org/info/docs/tools/vep/script/vep_download.html)) largely due to perl dependencies. There is a conda package available for VEP [ensembl-vep](https://anaconda.org/bioconda/ensembl-vep) available through bioconda, yet we haven't yet tested it's utility alone, or within a snakemake workflow. Here I will attempt to run the ensembl-vep package locally before attempting to incorporate it into a snakemake workflow.
 
 *Note - there is also a [docker container available for VEP](https://hub.docker.com/r/ensemblorg/ensembl-vep/)*
 
-## Steps
+## Table of contents
 
-1. Create environment
-2. Install VEP
-3. Download VEP database
-4. Run VEP
+- [Install VEP locally](#install-vep-locally)
+  - [Table of contents](#table-of-contents)
+  - [Create environment](#create-environment)
+  - [Install VEP](#install-vep)
+  - [Download VEP database](#download-vep-database)
+  - [Run VEP](#run-vep)
 
-## 1. Create environment
+## Create environment
 
 Create a conda environment
 
@@ -31,7 +34,7 @@ cd /store/lkemp
 mkdir vep
 ```
 
-## 2. Install VEP
+## Install VEP
 
 Install conda package of VEP
 
@@ -41,7 +44,7 @@ conda install -c bioconda ensembl-vep=99.2
 
 This installs only the variant effect predictor (VEP) library code. We will need to install data libraries.
 
-## 3. Download VEP database
+## Download VEP database
 
 [Download using a command installed with the ensembl-vep conda package](https://github.com/bioconda/bioconda-recipes/blob/master/recipes/ensembl-vep/meta.yaml)
 
@@ -54,7 +57,7 @@ vep_install -a cf -s homo_sapiens -y GRCh37 -c /store/lkemp/publicData/vep/GRCh3
 vep_install -a cf -s homo_sapiens -y GRCh38 -c /store/lkemp/publicData/vep/GRCh38 --CONVERT
 ```
 
-## 4. Run VEP
+## Run VEP
 
 See the 'cache options' section cache options at [emsembl-vep](http://asia.ensembl.org/info/docs/tools/vep/script/vep_options.html)
 
