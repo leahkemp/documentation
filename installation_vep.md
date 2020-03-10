@@ -1,7 +1,7 @@
 # Install VEP locally
 
-- **Aim:** Install VEP locally (using the conda ensembl-vep package) to ensure it works before integrating it into a snakemake workflow
-- **Prerequisite software:** Conda 4.8.2
+- **Aim:** Install [VEP](https://asia.ensembl.org/info/docs/tools/vep/index.html) locally (using the [conda ensembl-vep package](https://anaconda.org/bioconda/ensembl-vep)) to ensure it works before integrating it into a snakemake workflow
+- **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
 
 This document describes how I installed VEP locally. VEP is difficult to install locally ([instructions here](https://asia.ensembl.org/info/docs/tools/vep/script/vep_download.html)) largely due to perl dependencies. There is a conda package available for VEP [ensembl-vep](https://anaconda.org/bioconda/ensembl-vep) available through bioconda, yet we haven't yet tested it's utility alone, or within a snakemake workflow. Here I will attempt to run the ensembl-vep package locally before attempting to incorporate it into a snakemake workflow.

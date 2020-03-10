@@ -1,11 +1,11 @@
 # Set up and run vcf_annotation_pipeline
 
 - **Aim:** Set up and run the [vcf_annotation_pipeline](https://github.com/leahkemp/vcf_annotation_pipeline.git)
-- **Prerequisite software:** Conda 4.8.2, tabix
+- **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip)
 - **Prerequisite data** Reference human genome and dbSNP database
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
 
-The vcf_annotation_pipeline is designed to accept data outputted by the ['human_genomics_pipeline'](https://github.com/ESR-NZ/human_genomics_pipeline). Therefore it assumes that a reference human genome and dbSNP database has been downloaded (see the associated documentation [here](https://github.com/leahkemp/documentation/blob/master/setup_human_genomics_pipeline.md)).
+The vcf_annotation_pipeline is designed to accept data outputted by the ['human_genomics_pipeline'](https://github.com/ESR-NZ/human_genomics_pipeline). Therefore it assumes that a reference human genome and dbSNP database has been downloaded. The ["Setup and run human_genomics_pipeline"](https://github.com/leahkemp/documentation/blob/master/setup_human_genomics_pipeline.md) documentation provides instructions on how to download this data.
 
 ## Steps
 
@@ -68,7 +68,7 @@ wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/hapmap_3.3.
 ## Not available for GRCh37?
 ```
 
-If an index file (.tbi) is not available, one will need to be created using tabix (or IndexFeatureFile by gatk). To do so, the files will need to be bgzipped. To check if they are the correct format, run:
+If an index file (.tbi) is not available, one will need to be created using tabix (or [IndexFeatureFile by gatk](https://gatk.broadinstitute.org/hc/en-us/articles/360036899892-IndexFeatureFile)). To do so, the files will need to be bgzipped. To check if they are the correct format, run:
 
 ```bash
 htsfile Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
