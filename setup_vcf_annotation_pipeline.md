@@ -1,7 +1,7 @@
 # Set up and run vcf_annotation_pipeline
 
 Created: 2020/03/11 11:25:43
-Last modified: 2020/03/11 11:26:03
+Last modified: 2020/03/12 16:04:09
 
 - **Aim:** Set up and run the [vcf_annotation_pipeline](https://github.com/leahkemp/vcf_annotation_pipeline.git)
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip)
@@ -12,9 +12,17 @@ The vcf_annotation_pipeline is designed to accept data outputted by the ['human_
 
 ## Table of contents
 
-* [Download data/repository](#download-data/repository)
-* [Set up the working environment](#set-up-the-working-environment)
-* [Run the pipeline](#run-the-pipeline)
+- [Set up and run vcf_annotation_pipeline](#set-up-and-run-vcfannotationpipeline)
+  - [Table of contents](#table-of-contents)
+  - [Download data/repository](#download-datarepository)
+    - [VEP database](#vep-database)
+    - [Other databases](#other-databases)
+    - [CADD database](#cadd-database)
+    - [Clone repository](#clone-repository)
+  - [Set up the working environment](#set-up-the-working-environment)
+    - [Set the working directories](#set-the-working-directories)
+    - [Create a conda environment](#create-a-conda-environment)
+  - [Run the pipeline](#run-the-pipeline)
 
 ## Download data/repository
 
@@ -142,6 +150,20 @@ wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/Axiom_Exome
 
 Since the index files (.tbi) are available for download for GRCh38, we don't need to create them with tabix
 
+### CADD database
+
+This database is **massive** so it will take a long time to download (85G and 194G)
+
+```bash
+# GRCh37
+wget https://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/whole_genome_SNVs.tsv.gz
+wget https://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/whole_genome_SNVs.tsv.gz.tbi
+
+# GRCh38
+wget https://krishna.gs.washington.edu/download/CADD/v1.4/GRCh38/whole_genome_SNVs.tsv.gz
+wget https://krishna.gs.washington.edu/download/CADD/v1.4/GRCh38/whole_genome_SNVs.tsv.gz.tbi
+```
+
 ### Clone repository
 
 Clone the [vcf_annotation_pipeline](https://github.com/leahkemp/vcf_annotation_pipeline.git) repository
@@ -166,7 +188,7 @@ conda activate annot_pipeline_env
 Install snakemake in your conda environment
 
 ```bash
-conda install --channel bioconda snakemake
+conda install --channel bioconda snakemake=5.10.0
 ```
 
 ## Run the pipeline
