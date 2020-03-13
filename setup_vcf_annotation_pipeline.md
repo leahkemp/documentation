@@ -1,11 +1,11 @@
 # Set up and run vcf_annotation_pipeline
 
 Created: 2020/03/11 11:25:43
-Last modified: 2020/03/12 16:04:09
+Last modified: 2020/03/13 11:52:37
 
 - **Aim:** Set up and run the [vcf_annotation_pipeline](https://github.com/leahkemp/vcf_annotation_pipeline.git)
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip)
-- **Prerequisite data** Reference human genome and dbSNP database
+- **Prerequisite data:** Reference human genome and dbSNP database
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
 
 The vcf_annotation_pipeline is designed to accept data outputted by the ['human_genomics_pipeline'](https://github.com/ESR-NZ/human_genomics_pipeline). Therefore it assumes that a reference human genome and dbSNP database has been downloaded. The ["Setup and run human_genomics_pipeline"](https://github.com/leahkemp/documentation/blob/master/setup_human_genomics_pipeline.md) documentation provides instructions on how to download this data.
@@ -20,6 +20,7 @@ The vcf_annotation_pipeline is designed to accept data outputted by the ['human_
     - [CADD database](#cadd-database)
     - [Clone repository](#clone-repository)
   - [Set up the working environment](#set-up-the-working-environment)
+    - [Move vcf data to vcf_annotation_pipeline](#move-vcf-data-to-vcfannotationpipeline)
     - [Set the working directories](#set-the-working-directories)
     - [Create a conda environment](#create-a-conda-environment)
   - [Run the pipeline](#run-the-pipeline)
@@ -152,16 +153,16 @@ Since the index files (.tbi) are available for download for GRCh38, we don't nee
 
 ### CADD database
 
-This database is **massive** so it will take a long time to download (85G and 194G)
+This database is **massive** so it will take a long time to download (85G and 194G). aria2c can speed things up when downloading large files like these.
 
 ```bash
 # GRCh37
-wget https://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/whole_genome_SNVs.tsv.gz
+aria2c -c -s 10 https://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/whole_genome_SNVs.tsv.gz
 wget https://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/whole_genome_SNVs.tsv.gz.tbi
 
 # GRCh38
-wget https://krishna.gs.washington.edu/download/CADD/v1.4/GRCh38/whole_genome_SNVs.tsv.gz
-wget https://krishna.gs.washington.edu/download/CADD/v1.4/GRCh38/whole_genome_SNVs.tsv.gz.tbi
+aria2c -c -s 10 https://krishna.gs.washington.edu/download/CADD/v1.5/GRCh38/whole_genome_SNVs.tsv.gz
+wget https://krishna.gs.washington.edu/download/CADD/v1.5/GRCh38/whole_genome_SNVs.tsv.gz.tbi
 ```
 
 ### Clone repository
@@ -173,6 +174,16 @@ git clone https://github.com/leahkemp/vcf_annotation_pipeline.git
 ```
 
 ## Set up the working environment
+
+### Move vcf data to vcf_annotation_pipeline
+
+Create a directory within vcf_annotation_pipeline
+
+```bash
+mkdir vcf
+cd vcf
+cp ../../human_genomics_pipeline/vcf/*.raw.snps.indels.AS.g.vcf* .
+```
 
 ### Set the working directories
 
