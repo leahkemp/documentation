@@ -1,7 +1,7 @@
 # Set up and run human_genomics_pipeline
 
 Created: 2020/03/11 11:25:43
-Last modified: 2020/03/11 11:27:30
+Last modified: 2020/03/13 13:27:02
 
 - **Aim:** Set up and run the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline)
 - **Prerequisite software:**  [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [gatk](https://gatk.broadinstitute.org/hc/en-us)
@@ -14,11 +14,12 @@ Last modified: 2020/03/11 11:27:30
   - [Download data/repository](#download-datarepository)
     - [Clone repository](#clone-repository)
     - [Reference human genome](#reference-human-genome)
-      - [Option one: download from the GATK resource bundle (recommended)](#option-one-download-from-the-gatk-resource-bundle-recommended)
-      - [Option two: download from UCSC](#option-two-download-from-ucsc)
-    - [dbSNP database](#dbsnp-database)
       - [Option one: download from NCBI (recommended)](#option-one-download-from-ncbi-recommended)
       - [Option two: download from the GATK resource bundle](#option-two-download-from-the-gatk-resource-bundle)
+      - [Option three: download from UCSC](#option-three-download-from-ucsc)
+    - [dbSNP database](#dbsnp-database)
+      - [Option one: download from NCBI (recommended)](#option-one-download-from-ncbi-recommended-1)
+      - [Option two: download from the GATK resource bundle](#option-two-download-from-the-gatk-resource-bundle-1)
     - [Example WGS data](#example-wgs-data)
   - [Set up the working environment](#set-up-the-working-environment)
     - [Set the working directories](#set-the-working-directories)
@@ -27,7 +28,13 @@ Last modified: 2020/03/11 11:27:30
 
 ## Download data/repository
 
-Note. it's a good idea to use data such as reference human genome, it's associated files and dbSNP database downloaded from the same source since different sources may label data differently (eg. [chromosome labeling and length](https://gatkforums.broadinstitute.org/gatk/discussion/11359/input-files-reference-and-features-have-incompatible-contigs)
+----
+
+If possible, try and get these databases from the same source, since issues typically arise when using reference human genomes and dbSNP databases from different sources. This is because different sources may label data differently (eg. [chromosome labeling and length](https://gatkforums.broadinstitute.org/gatk/discussion/11359/input-files-reference-and-features-have-incompatible-contigs)). This can cause compatibility issues within steps of the pipeline, for example in the [gatk4 BaseRecalibrator step](https://www.biostars.org/p/354472/).
+
+----
+
+In the end, I used the reference human genome and dbSNP database from NCBI since they has the most recent releases of these files available.
 
 ### Clone repository
 
@@ -39,9 +46,52 @@ git clone https://github.com/ESR-NZ/human_genomics_pipeline.git
 
 ### Reference human genome
 
-There are many places you can download the reference human genome (and many ways to download it). Here I will describe two methods I used to download and prepare two releases of reference human genome.
+There are many places you can download the reference human genome (and many ways to download it). Here I will describe how I downloaded and prepared the reference human genome from three sources.
 
-#### Option one: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle) (recommended)
+#### Option one: download from [NCBI](https://www.ncbi.nlm.nih.gov/genome/guide/human/?) (recommended)
+
+- Download over the ftp server and unzip files
+
+```bash
+# GRCh37
+wget ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh37_latest/refseq_identifiers/GRCh37_latest_genomic.fna.gz
+gunzip GRCh37_latest_genomic.fna.gz
+
+#GRCh38
+wget ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.fna.gz
+gunzip GRCh38_latest_genomic.fna.gz
+```
+
+- Create index files for the genome sequence (.amb, .ann, .bwt, .pac, .sa)
+
+```bash
+# GRCh37/hg19
+bwa index -a bwtsw GRCh37_latest_genomic.fna
+# GRCh38/hg38
+bwa index -a bwtsw GRCh38_latest_genomic.fna
+```
+
+['bwtsw' is required](http://seqanswers.com/forums/showthread.php?t=3547) so that bwa uses the correct algorithm to handle a large whole genome sequence
+
+- Make the fasta sequence dictionary file (.dict) using picard within GATK
+
+```bash
+# GRCh37/hg19
+java -jar /store/mbenton/software/gatk-4.1.4.1/gatk-package-4.1.4.1-local.jar CreateSequenceDictionary -R /store/lkemp/publicData/referenceGenome/ncbi/GRCh37/GRCh37_latest_genomic.fna
+# GRCh38/hg38
+java -jar /store/mbenton/software/gatk-4.1.4.1/gatk-package-4.1.4.1-local.jar CreateSequenceDictionary -R /store/lkemp/publicData/referenceGenome/ncbi/GRCh38/GRCh38_latest_genomic.fna
+```
+
+- Make the fasta index file (.fai) with samtools
+
+```bash
+# GRCh37/hg19
+samtools faidx /store/lkemp/publicData/referenceGenome/ncbi/GRCh37/GRCh37_latest_genomic.fna
+# GRCh38/hg38
+samtools faidx /store/lkemp/publicData/referenceGenome/ncbi/GRCh38/GRCh38_latest_genomic.fna
+```
+
+#### Option two: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle)
 
 Downloading the reference human genome from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle) allows us to also download their associated fasta sequence dictionary file (.dict) and fasta index file (.fai) files that would otherwise [need to be created](https://gatkforums.broadinstitute.org/gatk/discussion/1601/how-can-i-prepare-a-fasta-file-to-use-as-reference)
 
@@ -74,7 +124,7 @@ bwa index -a bwtsw Homo_sapiens_assembly38.fasta
 
 ['bwtsw' is required](http://seqanswers.com/forums/showthread.php?t=3547) so that bwa uses the correct algorithm to handle a large whole genome sequence
 
-#### Option two: download from [UCSC](https://hgdownload.soe.ucsc.edu/downloads.html)
+#### Option three: download from [UCSC](https://hgdownload.soe.ucsc.edu/downloads.html)
 
 Downloading the reference human genome from [UCSC](https://hgdownload.soe.ucsc.edu/downloads.html) will provide only the fasta file with the genome sequence. We will [need to create]((https://gatkforums.broadinstitute.org/gatk/discussion/1601/how-can-i-prepare-a-fasta-file-to-use-as-reference)) it's associated fasta sequence dictionary file (.dict) and fasta index file (.fai) files.
 
@@ -104,18 +154,18 @@ bwa index -a bwtsw hg38.fa
 
 ```bash
 # GRCh37/hg19
-java -jar /store/mbenton/software/gatk-4.1.4.1/gatk-package-4.1.4.1-local.jar CreateSequenceDictionary -R /store/lkemp/publicData/referenceGenome/GRCh37/hg19.fa
+java -jar /store/mbenton/software/gatk-4.1.4.1/gatk-package-4.1.4.1-local.jar CreateSequenceDictionary -R /store/lkemp/publicData/referenceGenome/ucsc/GRCh37/hg19.fa
 # GRCh38/hg38
-java -jar /store/mbenton/software/gatk-4.1.4.1/gatk-package-4.1.4.1-local.jar CreateSequenceDictionary -R /store/lkemp/publicData/referenceGenome/GRCh38/hg38.fa
+java -jar /store/mbenton/software/gatk-4.1.4.1/gatk-package-4.1.4.1-local.jar CreateSequenceDictionary -R /store/lkemp/publicData/referenceGenome/ucsc/GRCh38/hg38.fa
 ```
 
 - Make the fasta index file (.fai) with samtools
 
 ```bash
 # GRCh37/hg19
-samtools faidx /store/lkemp/publicData/referenceGenome/GRCh37/hg19.fa
+samtools faidx /store/lkemp/publicData/referenceGenome/ucsc/GRCh37/hg19.fa
 # GRCh38/hg38
-samtools faidx /store/lkemp/publicData/referenceGenome/GRCh38/hg38.fa
+samtools faidx /store/lkemp/publicData/referenceGenome/ucsc/GRCh38/hg38.fa
 ```
 
 ### dbSNP database
