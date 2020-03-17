@@ -1,7 +1,7 @@
 # A cheeky peek at big genomic data files for human genomic pipelines
 
 Created: 2020/03/18 09:47:43
-Last modified: 2020/03/18 12:07:32
+Last modified: 2020/03/18 12:43:57
 
 The reference human genomes and other databases files differ when downloaded from different sources (eg. chromosome labelling). Unfortunately mixing files sourced from different hosts within a pipeline can cause computer says no's. The typical advice is to [use data sources from the same place](https://gatkforums.broadinstitute.org/gatk/discussion/11359/input-files-reference-and-features-have-incompatible-contigs).
 
@@ -227,37 +227,6 @@ wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.25.gz.tb
 ```
 
 ```bash
-#CHROM  POS             ID              REF     ALT     QUAL    FILTER  INFO
-chrM    64              rs3883917       C       T       .       .       ASP;CAF=[0.9373,0.06268];COMMON=1;OTHERKG;R5;RS=3883917;RSPOS=64;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000002000100;WGT=1;dbSNPBuildID=108
-chrM    72              rs370271105     T       C       .       .       ASP;CAF=[0.9878,0.01123];COMMON=1;HD;OTHERKG;R5;RS=370271105;RSPOS=72;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000402000100;WGT=1;dbSNPBuildID=138
-chrM    93              rs369034419     A       G       .       .       ASP;CAF=[0.9663,0.03368];COMMON=1;HD;OTHERKG;R5;RS=369034419;RSPOS=93;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000402000100;WGT=1;dbSNPBuildID=138
-chrM    97              rs147830800     G       A       .       .       ASP;CAF=[0.9972,0.002806];COMMON=1;OTHERKG;R5;RS=147830800;RSPOS=97;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000002000100;WGT=1;dbSNPBuildID=134
-chrM    103             rs369070397     G       A       .       .       ASP;CAF=[0.9906,0.009355];COMMON=1;OTHERKG;R5;RS=369070397;RSPOS=103;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000002000100;WGT=1;dbSNPBuildID=138
-chrM    125             rs144402189     T       C       .       .       ASP;CAF=[0.9991,0.0009355];COMMON=0;HD;OTHERKG;R5;RS=144402189;RSPOS=125;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000402000100;WGT=1;dbSNPBuildID=134
-chrM    127             rs139684161     T       C       .       .       ASP;CAF=[0.9991,0.0009355];COMMON=0;OTHERKG;R5;RS=139684161;RSPOS=127;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000002000100;WGT=1;dbSNPBuildID=134
-chrM    143             rs375589100     G       A       .       .       ASP;CAF=[0.9673,0.03274];COMMON=1;OTHERKG;R5;RS=375589100;RSPOS=143;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000002000100;WGT=1;dbSNPBuildID=138
-.
-.
-.
-chrY    59362755        rs372555462     AG      A       .       .       ASP;CFL;OTHERKG;RS=372555462;RSPOS=59362756;SAO=0;SSR=0;VC=DIV;VP=0x05000000000d000002000200;WGT=1;dbSNPBuildID=138
-chrY    59362881        rs368008987     T       G       .       .       ASP;CFL;OTHERKG;RS=368008987;RSPOS=59362881;SAO=0;SSR=0;VC=SNV;VP=0x05000000000d000002000100;WGT=1;dbSNPBuildID=138
-chrY    59362903        rs374874946     GGT     G       .       .       ASP;CFL;OTHERKG;RS=374874946;RSPOS=59362904;SAO=0;SSR=0;VC=DIV;VP=0x05000000000d000002000200;WGT=1;dbSNPBuildID=138
-chrY    59362926        rs369293409     AG      A       .       .       ASP;CFL;OTHERKG;RS=369293409;RSPOS=59362927;SAO=0;SSR=0;VC=DIV;VP=0x05000000000d000002000200;WGT=1;dbSNPBuildID=138
-chrY    59362952        rs372923705     AG      A       .       .       ASP;CFL;OTHERKG;RS=372923705;RSPOS=59362953;SAO=0;SSR=0;VC=DIV;VP=0x05000000000d000002000200;WGT=1;dbSNPBuildID=138
-chrY    59363034        rs374134835     TAG     T,TG    .       .       CFL;NOC;OTHERKG;RS=374134835;RSPOS=59363035;SAO=0;SSR=0;VC=DIV;VP=0x050000000009000002000210;WGT=1;dbSNPBuildID=138
-chrY    59363052        rs367673729     TAG     T,TG    .       .       CFL;NOC;OTHERKG;RS=367673729;RSPOS=59363053;SAO=0;SSR=0;VC=DIV;VP=0x050000000009000002000210;WGT=1;dbSNPBuildID=138
-chrY    59363407        rs376709892     AG      A       .       .       ASP;CFL;OTHERKG;RS=376709892;RSPOS=59363408;SAO=0;SSR=0;VC=DIV;VP=0x05000000000d000002000200;WGT=1;dbSNPBuildID=138
-chrY    59363442        rs371324725     AG      A       .       .       ASP;CFL;OTHERKG;RS=371324725;RSPOS=59363443;SAO=0;SSR=0;VC=DIV;VP=0x05000000000d000002000200;WGT=1;dbSNPBuildID=138
-```
-
-#### Sourced from the [GATK resource bundle](https://gatkforums.broadinstitute.org/gatk/discussion/1213/whats-in-the-resource-bundle-and-how-can-i-get-it)
-
-```bash
-# Build 138
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/dbsnp_138.hg19.vcf.gz
-```
-
-```bash
 #CHROM          POS     ID              REF     ALT                                           QUAL    FILTER  INFO
 NC_000001.10    10019   rs775809821     TA      T                                             .       .       RS=775809821;dbSNPBuildID=144;SSR=0;PSEUDOGENEINFO=DDX11L1:100287102;VC=INDEL
 NC_000001.10    10039   rs978760828     A       C                                             .       .       RS=978760828;dbSNPBuildID=150;SSR=0;PSEUDOGENEINFO=DDX11L1:100287102;VC=SNV
@@ -284,6 +253,37 @@ NW_004775435.1  307232  rs961157725     G       A                               
 NW_004775435.1  307237  rs1292431636    G       T                                             .       .       RS=1292431636;dbSNPBuildID=151;SSR=0;GENEINFO=LOC101928689:101928689;VC=SNV;GNO;FREQ=TOPMED:1,1.593e-05
 NW_004775435.1  307246  rs1458020546    G       A                                             .       .       RS=1458020546;dbSNPBuildID=151;SSR=0;GENEINFO=LOC101928689:101928689;VC=SNV;GNO;FREQ=TOPMED:1,2.389e-05
 NW_004775435.1  307248  rs1351236822    G       A                                             .       .       RS=1351236822;dbSNPBuildID=151;SSR=0;GENEINFO=LOC101928689:101928689;VC=SNV;GNO;FREQ=TOPMED:1,1.593e-05
+```
+
+#### Sourced from the [GATK resource bundle](https://gatkforums.broadinstitute.org/gatk/discussion/1213/whats-in-the-resource-bundle-and-how-can-i-get-it)
+
+```bash
+# Build 138
+wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/dbsnp_138.hg19.vcf.gz
+```
+
+```bash
+#CHROM  POS             ID              REF     ALT     QUAL    FILTER  INFO
+chrM    64              rs3883917       C       T       .       .       ASP;CAF=[0.9373,0.06268];COMMON=1;OTHERKG;R5;RS=3883917;RSPOS=64;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000002000100;WGT=1;dbSNPBuildID=108
+chrM    72              rs370271105     T       C       .       .       ASP;CAF=[0.9878,0.01123];COMMON=1;HD;OTHERKG;R5;RS=370271105;RSPOS=72;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000402000100;WGT=1;dbSNPBuildID=138
+chrM    93              rs369034419     A       G       .       .       ASP;CAF=[0.9663,0.03368];COMMON=1;HD;OTHERKG;R5;RS=369034419;RSPOS=93;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000402000100;WGT=1;dbSNPBuildID=138
+chrM    97              rs147830800     G       A       .       .       ASP;CAF=[0.9972,0.002806];COMMON=1;OTHERKG;R5;RS=147830800;RSPOS=97;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000002000100;WGT=1;dbSNPBuildID=134
+chrM    103             rs369070397     G       A       .       .       ASP;CAF=[0.9906,0.009355];COMMON=1;OTHERKG;R5;RS=369070397;RSPOS=103;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000002000100;WGT=1;dbSNPBuildID=138
+chrM    125             rs144402189     T       C       .       .       ASP;CAF=[0.9991,0.0009355];COMMON=0;HD;OTHERKG;R5;RS=144402189;RSPOS=125;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000402000100;WGT=1;dbSNPBuildID=134
+chrM    127             rs139684161     T       C       .       .       ASP;CAF=[0.9991,0.0009355];COMMON=0;OTHERKG;R5;RS=139684161;RSPOS=127;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000002000100;WGT=1;dbSNPBuildID=134
+chrM    143             rs375589100     G       A       .       .       ASP;CAF=[0.9673,0.03274];COMMON=1;OTHERKG;R5;RS=375589100;RSPOS=143;SAO=0;SSR=0;VC=SNV;VP=0x050000020005000002000100;WGT=1;dbSNPBuildID=138
+.
+.
+.
+chrY    59362755        rs372555462     AG      A       .       .       ASP;CFL;OTHERKG;RS=372555462;RSPOS=59362756;SAO=0;SSR=0;VC=DIV;VP=0x05000000000d000002000200;WGT=1;dbSNPBuildID=138
+chrY    59362881        rs368008987     T       G       .       .       ASP;CFL;OTHERKG;RS=368008987;RSPOS=59362881;SAO=0;SSR=0;VC=SNV;VP=0x05000000000d000002000100;WGT=1;dbSNPBuildID=138
+chrY    59362903        rs374874946     GGT     G       .       .       ASP;CFL;OTHERKG;RS=374874946;RSPOS=59362904;SAO=0;SSR=0;VC=DIV;VP=0x05000000000d000002000200;WGT=1;dbSNPBuildID=138
+chrY    59362926        rs369293409     AG      A       .       .       ASP;CFL;OTHERKG;RS=369293409;RSPOS=59362927;SAO=0;SSR=0;VC=DIV;VP=0x05000000000d000002000200;WGT=1;dbSNPBuildID=138
+chrY    59362952        rs372923705     AG      A       .       .       ASP;CFL;OTHERKG;RS=372923705;RSPOS=59362953;SAO=0;SSR=0;VC=DIV;VP=0x05000000000d000002000200;WGT=1;dbSNPBuildID=138
+chrY    59363034        rs374134835     TAG     T,TG    .       .       CFL;NOC;OTHERKG;RS=374134835;RSPOS=59363035;SAO=0;SSR=0;VC=DIV;VP=0x050000000009000002000210;WGT=1;dbSNPBuildID=138
+chrY    59363052        rs367673729     TAG     T,TG    .       .       CFL;NOC;OTHERKG;RS=367673729;RSPOS=59363053;SAO=0;SSR=0;VC=DIV;VP=0x050000000009000002000210;WGT=1;dbSNPBuildID=138
+chrY    59363407        rs376709892     AG      A       .       .       ASP;CFL;OTHERKG;RS=376709892;RSPOS=59363408;SAO=0;SSR=0;VC=DIV;VP=0x05000000000d000002000200;WGT=1;dbSNPBuildID=138
+chrY    59363442        rs371324725     AG      A       .       .       ASP;CFL;OTHERKG;RS=371324725;RSPOS=59363443;SAO=0;SSR=0;VC=DIV;VP=0x05000000000d000002000200;WGT=1;dbSNPBuildID=138
 ```
 
 ### Hapmap
