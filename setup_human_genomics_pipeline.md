@@ -1,7 +1,7 @@
 # Set up and run human_genomics_pipeline
 
 Created: 2020/03/11 11:25:43
-Last modified: 2020/03/13 13:27:02
+Last modified: 2020/03/16 15:34:36
 
 - **Aim:** Set up and run the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline)
 - **Prerequisite software:**  [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [gatk](https://gatk.broadinstitute.org/hc/en-us)
@@ -25,6 +25,7 @@ Last modified: 2020/03/13 13:27:02
     - [Set the working directories](#set-the-working-directories)
     - [Create a conda environment](#create-a-conda-environment)
   - [Run the pipeline](#run-the-pipeline)
+  - [Useful links](#useful-links)
 
 ## Download data/repository
 
@@ -47,6 +48,8 @@ git clone https://github.com/ESR-NZ/human_genomics_pipeline.git
 ### Reference human genome
 
 There are many places you can download the reference human genome (and many ways to download it). Here I will describe how I downloaded and prepared the reference human genome from three sources.
+
+NCBI ftp site: wget ftp://ftp.ncbi.nlm.nih.gov:21/
 
 #### Option one: download from [NCBI](https://www.ncbi.nlm.nih.gov/genome/guide/human/?) (recommended)
 
@@ -193,6 +196,13 @@ wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.38.gz
 wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.38.gz.tbi
 ```
 
+Note. I had to delete the index files (.tbi) associated with the dbSNP databases that I downloaded and recreate them because otherwise an error was cproduced in the vcf_annotation_pipeline indicating that the index file was out of date. I created them with tabix:
+
+```bash
+tabix GCF_000001405.25.gz
+tabix GCF_000001405.38.gz
+```
+
 #### Option two: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle)
 
 *These are large files and make take some time to download*
@@ -305,3 +315,7 @@ To run the multiqc step, direct to the qc/fastqc directory created by the pipeli
 conda install channel --bioconda multiqc
 multiqc .
 ```
+
+## Useful links
+
+Van der Auwera et al., (2013). *Current Protocols in Bioinformatics*. [From FastQ data to high confidence variant calls: the Genome Analysis Toolkit best practices pipeline](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4243306/); 11(1110): 11.10.1–11.10.33.
