@@ -1,7 +1,7 @@
 # Set up and run human_genomics_pipeline
 
 Created: 2020/03/11 11:25:43
-Last modified: 2020/03/16 15:34:36
+Last modified: 2020/03/18 13:55:20
 
 - **Aim:** Set up and run the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline)
 - **Prerequisite software:**  [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [gatk](https://gatk.broadinstitute.org/hc/en-us)
@@ -21,6 +21,7 @@ Last modified: 2020/03/16 15:34:36
       - [Option one: download from NCBI (recommended)](#option-one-download-from-ncbi-recommended-1)
       - [Option two: download from the GATK resource bundle](#option-two-download-from-the-gatk-resource-bundle-1)
     - [Example WGS data](#example-wgs-data)
+  - [Fix conflicting chromosome labelling for dbSNP](#fix-conflicting-chromosome-labelling-for-dbsnp)
   - [Set up the working environment](#set-up-the-working-environment)
     - [Set the working directories](#set-the-working-directories)
     - [Create a conda environment](#create-a-conda-environment)
@@ -210,9 +211,11 @@ tabix GCF_000001405.38.gz
 These are old releases of the dbSNP database so downloading these is not recommended
 
 ```bash
+# Build 138
 # GRCh37/hg19
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/dbsnp_138.hg19.vcf.gz
 
+# Build 146
 # GRCh38/hg38
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz.tbi
@@ -254,6 +257,33 @@ wget ftp://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/AshkenazimTrio/
 ```
 
 This downloads WGS data for the mother of the AshkenazimTrio ([sample HG004](https://github.com/genome-in-a-bottle/giab_data_indexes))
+
+## Fix conflicting chromosome labelling for dbSNP
+
+Chromosomes are labelled differently for data provided by NCBI and the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle). For a GRCh37 run of this pipeline ([human_genomics_pipeline]((https://github.com/ESR-NZ/human_genomics_pipeline))) and the [vcf_annotation_pipeline](https://github.com/leahkemp/vcf_annotation_pipeline.git) that follows on from it, the most recent reference genome and databases required are available through the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle). However, the most recent release of the dbSNP database (build 153) is only available from [NCBI](https://www.ncbi.nlm.nih.gov/variation/docs/human_variation_vcf/). Their chromosome labelling differs (see ["A cheeky peek at big genomic data files for human genomic pipelines"](https://github.com/leahkemp/documentation/blob/master/cheeky_peek_big_genomic_data_files.md)) so we will convert these labelled to the ucsc format used for files in the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle) using [cvbio](https://anaconda.org/bioconda/cvbio).
+
+- Get the [txt file that converts NCBI to UCSC](https://github.com/dpryan79/ChromosomeMappings)
+
+```bash
+git clone https://github.com/dpryan79/ChromosomeMappings.git
+```
+
+- Install cvbio
+
+```bash
+conda install -c bioconda cvbio
+```
+
+- Convert dbsnp database to UCSC format
+
+```bash
+cvbio UpdateContigNames \
+    -i GCF_000001405.25.gz \
+    -o GCF_000001405.25.ucsc-named.gz \
+    -m ChromosomeMappings/GRCh37_NCBI2UCSC.txt \
+    --comment-chars '#' \
+    --skip-missing false
+```
 
 ## Set up the working environment
 
