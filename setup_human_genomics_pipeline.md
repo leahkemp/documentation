@@ -1,7 +1,7 @@
 # Set up and run human_genomics_pipeline
 
 Created: 2020/03/11 11:25:43
-Last modified: 2020/03/18 13:55:20
+Last modified: 2020/03/18 16:33:49
 
 - **Aim:** Set up and run the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline)
 - **Prerequisite software:**  [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [gatk](https://gatk.broadinstitute.org/hc/en-us)
@@ -40,7 +40,7 @@ In the end, I used the reference human genome and dbSNP database from NCBI since
 
 ### Clone repository
 
-Clone the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) repository
+- Clone the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) repository
 
 ```bash
 git clone https://github.com/ESR-NZ/human_genomics_pipeline.git
@@ -197,7 +197,7 @@ wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.38.gz
 wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.38.gz.tbi
 ```
 
-Note. I had to delete the index files (.tbi) associated with the dbSNP databases that I downloaded and recreate them because otherwise an error was cproduced in the vcf_annotation_pipeline indicating that the index file was out of date. I created them with tabix:
+Note. I had to delete the index files (.tbi) associated with the dbSNP databases that I downloaded and recreate them because otherwise an error was produced in the vcf_annotation_pipeline indicating that the index file was out of date. I created them with tabix:
 
 ```bash
 tabix GCF_000001405.25.gz
@@ -260,7 +260,7 @@ This downloads WGS data for the mother of the AshkenazimTrio ([sample HG004](htt
 
 ## Fix conflicting chromosome labelling for dbSNP
 
-Chromosomes are labelled differently for data provided by NCBI and the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle). For a GRCh37 run of this pipeline ([human_genomics_pipeline]((https://github.com/ESR-NZ/human_genomics_pipeline))) and the [vcf_annotation_pipeline](https://github.com/leahkemp/vcf_annotation_pipeline.git) that follows on from it, the most recent reference genome and databases required are available through the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle). However, the most recent release of the dbSNP database (build 153) is only available from [NCBI](https://www.ncbi.nlm.nih.gov/variation/docs/human_variation_vcf/). Their chromosome labelling differs (see ["A cheeky peek at big genomic data files for human genomic pipelines"](https://github.com/leahkemp/documentation/blob/master/cheeky_peek_big_genomic_data_files.md)) so we will convert these labelled to the ucsc format used for files in the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle) using [cvbio](https://anaconda.org/bioconda/cvbio).
+Chromosomes are labelled differently for data provided by NCBI and the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle). For a GRCh37 run of this pipeline ([human_genomics_pipeline]((https://github.com/ESR-NZ/human_genomics_pipeline))) and the [vcf_annotation_pipeline](https://github.com/leahkemp/vcf_annotation_pipeline.git) that follows on from it, the most recent reference genome and databases required are available through the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle). However, the most recent release of the dbSNP database (build 153) is only available from [NCBI](https://www.ncbi.nlm.nih.gov/variation/docs/human_variation_vcf/). Their chromosome labelling differs (see ["A cheeky peek at big genomic data files for human genomic pipelines"](https://github.com/leahkemp/documentation/blob/master/cheeky_peek_big_genomic_data_files.md)) so we will convert these labels to the ucsc format used for files in the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle) using [cvbio](https://anaconda.org/bioconda/cvbio).
 
 - Get the [txt file that converts NCBI to UCSC](https://github.com/dpryan79/ChromosomeMappings)
 
@@ -274,28 +274,37 @@ git clone https://github.com/dpryan79/ChromosomeMappings.git
 conda install -c bioconda cvbio
 ```
 
-- Convert dbsnp database to UCSC format
+- Convert dbSNP database to UCSC format
 
 ```bash
 cvbio UpdateContigNames \
     -i GCF_000001405.25.gz \
-    -o GCF_000001405.25.ucsc-named.gz \
+    -o GCF_000001405.25.ucsc.named.gz \
     -m ChromosomeMappings/GRCh37_NCBI2UCSC.txt \
     --comment-chars '#' \
     --skip-missing false
+```
+
+Create it's associated index file (first convert to bgzip compressed format and sort by position (second column))
+
+```bash
+gunzip GCF_000001405.25.ucsc-named.gz
+bgzip GCF_000001405.25.ucsc-named
+sort GCF_000001405.25.ucsc.named.gz -k 2
+tabix GCF_000001405.25.ucsc-named.gz
 ```
 
 ## Set up the working environment
 
 ### Set the working directories
 
-Set the working directories of the human_genomics_pipeline by manually editing the first section of 'Snakefile' and 'Merge_QC.snakemake'. Ensure that the pipeline can find the:
+Manually set the working directories in the 'Snakefile'. Ensure that the pipeline can find the:
 
 - reference human genome
 - dbSNP database
 - WGS or WES data
 
-Also, make sure that the global wildcard function (page 23 of the snakefile) that finds your sample names will find/capture your sample name. For example, I needed to change this...
+Also, make sure that the global wildcard function will find/capture your sample name. For example, I needed to change this...
 
 ```python
 SAMPLES, = glob_wildcards("fastq/{sample}_1.fastq.gz")
@@ -314,19 +323,19 @@ SAMPLES, = glob_wildcards("..fastq/{sample}_R1.fastq.gz")
 Create a conda environment including python, then activate it
 
 ```bash
-conda create --name pipeline_env python=3.7
+conda create -n pipeline_env python=3.7
 conda activate pipeline_env
 ```
 
 Install snakemake in your conda environment
 
 ```bash
-conda install --channel bioconda snakemake
+conda install -c bioconda snakemake
 ```
 
 ## Run the pipeline
 
-Start a dry run
+First start a dry run
 
 ```bash
 snakemake -n --use-conda
@@ -338,10 +347,9 @@ If there are no issues, start a full run
 snakemake --use-conda
 ```
 
-To run the multiqc step, direct to the qc/fastqc directory created by the pipeline and run:
+The multiqc step can be run manually if needed by directing to the qc/fastqc directory created during the pipeline run and running:
 
 ```bash
-# install multiqc and run on files in the current directory
 conda install channel --bioconda multiqc
 multiqc .
 ```

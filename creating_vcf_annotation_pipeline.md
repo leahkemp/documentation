@@ -1,7 +1,7 @@
 # Create snakemake wrapper for vcf_annotation_pipeline
 
 Created: 2020/03/13 11:00:43
-Last modified: 2020/03/13 11:27:59
+Last modified: 2020/03/16 14:05:23
 
 - **Aim:** convert a bash script pipeline written by Miles Benton into a snakemake pipeline: [vcf_annotation_pipeline](https://github.com/leahkemp/vcf_annotation_pipeline.git)
 - **Prerequisite software:**
@@ -9,6 +9,13 @@ Last modified: 2020/03/13 11:27:59
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
 
 ## VariantRecalibrator arguments
+
+[See here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890851-Variant-annotations)
+
+The annotations called by -an/--use-annotation are produced (in this case) by gatk4_HaplotypeCaller in human_genomics_pipeline
+
+The
+
 
 To set the parameters for the annotation argument (-n/--use-annotation) for the Variant Recalibrator step, see the input VCF file's INFO field for a list of all available annotations. Do this by printing the first section of one of the final vcf file output by human_genomics_pipeline:
 
@@ -40,4 +47,14 @@ chrM    134     .       T       <NON_REF>       .       .       END=149         
 ##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification">
 ##FORMAT=<ID=PS,Number=1,Type=Integer,Description="Phasing set (typically the position of the first variant in the set)">
 ##FORMAT=<ID=SB,Number=4,Type=Integer,Description="Per-sample component statistics which comprise the Fisher's Exact Test to detect strand bias.">
+```
+
+## Access to other databases:
+
+```bash
+# GRCh37
+wget https://ftp.ncbi.nlm.nih.gov/pub/dbVar/data/Homo_sapiens/by_assembly/GRCh37/vcf/GRCh37.variant_call.all.vcf.gz
+
+#GRCh38
+wget https://ftp.ncbi.nlm.nih.gov/pub/dbVar/data/Homo_sapiens/by_assembly/GRCh38/vcf/GRCh38.variant_call.all.vcf.gz
 ```

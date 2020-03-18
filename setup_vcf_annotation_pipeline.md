@@ -1,7 +1,7 @@
 # Set up and run vcf_annotation_pipeline
 
 Created: 2020/03/11 11:25:43
-Last modified: 2020/03/13 11:52:37
+Last modified: 2020/03/16 16:38:08
 
 - **Aim:** Set up and run the [vcf_annotation_pipeline](https://github.com/leahkemp/vcf_annotation_pipeline.git)
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip)
@@ -17,6 +17,8 @@ The vcf_annotation_pipeline is designed to accept data outputted by the ['human_
   - [Download data/repository](#download-datarepository)
     - [VEP database](#vep-database)
     - [Other databases](#other-databases)
+      - [Option one: download from NCBI (recommended)](#option-one-download-from-ncbi-recommended)
+      - [Option two: download from the GATK resource bundle](#option-two-download-from-the-gatk-resource-bundle)
     - [CADD database](#cadd-database)
     - [Clone repository](#clone-repository)
   - [Set up the working environment](#set-up-the-working-environment)
@@ -24,6 +26,7 @@ The vcf_annotation_pipeline is designed to accept data outputted by the ['human_
     - [Set the working directories](#set-the-working-directories)
     - [Create a conda environment](#create-a-conda-environment)
   - [Run the pipeline](#run-the-pipeline)
+  - [Useful links/papers](#useful-linkspapers)
 
 ## Download data/repository
 
@@ -36,11 +39,10 @@ conda create --name download_data_env python=3.7
 conda activate download_data_env
 ```
 
-Install conda package of VEP and gatk4 (will use later)
+Install conda package of VEP
 
 ```bash
 conda install -c bioconda ensembl-vep=99.2
-conda install -c bioconda gatk4=4.1.5.0
 ```
 
 Download VEP database with with the [ensembl-vep conda package](https://github.com/bioconda/bioconda-recipes/blob/master/recipes/ensembl-vep/meta.yaml)
@@ -55,6 +57,27 @@ vep_install -a cf -s homo_sapiens -y GRCh38 -c /store/lkemp/publicData/vep/GRCh3
 ```
 
 ### Other databases
+
+NCBI ftp site: wget ftp://ftp.ncbi.nlm.nih.gov:21/
+
+#### Option one: download from [NCBI](https://www.ncbi.nlm.nih.gov/genome/guide/human/?) (recommended)
+
+GRCh37
+
+```bash
+# Mills
+wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/GRCh38_reference_genome/other_mapping_resources/Mills_and_1000G_gold_standard.indels.b38.primary_assembly.vcf.gz
+wget ftp://ftp.1000genomes.ebi.ac.uk:21/vol1/ftp/technical/reference/GRCh38_reference_genome/other_mapping_resources/Mills_and_1000G_gold_standard.indels.b38.primary_assembly.vcf.gz.tbi
+```
+
+GRCh38
+
+```bash
+
+
+```
+
+#### Option two: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle)
 
 GRCh37
 
@@ -153,7 +176,7 @@ Since the index files (.tbi) are available for download for GRCh38, we don't nee
 
 ### CADD database
 
-This database is **massive** so it will take a long time to download (85G and 194G). aria2c can speed things up when downloading large files like these.
+This database is **massive** so it will take a long time to download (around 85G). aria2c can speed things up when downloading large files like these.
 
 ```bash
 # GRCh37
@@ -200,6 +223,7 @@ Install snakemake in your conda environment
 
 ```bash
 conda install --channel bioconda snakemake=5.10.0
+conda install --channel bioconda singularity=3.5.3
 ```
 
 ## Run the pipeline
@@ -215,3 +239,7 @@ If there are no issues, start a full run
 ```bash
 snakemake --use-conda
 ```
+
+## Useful links/papers
+
+Van der Auwera et al., (2013). *Current Protocols in Bioinformatics*. [From FastQ data to high confidence variant calls: the Genome Analysis Toolkit best practices pipeline](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4243306/); 11(1110): 11.10.1–11.10.33.

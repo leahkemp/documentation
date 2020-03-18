@@ -1,7 +1,7 @@
 # Create a scout database
 
 Created: 2020/03/11 11:25:43
-Last modified: 2020/03/11 11:28:02
+Last modified: 2020/03/16 11:51:58
 
 - **Aim:** Create a [scout](http://www.clinicalgenomics.se/scout/) database
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html)
@@ -29,7 +29,7 @@ These notes are adapted/extended from documentation written by Miles Benton
 
 Make sure:
 
-- you have activated your conda environment you installed scout and all it's dependencies
+- you have activated your conda environment in which you installed scout and all it's dependencies
 - a mongod process is running
 
 (see documentation: installation_scout.md)
@@ -42,7 +42,7 @@ Create a mongoDB database
 scout -db test-database setup
 ```
 
-Load a new institute :confused:
+Load a new institute
 
 ```bash
 scout load institute -i ESR001 --display-name ESR
