@@ -1,7 +1,7 @@
 # A cheeky peek at big genomic data files for human genomic pipelines
 
 Created: 2020/03/18 09:47:43
-Last modified: 2020/03/18 12:43:57
+Last modified: 2020/03/25 17:33:05
 
 The reference human genomes and other databases files differ when downloaded from different sources (eg. chromosome labelling). Unfortunately mixing files sourced from different hosts within a pipeline can cause computer says no's. The typical advice is to [use data sources from the same place](https://gatkforums.broadinstitute.org/gatk/discussion/11359/input-files-reference-and-features-have-incompatible-contigs).
 
@@ -480,7 +480,7 @@ chrY    59030478        125411  AAAACAAAC    A,AAAAC           .         PASS   
 #### Sourced from the [GATK resource bundle](https://gatkforums.broadinstitute.org/gatk/discussion/1213/whats-in-the-resource-bundle-and-how-can-i-get-it)
 
 ```bash
-## Not avaialble?
+## Not available for GRCh37?
 ```
 
 ```bash
@@ -836,7 +836,7 @@ chr19_KI270938v1_alt    327468  SNP19-59548166  G       A       .       PASS    
 #### Sourced from the [GATK resource bundle](https://gatkforums.broadinstitute.org/gatk/discussion/1213/whats-in-the-resource-bundle-and-how-can-i-get-it)
 
 ```bash
-## Not available?
+## Not available for GRCh38?
 ```
 
 ```bash
