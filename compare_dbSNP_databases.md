@@ -1,20 +1,30 @@
 # Compare dbSNP files/builds
 
 Created: 2020/03/19 14:18:43
-Last modified: 2020/03/20 12:45:45
+Last modified: 2020/03/26 13:36:06
 
 ## Table of contents
 
 - [Compare dbSNP files/builds](#compare-dbsnp-filesbuilds)
   - [Table of contents](#table-of-contents)
-  - [GRCh37](#grch37)
-    - [Comparison](#comparison)
-    - [Data sources](#data-sources)
-  - [GRCh38](#grch38)
-    - [Comparison](#comparison-1)
-    - [Data sources](#data-sources-1)
+  - [Findings](#findings)
+  - [Comparison](#comparison)
+    - [GRCh37](#grch37)
+      - [Data sources](#data-sources)
+    - [GRCh38](#grch38)
+      - [Data sources](#data-sources-1)
 
 This document compares the chromosome labelling of dbSNP databases of differing builds and downloaded from different sources. This can be useful when mitigating errors arising from chromosome labelling when building/running genomic pipelines that utilise these resources.
+
+## Findings
+
+- The chromosome labelling of the same dbSNP build is the same between GRCh37 and GRCh38
+- The chromosome labelling differs between dbSNP databases hosted by NCBI and GATK, although NCBI provides a version of the dbSNP database that is compatible with GATK
+- The chromosome labelling of the (current) newest dbSNP build (153) is different from older builds, instead using genbank accession numbers (see [here](https://www.ncbi.nlm.nih.gov/grc/human))
+- The (current) newest dbSNP build (153) is only available from NCBI
+- GATK currently only hosts older versions of dbSNP databases (build 138 for GRCh17 and build 146 for GRCh38)
+- Some dbSNP databases provide the associated tabix index file (.tbi), however some do not and will need to be manually created with [tabix](http://www.htslib.org/doc/tabix.html)
+- Some dbSNP databases are in the wrong compression format when downloaded and will need to be unzipped with [gunzip](https://linux.die.net/man/1/gunzip), and rezipped into bgzip format with [bgzip](http://www.htslib.org/doc/bgzip.html) before tabix can be used to create a tabix index file (.tbi)
 
 Code used to return unique values of the chromosome column:
 
@@ -22,9 +32,9 @@ Code used to return unique values of the chromosome column:
 zgrep -v "#" file.gz | awk '{print $1}' | uniq
 ```
 
-## GRCh37
+## Comparison
 
-### Comparison
+### GRCh37
 
 | GATK (build 138)                   | NCBI (build 150) | NCBI (build 150) gatk version | NCBI (build151) | NCBI (build151) gatk version | NCBI (build 153) |
 |------------------------------------|------------------|-------------------------------|-----------------|------------------------------|------------------|
@@ -326,12 +336,16 @@ zgrep -v "#" file.gz | awk '{print $1}' | uniq
 |                                    |                  |                               |                 |                              | NW_004775434.1   |
 |                                    |                  |                               |                 |                              | NW_004775435.1   |
 
-### Data sources
+#### Data sources
 
 GATK (build 138)
 
 ```bash
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/dbsnp_138.hg19.vcf.gz
+# To produce tabix index file (.tbi)
+gunzip dbsnp_138.hg19.vcf.gz
+bgzip dbsnp_138.hg19.vcf
+tabix dbsnp_138.hg19.vcf.gz
 ```
 
 NCBI (build 150)
@@ -366,11 +380,10 @@ NCBI (build 153)
 
 ```bash
 wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.25.gz
+wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.25.gz.tbi
 ```
 
-## GRCh38
-
-### Comparison
+### GRCh38
 
 | GATK (build 146) | NCBI (build 150) | NCBI (build 150) gatk version | NCBI (build151) | NCBI (build151) gatk version | NCBI (build 153) |
 |------------------|------------------|-------------------------------|-----------------|------------------------------|------------------|
@@ -950,7 +963,7 @@ wget ftp://ftp.ncbi.nlm.nih.gov:21/snp/latest_release/VCF/GCF_000001405.25.gz
 |                  |                  |                               |                 |                              | NW_019805502.1   |
 |                  |                  |                               |                 |                              | NW_019805503.1   |
 
-### Data sources
+#### Data sources
 
 GATK (build 146)
 
