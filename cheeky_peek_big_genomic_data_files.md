@@ -1,7 +1,7 @@
 # A cheeky peek at big genomic data files for human genomic pipelines
 
 Created: 2020/03/18 09:47:43
-Last modified: 2020/03/25 17:33:05
+Last modified: 2020/04/16 12:21:24
 
 The reference human genomes and other databases files differ when downloaded from different sources (eg. chromosome labelling). Unfortunately mixing files sourced from different hosts within a pipeline can cause computer says no's. The typical advice is to [use data sources from the same place](https://gatkforums.broadinstitute.org/gatk/discussion/11359/input-files-reference-and-features-have-incompatible-contigs).
 
@@ -63,6 +63,8 @@ So here are the heads and tails of the reference human genomes and other databas
       - [Sourced from the GATK resource bundle](#sourced-from-the-gatk-resource-bundle-15)
     - [CADD](#cadd-1)
       - [Sourced from CADD](#sourced-from-cadd-1)
+    - [Known indels](#known-indels)
+      - [Sourced from the GATK resource bundle](#sourced-from-the-gatk-resource-bundle-16)
 
 ## GRCh37/hg19
 
@@ -1006,4 +1008,49 @@ Y       57217414        G       T       0.022219        1.958
 Y       57217415        T       A       0.188583        3.914
 Y       57217415        T       C       0.233330        4.490
 Y       57217415        T       G       0.208926        4.178
+```
+
+### Known indels
+
+#### Sourced from the [GATK resource bundle](https://gatkforums.broadinstitute.org/gatk/discussion/1213/whats-in-the-resource-bundle-and-how-can-i-get-it)
+
+```bash
+wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/beta/Homo_sapiens_assembly38.known_indels.vcf.gz
+```
+
+```bash
+#CHROM                  POS     ID      REF     ALT     QUAL    FILTER  INFO
+chr1                    13957   .       TC      T       28      PASS    AC=35;AF=0.02;AFR_AF=0.02;AMR_AF=0.02;AN=2184;ASN_AF=0.01;AVGPOST=0.8711;ERATE=0.0065;EUR_AF=0.02;LDAF=0.0788;RSQ=0.2501;THETA=0.0100;VT=INDEL;set=variant
+chr1                    46402   .       C       CTGT    31      PASS    AC=8;AF=0.0037;AFR_AF=0.01;AN=2184;ASN_AF=0.0017;AVGPOST=0.8325;ERATE=0.0072;LDAF=0.0903;RSQ=0.0960;THETA=0.0121;VT=INDEL;set=variant
+chr1                    47190   .       G       GA      192     PASS    AC=29;AF=0.01;AFR_AF=0.06;AMR_AF=0.0028;AN=2184;AVGPOST=0.9041;ERATE=0.0041;LDAF=0.0628;RSQ=0.2883;THETA=0.0153;VT=INDEL;set=variant
+chr1                    52185   .       TTAA    T       244     PASS    AC=10;AF=0.0046;AFR_AF=0.0020;AMR_AF=0.02;AN=2184;ASN_AF=0.0035;AVGPOST=0.9840;ERATE=0.0037;LDAF=0.0124;RSQ=0.4271;THETA=0.0232;VT=INDEL;set=variant
+chr1                    53234   .       CAT     C       227     PASS    AC=10;AF=0.0046;AFR_AF=0.02;AMR_AF=0.0028;AN=2184;AVGPOST=0.9936;ERATE=0.0007;LDAF=0.0074;RSQ=0.6237;THETA=0.0119;VT=INDEL;set=variant
+chr1                    55249   .       C       CTATGG  6160.83 PASS    AC=151;AF=0.07;AFR_AF=0.03;AMR_AF=0.08;AN=2184;ASN_AF=0.16;AVGPOST=0.9073;ERATE=0.0063;EUR_AF=0.02;LDAF=0.0968;RSQ=0.5891;THETA=0.0038;VT=INDEL;set=Intersection
+chr1                    63735   .       CCTA    C       455     PASS    AC=829;AF=0.38;AFR_AF=0.13;AMR_AF=0.33;AN=2184;ASN_AF=0.69;AVGPOST=0.7654;ERATE=0.0047;EUR_AF=0.34;LDAF=0.4128;RSQ=0.6424;THETA=0.0062;VT=INDEL;set=variant
+chr1                    72119   .       G       GTA     158     PASS    AC=8;AF=0.0037;AMR_AF=0.0028;AN=2184;ASN_AF=0.01;AVGPOST=0.9589;ERATE=0.0026;EUR_AF=0.0013;LDAF=0.0243;RSQ=0.2268;THETA=0.0016;VT=INDEL;set=variant
+chr1                    72297   .       G       GTAT    160     PASS    AC=19;AF=0.01;AMR_AF=0.02;AN=2184;ASN_AF=0.01;AVGPOST=0.9383;ERATE=0.0055;EUR_AF=0.01;LDAF=0.0399;RSQ=0.3194;THETA=0.0064;VT=INDEL;set=variant
+chr1                    84005   .       AG      A       78      PASS    AC=52;AF=0.02;AFR_AF=0.02;AMR_AF=0.03;AN=2184;ASN_AF=0.01;AVGPOST=0.9360;ERATE=0.0049;EUR_AF=0.04;LDAF=0.0514;RSQ=0.4690;THETA=0.0005;VT=INDEL;set=variant
+chr1                    87114   .       CT      C       666.86  PASS    AC=8;AF=0.0037;AFR_AF=0.02;AN=2184;AVGPOST=0.9976;ERATE=0.0010;LDAF=0.0042;RSQ=0.7479;THETA=0.0149;VT=INDEL;set=Intersection
+chr1                    94421   .       TC      T       90      PASS    AC=253;AF=0.12;AFR_AF=0.01;AMR_AF=0.20;AN=2184;ASN_AF=0.26;AVGPOST=0.7183;ERATE=0.0117;EUR_AF=0.03;LDAF=0.2244;RSQ=0.3175;THETA=0.0159;VT=INDEL;set=variant
+chr1                    97269   .       T       TAC     357     PASS    AC=295;AF=0.14;AFR_AF=0.16;AMR_AF=0.10;AN=2184;ASN_AF=0.15;AVGPOST=0.9390;ERATE=0.0018;EUR_AF=0.12;LDAF=0.1445;RSQ=0.8151;THETA=0.0057;VT=INDEL;set=variant
+chr1                    109107  .       G       GT      67      PASS    AC=63;AF=0.03;AFR_AF=0.01;AMR_AF=0.04;AN=2184;ASN_AF=0.03;AVGPOST=0.8840;ERATE=0.0122;EUR_AF=0.04;LDAF=0.0890;RSQ=0.3660;THETA=0.0210;VT=INDEL;set=variant
+chr1                    111513  .       C       CTA     249     PASS    AC=58;AF=0.03;AFR_AF=0.09;AMR_AF=0.03;AN=2184;ASN_AF=0.0017;AVGPOST=0.9145;ERATE=0.0024;EUR_AF=0.0013;LDAF=0.0665;RSQ=0.4694;THETA=0.0292;VT=INDEL;set=variant
+.
+.
+.
+chr19_KI270938v1_alt    143658  .       CTTTCTT C       125     PASS    AC=493;AF=0.23;AFR_AF=0.28;AMR_AF=0.20;AN=2184;ASN_AF=0.14;AVGPOST=0.7668;ERATE=0.0242;EUR_AF=0.27;LDAF=0.2667;RSQ=0.5291;THETA=0.0059;VT=INDEL;set=variant
+chr19_KI270938v1_alt    237552  .       GTATATGTGTGTGTA G       1187    PASS    AC=1196;AF=0.55;AFR_AF=0.50;AMR_AF=0.44;AN=2184;ASN_AF=0.84;AVGPOST=0.9214;ERATE=0.0082;EUR_AF=0.41;LDAF=0.5459;RSQ=0.8860;THETA=0.0016;VT=INDEL;set=variant
+chr19_KI270938v1_alt    274597  .       AG      A       487.76  PASS    AC=50;AF=0.02;AFR_AF=0.02;AMR_AF=0.01;AN=2184;ASN_AF=0.06;AVGPOST=0.9853;ERATE=0.0007;EUR_AF=0.0013;LDAF=0.0293;RSQ=0.8497;THETA=0.0005;VT=INDEL;set=Intersection
+chr19_KI270938v1_alt    275383  .       CCTT    C       4874.67 PASS    AC=80;AF=0.04;AFR_AF=0.15;AMR_AF=0.01;AN=2184;AVGPOST=0.9918;ERATE=0.0006;LDAF=0.0383;RSQ=0.9275;THETA=0.0010;VT=INDEL;set=Intersection
+chr19_KI270938v1_alt    276880  .       TTCTCCC T       1316.97 PASS    set=variant2
+chr19_KI270938v1_alt    278155  .       T       TG      168     PASS    AC=183;AF=0.08;AFR_AF=0.33;AMR_AF=0.05;AN=2184;AVGPOST=0.9746;ERATE=0.0017;EUR_AF=0.01;LDAF=0.0873;RSQ=0.9032;THETA=0.0045;VT=INDEL;set=variant
+chr19_KI270938v1_alt    473006  .       T       TC      125     PASS    AC=235;AF=0.11;AFR_AF=0.13;AMR_AF=0.17;AN=2184;ASN_AF=0.05;AVGPOST=0.9189;ERATE=0.0046;EUR_AF=0.11;LDAF=0.1264;RSQ=0.7227;THETA=0.0011;VT=INDEL;set=variant
+chr19_KI270938v1_alt    473057  .       TTC     T       207     PASS    AC=183;AF=0.08;AFR_AF=0.06;AMR_AF=0.14;AN=2184;ASN_AF=0.04;AVGPOST=0.9939;ERATE=0.0005;EUR_AF=0.10;LDAF=0.0856;RSQ=0.9718;THETA=0.0007;VT=INDEL;set=variant
+chr19_KI270938v1_alt    535096  .       TTGTA   T       1979.57 PASS    set=variant2
+chr19_KI270938v1_alt    535122  .       CGT     C       5759    PASS    AC=67;AF=0.03;AFR_AF=0.05;AMR_AF=0.03;AN=2184;AVGPOST=0.9993;ERATE=0.0003;EUR_AF=0.04;LDAF=0.0307;RSQ=0.9904;THETA=0.0004;VT=INDEL;set=Intersection
+chr19_KI270938v1_alt    535130  .       TGA     T       4101.79 PASS    AC=67;AF=0.03;AFR_AF=0.05;AMR_AF=0.03;AN=2184;AVGPOST=0.9988;ERATE=0.0004;EUR_AF=0.04;LDAF=0.0306;RSQ=0.9829;THETA=0.0002;VT=INDEL;set=Intersection
+chr19_KI270938v1_alt    535151  .       ATG     A       271     PASS    AC=44;AF=0.02;AFR_AF=0.04;AMR_AF=0.02;AN=2184;AVGPOST=0.9985;ERATE=0.0003;EUR_AF=0.03;LDAF=0.0205;RSQ=0.9720;THETA=0.0003;VT=INDEL;set=variant
+chr19_KI270938v1_alt    535158  .       TGA     T       3176.81 PASS    AC=44;AF=0.02;AFR_AF=0.03;AMR_AF=0.02;AN=2184;AVGPOST=0.9979;ERATE=0.0006;EUR_AF=0.03;LDAF=0.0210;RSQ=0.9605;THETA=0.0003;VT=INDEL;set=Intersection
+chr19_KI270938v1_alt    535173  .       GTA     G       6850.34 PASS    AC=38;AF=0.02;AFR_AF=0.07;AMR_AF=0.01;AN=2184;AVGPOST=0.9992;ERATE=0.0005;LDAF=0.0178;RSQ=0.9813;THETA=0.0004;VT=INDEL;set=Intersection
+chr19_KI270938v1_alt    665363  .       TAGCTA  T       255     PASS    AC=15;AF=0.01;AFR_AF=0.03;AMR_AF=0.01;AN=2184;AVGPOST=0.9953;ERATE=0.0012;LDAF=0.0083;RSQ=0.7519;THETA=0.0038;VT=INDEL;set=variant
 ```
