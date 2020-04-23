@@ -1,7 +1,7 @@
 # Database downloads for human_genomics_pipeline and vcf_annotation_pipeline
 
 Created: 2020/03/11 11:25:43
-Last modified: 2020/03/26 15:59:19
+Last modified: 2020/04/23 15:20:02
 
 - **Aim:** Document where data/databases required for [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) can be downloaded and what data processing they require before they can be used
 - **Prerequisite software:**  [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [gatk](https://anaconda.org/bioconda/gatk4)
@@ -41,7 +41,7 @@ Along with the reference human genome sequence, you will also require it's assoc
 
 Secondly, the index files (.amb, .ann, .bwt, .pac, .sa) for the reference human genome sequence need to be created using [bwa](http://bio-bwa.sourceforge.net/) with the ['bwtsw' argument](http://seqanswers.com/forums/showthread.php?t=3547) to ensure that the correct algorithm is used to handle a large whole genome sequence.
 
-#### Option one: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle)
+#### Option one: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360035890811-Resource-bundle)
 
 GATK resource bundle ftp site: ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle
 
@@ -203,7 +203,7 @@ wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.h
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz.tbi
 ```
 
-#### Option two: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360036212652-Resource-Bundle)
+#### Option two: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360035890811-Resource-bundle)
 
 GATK resource bundle ftp site: ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle
 
