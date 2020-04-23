@@ -1,13 +1,15 @@
 # Description of the files output by two genomic pipelines
 
 Created: 2020-04-22 17:35:19
-Last modified: 2020/04/23 14:47:06
+Last modified: 2020/04/23 15:16:17
 
 This document show how the data is manipulated/changed as the input exome data (fastq files) data goes through both the [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and the [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline), resulting in the final annotated vcf file. Use this to help understand what happens to the data after key stages in the pipelines. See [this file](https://samtools.github.io/hts-specs/VCFv4.2.pdf) for an overview of vcf files and descriptions on what the data fields represent.
 
 ---
 
 This example was run on the Genome In A Bottle (GIAB) sample 'NA12878' (see [here](https://github.com/ESR-NZ/ESR-Parabricks) for more information on how this data was prepared).
+
+Both pipelines were run against the GRCh38 reference genome (Homo_sapiens_assembly38.fasta) and known indels (Homo_sapiens_assembly38.known_indels.vcf.gz") from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360035890811-Resource-bundle))
 
 ---
 
