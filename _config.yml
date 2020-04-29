@@ -9,4 +9,12 @@ include:
   - compare_dbSNP_databases.md
   - downloads_for_genomics_pipeline.md
   - grch37_vs_grch38.md
+  - installation_scout.md
+  - installation_vep.md
+  - opentrons_programming.md
+  - pipeline_files.md
+  - setup-singularityContainer.md
+  - setup_VCF-DART.md
+  - setup_scoutContainer.md
+  - setup_scoutDatabase.md
 theme: jekyll-theme-cayman
