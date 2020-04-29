@@ -1,7 +1,12 @@
-theme: jekyll-theme-cayman
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: true
 include:
   - benchmarking_pipelines.md
   - cheeky_peek_big_genomic_data_files.md
   - compare_dbSNP_databases.md
   - downloads_for_genomics_pipeline.md
   - grch37_vs_grch38.md
+theme: jekyll-theme-cayman
