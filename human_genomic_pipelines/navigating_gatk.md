@@ -1,7 +1,7 @@
 # Navigating gatk
 
 Created: 2020-05-04 09:55:50
-Last modified: 2020/05/04 10:02:26
+Last modified: 2020/05/04 10:29:16
 
 ## Table of contents
 
