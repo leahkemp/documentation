@@ -16,3 +16,6 @@ Other documentation:
 
 - [Setup singularity container](setup-singularityContainer)
 - [Setup VCF-DART](setup_VCF-DART)
+
+Website: https://leahkemp.github.io/documentation/
+Github: https://github.com/leahkemp/documentation
