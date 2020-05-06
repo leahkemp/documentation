@@ -1,7 +1,7 @@
 # Design files
 
 Created: 2020-05-06 12:31:56
-Last modified: 2020/05/06 13:05:40
+Last modified: 2020/05/06 13:08:29
 
 ## Table of contents
 
@@ -21,8 +21,8 @@ First create an account with SureSelect (help with using this resource can be fo
 
 ### Download existing design files
 
-- Find the 'Agilent catalog' within the 'Find designs' tab
-- Choose the capture kit used to sequence the data to be analysed
+- Select SureSelect within the 'Find designs' tab
+- Search for your capture kit within the 'Agilent catalog'
 - Download and unzip files
 
 Further help can be found [here](https://earray.chem.agilent.com/suredesign/help/WebHelp.htm#Create_a_SureSelect_design_with_the_wizard.htm)
