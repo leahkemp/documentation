@@ -1,7 +1,7 @@
 # Install and run scout
 
 Created: 2020/03/11 11:25:43
-Last modified: 2020/03/11 11:26:29
+Last modified: 2020/05/07 18:13:11
 
 - **Aim:** Install [scout](http://www.clinicalgenomics.se/scout/) and run a demo instance
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html)
@@ -19,20 +19,14 @@ Last modified: 2020/03/11 11:26:29
 
 ## Install scout
 
-Their [website](http://www.clinicalgenomics.se/scout/install/) describes the overall installation process. The easiest way I found to install scout was to create a conda environment in which to install scout and it's dependant software is installed. This saves you from *some* python dependency issues.
+Their [website](http://www.clinicalgenomics.se/scout/install/) describes the overall installation process. The easiest way I found to install scout was to create a conda environment in which to install scout and it's dependant software is installed. This saves you from some python dependency issues.
 
 ### Create a conda environment
 
-Create the conda environment and list all the environments
+Create and activate a conda environment
 
 ```bash
 conda create --name scout_env python=3.7
-conda env list
-```
-
-Activate the environment
-
-```bash
 conda activate scout_env
 ```
 
@@ -92,20 +86,14 @@ Setup a fully working Scout demo. This will setup an instance of scout with a da
 scout setup demo
 ```
 
-Physically move to use Wintermute so that we can use it's GUI
-
-From the command line, access the conda environment we created for scout
-
-```bash
-conda activate scout_env
-```
-
 Now run the demo
 
 ```bash
 scout --demo serve
 ```
 
+Either directly use Wintermute or create an SSH tunnel so that we can use it's GUI to explore scout.
+
 Connect to the [connection](http://localhost:5000/) through a browser to open the scout GUI. Use the user email clark.kent@mail.com to get access.
 
-See the scout [admin guide](http://www.clinicalgenomics.se/scout/admin-guide/) for more info on how to set up scout as an administrator
+See the scout [admin guide](http://www.clinicalgenomics.se/scout/admin-guide/) for more info on how to set up scout as an administrator.
