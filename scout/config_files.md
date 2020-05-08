@@ -1,7 +1,7 @@
 # Create a configuration files for scout
 
 Created: 2020-05-08 13:00:23
-Last modified: 2020/05/08 13:31:28
+Last modified: 2020/05/08 13:34:36
 
 This document describes how to create config files for loading cases into [scout](http://www.clinicalgenomics.se/scout/)
 
@@ -104,3 +104,6 @@ Their sample id's are:
 - ADM1059A3
 
 *Note: a single sample analysis will return a vcf file with a single column/sample id*
+
+- If the values in the config file are numbers: `sample_id: 20`, it needs to be passed as a string `sample_id: '20'`
+  
