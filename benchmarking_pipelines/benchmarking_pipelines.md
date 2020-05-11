@@ -1,18 +1,20 @@
 # Benchmarking genomic pipelines
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/04/23 17:32:42
+Last modified: 2020/05/11 12:48:58
 
-- **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use
+- **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use. 
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
+
+The pipelines were run against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) and the quality of their outputs evaluated. See the complementary docs for benchmarking the Nvidia Parabricks pipeline [here](https://github.com/ESR-NZ/ESR-Parabricks).
 
 ## Table of contents
 
 - [Benchmarking genomic pipelines](#benchmarking-genomic-pipelines)
   - [Table of contents](#table-of-contents)
   - [Setup](#setup)
-    - [Install software](#install-software)
+    - [Install benchmarking software](#install-benchmarking-software)
       - [RTG Tools (for vcfeval)](#rtg-tools-for-vcfeval)
       - [hap.py](#happy)
     - [Download data](#download-data)
@@ -20,11 +22,11 @@ Last modified: 2020/04/23 17:32:42
     - [human_genomics_pipeline](#humangenomicspipeline)
       - [Compare the truth and query vcf](#compare-the-truth-and-query-vcf)
       - [Compare ...](#compare)
-    - [Nvidia parabricks](#nvidia-parabricks)
+    - [Nvidia parabricks germline](#nvidia-parabricks-germline)
 
 ## Setup
 
-### Install software
+### Install benchmarking software
 
 #### [RTG Tools (for vcfeval)](https://github.com/RealTimeGenomics/rtg-tools/tree/eb13bbb82d2fbeab7d54a92e8493ddd2acf0d349)
 
@@ -82,11 +84,20 @@ python install.py ~/hap.py-install --no-tests
 
 ### Download data
 
+Truth vcf for [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) sample
+
+```bash
+wget https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/project.NIST.hc.snps.indels.vcf
+wget https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/project.NIST.hc.snps.indels.vcf.idx
+```
+
 ## Benchmarking
 
 See [this paper](https://www.nature.com/articles/s41587-019-0054-x) for best practices for benchmarking germline small-variant calls in human genomes
 
 ### [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline)
+
+See the results of the human_genomics_pipeline run on the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) at ....
 
 #### Compare the truth and query vcf
 
@@ -264,4 +275,6 @@ cat project.NIST.hc.snps.indels.vcf | grep '^##'
 ##INFO=<ID=ReadPosRankSum,Number=1,Type=Float,Description="Z-score from Wilcoxon rank sum test of Alt vs. Ref read position bias">
 ```
 
-### [Nvidia parabricks](https://github.com/ESR-NZ/ESR-Parabricks)
+### [Nvidia parabricks germline](https://github.com/ESR-NZ/ESR-Parabricks)
+
+See the results of the Nvidia parabricks run on the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) at ....
