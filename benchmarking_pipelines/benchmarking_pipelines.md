@@ -110,8 +110,8 @@ human_genomic_pipeline will undertake pre-processing and variant calling. Becaus
 
 See the results and settings of the pipeline runs on the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (NIST7035 and NIST7086) for:
 
-- human_genomics_pipeline at https://github.com/ESR_NZ/human_genomics_pipeline/tree/bench1.0
-- vcf_annotation_pipeline at ...
+- human_genomics_pipeline at https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.0
+- vcf_annotation_pipeline at https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.0
 
 #### Compare the truth and query vcf with vcfeval
 
