@@ -1,13 +1,13 @@
 # Benchmarking genomic pipelines
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/12 18:16:04
+Last modified: 2020/05/14 18:23:04
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use. 
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
 
-The pipelines were run against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) and the quality of their outputs evaluated. See the complementary docs for benchmarking the Nvidia Parabricks pipeline [here](https://github.com/ESR-NZ/ESR-Parabricks).
+The ides is to run these pipelines against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) and compare the quality of varaiant calls in their output vcf files. See the complementary docs for benchmarking the Nvidia Parabricks pipeline [here](https://github.com/ESR-NZ/ESR-Parabricks). Benchmakring will follow the best practices described in [this paper](https://www.nature.com/articles/s41587-019-0054-x).
 
 ## Table of contents
 
@@ -17,10 +17,13 @@ The pipelines were run against the Genome In A Bottle (GIAB) sample [NA12878](ht
     - [Install benchmarking software](#install-benchmarking-software)
       - [hap.py and [RTG Tools](https://github.com/RealTimeGenomics/rtg-tools/tree/eb13bbb82d2fbeab7d54a92e8493ddd2acf0d349)](#happy-and-rtg-tools)
     - [Download and prepare data](#download-and-prepare-data)
+      - [Fastq data to run through pipelines](#fastq-data-to-run-through-pipelines)
+      - [Truth vcf to compare output to](#truth-vcf-to-compare-output-to)
   - [Benchmarking](#benchmarking)
-    - [human_genomics_pipeline](#humangenomicspipeline)
-      - [Compare the truth and query vcf](#compare-the-truth-and-query-vcf)
+    - [human_genomics_pipeline and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)](#humangenomicspipeline-and-vcfannotationpipeline)
+      - [Compare the truth and query vcf with vcfeval](#compare-the-truth-and-query-vcf-with-vcfeval)
     - [Nvidia parabricks germline](#nvidia-parabricks-germline)
+  - [Notes](#notes)
 
 ## Setup
 
@@ -58,33 +61,76 @@ python install.py /store/lkemp/exome_project/benchmarking/NA12878_exome/hap.py-i
 
 ### Download and prepare data
 
-Truth vcf for [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) sample was accessed and prepared how described [here]([here](https://github.com/ESR-NZ/ESR-Parabricks)).
+#### Fastq data to run through pipelines
+
+Download
+
+```bash
+wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
+wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
+wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L002_R1_001.fastq.gz
+wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L002_R2_001.fastq.gz
+wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7086_CGTACTAG_L001_R1_001.fastq.gz
+wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7086_CGTACTAG_L001_R2_001.fastq.gz
+wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7086_CGTACTAG_L002_R1_001.fastq.gz
+wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7086_CGTACTAG_L002_R2_001.fastq.gz
+```
+
+Collapse pooled runs
+
+```bash
+# NIST7035
+cat NIST7035*_R1_001.fastq.gz > NIST7035_NIST_R1.fastq.gz
+cat NIST7035*_R2_001.fastq.gz > NIST7035_NIST_R2.fastq.gz
+
+# NIST7086
+cat NIST7086*_R1_001.fastq.gz > NIST7086_NIST_R1.fastq.gz
+cat NIST7086*_R2_001.fastq.gz > NIST7086_NIST_R2.fastq.gz
+```
+
+*Note. NIST7035 and NIST7086 represent 2 vials of the same sample (NA12878)*
+
+#### Truth vcf to compare output to
+
+```bash
+# VCF
+wget https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/project.NIST.hc.snps.indels.vcf
+wget https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/project.NIST.hc.snps.indels.vcf.idx
+# regions bed
+wget https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz
+```
+
+See [here](https://github.com/ga4gh/benchmarking-tools/blob/master/resources/high-confidence-sets/giab.md) for more info on GIAB resources
 
 ## Benchmarking
 
-See [this paper](https://www.nature.com/articles/s41587-019-0054-x) for best practices for benchmarking germline small-variant calls in human genomes
+human_genomic_pipeline will undertake pre-processing and variant calling. Because variant filtering occurs with vcf annotation_pipeline, we will benchmark the vcf files that have gone through both pipelines. However, we will use a minimal version of the vcf_annotation_pipeline since the annotation rules are not required for benchmarking.
 
-### [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline)
+### [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)
 
-See the results of the human_genomics_pipeline run on the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) at ....
+See the results and settings of the pipeline runs on the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (NIST7035 and NIST7086) for:
 
-#### Compare the truth and query vcf
+- human_genomics_pipeline at https://github.com/ESR_NZ/human_genomics_pipeline/tree/bench1.0
+- vcf_annotation_pipeline at ...
 
-"Comparing variants at the level of the genomic haplotypes that the variants represent as a way to overcome the problems associated with comparing complex variants, in which alternative yet equivalent variant representations can confound direct comparison methods"
+#### Compare the truth and query vcf with vcfeval
 
-The known sites file and query vcf file needs to be bgzipped and have a tabix index file (.tbi) (write to new files so as to not modify the original files)
+The known sites file and query vcf file needs to be bgzipped and have a tabix index file (.tbi) (write to new files so as to not modify the original files):
 
 ```bash
 cd /store/lkemp/exome_project/benchmarking/NA12878_exome/
-# Query vcf
-bgzip < ./human_genomics_pipeline/vcf/NA12878_NIST_raw_snps_indels_AS_g.vcf > ./human_genomics_pipeline/vcf/NA12878_NIST_raw_snps_indels_AS_g.vcf.gz
-tabix ./human_genomics_pipeline/vcf/NA12878_NIST_raw_snps_indels_AS_g.vcf.gz
+# Query vcf (NIST7035)
+bgzip < ./human_genomics_pipeline/vcf/NIST7035_NIST_raw_snps_indels_AS_g.vcf > ./human_genomics_pipeline/vcf/NIST7035_NIST_raw_snps_indels_AS_g.vcf.gz
+tabix ./human_genomics_pipeline/vcf/NIST7035_NIST_raw_snps_indels_AS_g.vcf.gz
+# Query vcf (NIST7086)
+bgzip < ./human_genomics_pipeline/vcf/NIST7086_NIST_raw_snps_indels_AS_g.vcf > ./human_genomics_pipeline/vcf/NIST7086_NIST_raw_snps_indels_AS_g.vcf.gz
+tabix ./human_genomics_pipeline/vcf/NIST7086_NIST_raw_snps_indels_AS_g.vcf.gz
 # Known vcf
-bgzip < ./known/project.NIST.hc.snps.indels.vcf > ./known/project.NIST.hc.snps.indels.vcf.gz
+bgzip < ./known/project.NIST.hc.snps.indels.vcf> ./known/project.NIST.hc.snps.indels.vcf.gz
 tabix ./known/project.NIST.hc.snps.indels.vcf.gz
 ```
 
-We also need to create an sdf file for the reference human genome (that was used in the benchmarking pipeline run). Create this with the rgt-tools format function
+We also need to create an sdf file for the reference human genome (that was used in the benchmarking pipeline run). Create this with the rgt-tools format function:
 
 ```bash
 ./hap.py-install/libexec/rtg-tools-install/rtg format \
@@ -92,24 +138,48 @@ We also need to create an sdf file for the reference human genome (that was used
 /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh38/Homo_sapiens_assembly38.fasta
 ```
 
-*Note. the two columns in the vcf file (NIST7035 and NIST7086) represent 2 vials of the same sample (NA12878)*
+Run vcfeval
 
 ```bash
-./hap.py-install/bin/hap.py \
-./known/project.NIST.hc.snps.indels.vcf \
-./human_genomics_pipeline/vcf/NA12878_NIST_raw_snps_indels_AS_g.vcf.gz \
--f ./known/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
--o happy_human_genomics_pipeline \
--r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh38/Homo_sapiens_assembly38.fasta \
---engine=vcfeval \
---engine-vcfeval-template ./hap.py-install/libexec/rtg-tools-install/Homo_sapiens_assembly38.fasta.sdf \
+# NIST7035
+./hap.py-install/libexec/rtg-tools-install/rtg vcfeval \
+--baseline ./known/project.NIST.hc.snps.indels.vcf.gz \
+--calls ./human_genomics_pipeline/vcf/NIST7035_NIST_raw_snps_indels_AS_g.vcf.gz \
+--sample NIST7035,20 \ # Specify columns to compare in a multi-sample vcf, match samples
+--output vcfeval_human_genomics_pipeline \
+--template ./hap.py-install/libexec/rtg-tools-install/Homo_sapiens_assembly38.fasta.sdf \
+--evaluation-regions ./known/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+--output-mode ga4gh \
+--threads 12
+
+# NIST7086
+./hap.py-install/libexec/rtg-tools-install/rtg vcfeval \
+--baseline ./known/project.NIST.hc.snps.indels.vcf.gz \
+--calls ./human_genomics_pipeline/vcf/NIST7086_NIST_raw_snps_indels_AS_g.vcf.gz \
+--sample NIST7086,20 \ # Specify columns to compare in a multi-sample vcf, match samples
+--output vcfeval_human_genomics_pipeline \
+--template ./hap.py-install/libexec/rtg-tools-install/Homo_sapiens_assembly38.fasta.sdf \
+--evaluation-regions ./known/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+--output-mode ga4gh \
 --threads 12
 ```
-
-STUCK FROM HERE: need to tell it which columns to use, ie. pass to vcfeval the `--sample NIST7035,20` argument
 
 This will generate VCF files containing called variants that were in the truth VCF (tp), called variants that were not in the truth VCF (fp) and truth variants that were not in the called variants (fn) (for a more in depth explanation see [here](https://github.com/ga4gh/benchmarking-tools/blob/master/doc/ref-impl/intermediate.md)).
 
 ### [Nvidia parabricks germline](https://github.com/ESR-NZ/ESR-Parabricks)
 
-See the results of the Nvidia parabricks run on the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) at ....
+See the results and settings of the pipeline runs on the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (NIST7035 and NIST7086) for:
+
+- Nvidia parabricks germline at ...
+
+Located at `/usr/local/bin/pbrun`
+
+Run:
+
+```bash
+
+```
+
+## Notes
+
+- I found it difficult to use the hap.py wrapper for vcfeval since there were parameters I wasn't able to pass to vcfeval (such as specifying a sample in a multi sample vcf file and specifying the output mode).
