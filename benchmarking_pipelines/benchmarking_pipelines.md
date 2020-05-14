@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/14 18:23:04
+Last modified: 2020/05/14 09:12:52
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use. 
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -120,11 +120,11 @@ The known sites file and query vcf file needs to be bgzipped and have a tabix in
 ```bash
 cd /store/lkemp/exome_project/benchmarking/NA12878_exome/
 # Query vcf (NIST7035)
-bgzip < ./human_genomics_pipeline/vcf/NIST7035_NIST_raw_snps_indels_AS_g.vcf > ./human_genomics_pipeline/vcf/NIST7035_NIST_raw_snps_indels_AS_g.vcf.gz
-tabix ./human_genomics_pipeline/vcf/NIST7035_NIST_raw_snps_indels_AS_g.vcf.gz
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_raw_snps_indels_AS_g.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_raw_snps_indels_AS_g.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_raw_snps_indels_AS_g.vcf.gz
 # Query vcf (NIST7086)
-bgzip < ./human_genomics_pipeline/vcf/NIST7086_NIST_raw_snps_indels_AS_g.vcf > ./human_genomics_pipeline/vcf/NIST7086_NIST_raw_snps_indels_AS_g.vcf.gz
-tabix ./human_genomics_pipeline/vcf/NIST7086_NIST_raw_snps_indels_AS_g.vcf.gz
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_raw_snps_indels_AS_g.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_raw_snps_indels_AS_g.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_raw_snps_indels_AS_g.vcf.gz
 # Known vcf
 bgzip < ./known/project.NIST.hc.snps.indels.vcf> ./known/project.NIST.hc.snps.indels.vcf.gz
 tabix ./known/project.NIST.hc.snps.indels.vcf.gz
@@ -144,7 +144,7 @@ Run vcfeval
 # NIST7035
 ./hap.py-install/libexec/rtg-tools-install/rtg vcfeval \
 --baseline ./known/project.NIST.hc.snps.indels.vcf.gz \
---calls ./human_genomics_pipeline/vcf/NIST7035_NIST_raw_snps_indels_AS_g.vcf.gz \
+--calls ./vcf_annotation_pipeline/filtered/NIST7035_NIST_raw_snps_indels_AS_g.vcf \
 --sample NIST7035,20 \ # Specify columns to compare in a multi-sample vcf, match samples
 --output vcfeval_human_genomics_pipeline \
 --template ./hap.py-install/libexec/rtg-tools-install/Homo_sapiens_assembly38.fasta.sdf \
@@ -155,7 +155,7 @@ Run vcfeval
 # NIST7086
 ./hap.py-install/libexec/rtg-tools-install/rtg vcfeval \
 --baseline ./known/project.NIST.hc.snps.indels.vcf.gz \
---calls ./human_genomics_pipeline/vcf/NIST7086_NIST_raw_snps_indels_AS_g.vcf.gz \
+--calls ./vcf_annotation_pipeline/filtered/NIST7086_NIST_raw_snps_indels_AS_g.vcf \
 --sample NIST7086,20 \ # Specify columns to compare in a multi-sample vcf, match samples
 --output vcfeval_human_genomics_pipeline \
 --template ./hap.py-install/libexec/rtg-tools-install/Homo_sapiens_assembly38.fasta.sdf \
