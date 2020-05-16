@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/15 14:58:31
+Last modified: 2020/05/16 20:43:23
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use. 
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -23,8 +23,9 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
   - [Benchmarking](#benchmarking)
     - [human_genomics_pipeline and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)](#humangenomicspipeline-and-vcfannotationpipeline)
       - [Compare the truth and query vcf](#compare-the-truth-and-query-vcf)
-        - [Option one - vcftools](#option-one---vcftools-1)
-        - [Option two - rtg vcfeval](#option-two---rtg-vcfeval)
+        - [Option one - bcftools](#option-one---bcftools)
+        - [Option two - vcftools](#option-two---vcftools)
+        - [Option three - rtg vcfeval](#option-three---rtg-vcfeval)
     - [Nvidia parabricks germline](#nvidia-parabricks-germline)
   - [Results of benchmarking](#results-of-benchmarking)
   - [Notes](#notes)
@@ -129,7 +130,27 @@ See the results and settings of the pipeline runs on the Genome In A Bottle (GIA
 
 #### Compare the truth and query vcf
 
-##### Option one - vcftools
+##### Option one - bcftools
+
+```bash
+conda install -c bioconda bcftools=1.10.2
+```
+
+```bash
+bcftools isec \
+./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+../known/project.NIST.hc.snps.indels.vcf.gz \
+-p NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels
+```
+
+```bash
+bcftools isec \
+./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
+../known/project.NIST.hc.snps.indels.vcf.gz \
+-p NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels
+```
+
+##### Option two - vcftools
 
 ```bash
 vcftools \
@@ -139,7 +160,7 @@ vcftools \
 --out ./NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels
 ```
 
-##### Option two - rtg vcfeval
+##### Option three - rtg vcfeval
 
 The known sites file and query vcf file needs to be bgzipped and have a tabix index file (.tbi) (write to new files so as to not modify the original files):
 
@@ -160,8 +181,8 @@ We also need to create an sdf file for the reference human genome (that was used
 FIX
 ```bash
 ../hap.py-install/libexec/rtg-tools-install/rtg format \
---output ../hap.py-install/libexec/rtg-tools-install/Homo_sapiens_assembly38.fasta.sdf \
-/store/lkemp/publicData/referenceGenome/gatkBundle/GRCh38/Homo_sapiens_assembly38.fasta
+--output ../hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+/store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta
 ```
 
 Run vcfeval
@@ -173,7 +194,7 @@ Run vcfeval
 --calls ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
 --sample NIST7035,NIST7035_NIST \
 --output vcfeval_NIST7035 \
---template ../hap.py-install/libexec/rtg-tools-install/Homo_sapiens_assembly38.fasta.sdf \
+--template ../hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
 --evaluation-regions ../known/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
 --output-mode split \
 --threads 12
@@ -184,7 +205,7 @@ Run vcfeval
 --calls ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
 --sample NIST7086,NIST7086_NIST \
 --output vcfeval_NIST7086 \
---template ../hap.py-install/libexec/rtg-tools-install/Homo_sapiens_assembly38.fasta.sdf \
+--template ../hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
 --evaluation-regions ../known/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
 --output-mode split \
 --threads 12
