@@ -1,7 +1,7 @@
 # Database downloads for human_genomics_pipeline and vcf_annotation_pipeline
 
 Created: 2020/03/11 11:25:43
-Last modified: 2020/04/23 15:20:02
+Last modified: 2020/05/19 09:33:19
 
 - **Aim:** Document where data/databases required for [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) can be downloaded and what data processing they require before they can be used
 - **Prerequisite software:**  [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [gatk](https://anaconda.org/bioconda/gatk4)
@@ -49,21 +49,21 @@ GATK resource bundle ftp site: ftp://gsapubftp-anonymous@ftp.broadinstitute.org/
 
 ```bash
 # GRCh37
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/ucsc.hg19.fasta.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org/bundle/hg19/ucsc.hg19.fasta.gz
 gunzip ucsc.hg19.fasta.gz
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/ucsc.hg19.dict.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org/bundle/hg19/ucsc.hg19.dict.gz
 gunzip ucsc.hg19.dict.gz
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/ucsc.hg19.fasta.fai.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org/bundle/hg19/ucsc.hg19.fasta.fai.gz
 gunzip ucsc.hg19.fasta.fai.gz
 bwa index -a bwtsw ucsc.hg19.fasta
 ```
 
 ```bash
 # GRCh38
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg38/Homo_sapiens_assembly38.fasta.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org/bundle/hg38/Homo_sapiens_assembly38.fasta.gz
 gunzip Homo_sapiens_assembly38.fasta.gz
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg38/Homo_sapiens_assembly38.dict
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg38/Homo_sapiens_assembly38.fasta.fai
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org/bundle/hg38/Homo_sapiens_assembly38.dict
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org/bundle/hg38/Homo_sapiens_assembly38.fasta.fai
 bwa index -a bwtsw Homo_sapiens_assembly38.fasta
 ```
 
@@ -199,8 +199,8 @@ wget ftp://ftp.ncbi.nlm.nih.gov/snp/organisms/human_9606_b150_GRCh38p7/VCF/GATK/
 
 ```bash
 # Build 146 - GRCh38
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz.tbi
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz.tbi
 ```
 
 #### Option two: download from the [GATK resource bundle](https://gatk.broadinstitute.org/hc/en-us/articles/360035890811-Resource-bundle)
@@ -209,7 +209,7 @@ GATK resource bundle ftp site: ftp://gsapubftp-anonymous@ftp.broadinstitute.org/
 
 ```bash
 # Build 138 - GRCh37
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/dbsnp_138.hg19.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg19/dbsnp_138.hg19.vcf.gz
 gunzip dbsnp_138.hg19.vcf.gz
 bgzip dbsnp_138.hg19.vcf
 tabix dbsnp_138.hg19.vcf.gz
@@ -217,8 +217,8 @@ tabix dbsnp_138.hg19.vcf.gz
 
 ```bash
 # Build 146 - GRCh38
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz.tbi
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/dbsnp_146.hg38.vcf.gz.tbi
 ```
 
 ### VEP database
@@ -290,31 +290,31 @@ GATK resource bundle ftp site: ftp://gsapubftp-anonymous@ftp.broadinstitute.org/
 
 ```bash
 # Mills - GRCh37
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
 gunzip Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
 bgzip Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
 tabix Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
 
 # 1000G indel - GRCh37
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/1000G_phase1.indels.hg19.sites.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg19/1000G_phase1.indels.hg19.sites.vcf.gz
 gunzip 1000G_phase1.indels.hg19.sites.vcf.gz
 bgzip 1000G_phase1.indels.hg19.sites.vcf
 tabix 1000G_phase1.indels.hg19.sites.vcf.gz
 
 # 1000G snp - GRCh37
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg19/1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz
 gunzip 1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz
 bgzip 1000G_phase1.snps.high_confidence.hg19.sites.vcf
 tabix 1000G_phase1.snps.high_confidence.hg19.sites.vcf.gz
 
 # Omni - GRCh37
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/1000G_omni2.5.hg19.sites.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg19/1000G_omni2.5.hg19.sites.vcf.gz
 gunzip 1000G_omni2.5.hg19.sites.vcf.gz
 bgzip 1000G_omni2.5.hg19.sites.vcf
 tabix 1000G_omni2.5.hg19.sites.vcf.gz
 
 # Hapmap3 - GRCh37
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg19/hapmap_3.3.hg19.sites.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg19/hapmap_3.3.hg19.sites.vcf.gz
 gunzip hapmap_3.3.hg19.sites.vcf.gz
 bgzip hapmap_3.3.hg19.sites.vcf
 tabix hapmap_3.3.hg19.sites.vcf.gz
@@ -326,24 +326,24 @@ tabix hapmap_3.3.hg19.sites.vcf.gz
 
 ```bash
 # Mills - GRCh38
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
 wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi
 
 # 1000G snp - GRCh38
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/1000G_phase1.snps.high_confidence.hg38.vcf.gz
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/1000G_phase1.snps.high_confidence.hg38.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi
 
 # Omni - GRCh38
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/1000G_omni2.5.hg38.vcf.gz
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/1000G_omni2.5.hg38.vcf.gz.tbi
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/1000G_omni2.5.hg38.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/1000G_omni2.5.hg38.vcf.gz.tbi
 
 # Hapmap3 - GRCh38
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/hapmap_3.3.hg38.vcf.gz
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/hapmap_3.3.hg38.vcf.gz.tbi
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/hapmap_3.3.hg38.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/hapmap_3.3.hg38.vcf.gz.tbi
 
 # Axiom exome plus - GRCh38
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/Axiom_Exome_Plus.genotypes.all_populations.poly.hg38.vcf.gz
-wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org:21/bundle/hg38/Axiom_Exome_Plus.genotypes.all_populations.poly.hg38.vcf.gz.tbi
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/Axiom_Exome_Plus.genotypes.all_populations.poly.hg38.vcf.gz
+wget ftp://gsapubftp-anonymous:password@ftp.broadinstitute.org:21/bundle/hg38/Axiom_Exome_Plus.genotypes.all_populations.poly.hg38.vcf.gz.tbi
 ```
 
 :star:
