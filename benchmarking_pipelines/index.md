@@ -4,4 +4,3 @@ Documentation for benchmarking the [human_genomics_pipeline](https://github.com/
 
 - [Benchmarking pipelines](benchmarking_pipelines.md)
 - [Benchmarking pipeline results](benchmarking_pipeline_results.md)
-- [Chromosome overlap](chromosome_overlap.md)

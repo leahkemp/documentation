@@ -58,12 +58,12 @@ Parameters used to create the Genome In A Bottle (GIAB) sample [NA12878](https:/
 
 - Compared with bcftool isec
 
-| file                                                          | count   | type      |
-|---------------------------------------------------------------|---------|-----------|
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 215,888 | False-pos |
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 164,030 | False-neg |
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 252,659 | True-pos  |
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 252,659 | True-pos  |
+| file                                                          | count   | count (chromosome overlap adjusted) | type      |
+|---------------------------------------------------------------|---------|-------------------------------------|-----------|
+| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 215,888 | 215,875                             | False-pos |
+| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 164,030 | 164,027                             | False-neg |
+| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 252,659 | 252,659                             | True-pos  |
+| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 252,659 | 252,659                             | True-pos  |
 
 - Compared with rtg vcfeval
 
@@ -76,12 +76,12 @@ Parameters used to create the Genome In A Bottle (GIAB) sample [NA12878](https:/
 
 - Compared with bcftools isec
 
-| file                                                          | count   | type      |
-|---------------------------------------------------------------|---------|-----------|
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 230,065 | False-pos |
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 145,127 | False-neg |
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 271,562 | True-pos  |
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 271,562 | True-pos  |
+| file                                                          | count   | count (chromosome overlap adjusted) | type      |
+|---------------------------------------------------------------|---------|-------------------------------------|-----------|
+| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 230,065 | 230,053                             | False-pos |
+| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 145,127 | 145,121                             | False-neg |
+| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 271,562 | 271,562                             | True-pos  |
+| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 271,562 | 271,562                             | True-pos  |
 
 - Compared with rtg vcfeval
 
@@ -121,12 +121,12 @@ Parameters used to create the Genome In A Bottle (GIAB) sample [NA12878](https:/
 
 - Compared with bcftool isec
 
-| file                                                          | count   | type      |
-|---------------------------------------------------------------|---------|-----------|
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 215,888 | False-pos |
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 164,030 | False-neg |
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 252,659 | True-pos  |
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 252,659 | True-pos  |
+| file                                                          | count   | count (chromosome overlap adjusted) | type      |
+|---------------------------------------------------------------|---------|-------------------------------------|-----------|
+| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 215,888 | 215,875                             | False-pos |
+| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 164,030 | 164,027                             | False-neg |
+| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 252,659 | 252,659                             | True-pos  |
+| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 252,659 | 252,659                             | True-pos  |
 
 - Compared with rtg vcfeval
 
@@ -139,12 +139,12 @@ Parameters used to create the Genome In A Bottle (GIAB) sample [NA12878](https:/
 
 - Compared with bcftools isec
 
-| file                                                          | count   | type      |
-|---------------------------------------------------------------|---------|-----------|
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 230,065 | False-pos |
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 145,127 | False-neg |
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 271,562 | True-pos  |
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 271,562 | True-pos  |
+| file                                                          | count   | count (chromosome overlap adjusted) | type      |
+|---------------------------------------------------------------|---------|-------------------------------------|-----------|
+| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 230,065 | 230,053                             | False-pos |
+| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 145,127 | 145,121                             | False-neg |
+| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 271,562 | 271,562                             | True-pos  |
+| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 271,562 | 271,562                             | True-pos  |
 
 - Compared with rtg vcfeval
 
