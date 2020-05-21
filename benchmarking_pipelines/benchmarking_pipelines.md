@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/18 15:39:12
+Last modified: 2020/05/21 16:38:59
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use. 
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -16,16 +16,18 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
   - [Setup](#setup)
     - [Install benchmarking software](#install-benchmarking-software)
       - [Option one - vcftools](#option-one---vcftools)
-      - [Option two - hap.py and [RTG Tools](https://github.com/RealTimeGenomics/rtg-tools/tree/eb13bbb82d2fbeab7d54a92e8493ddd2acf0d349)](#option-two---happy-and-rtg-tools)
+      - [Option two - bcftools](#option-two---bcftools)
+      - [Option three and four - rtg vcfeval and hap.py](#option-three-and-four---rtg-vcfeval-and-happy)
     - [Download and prepare data](#download-and-prepare-data)
       - [Fastq data to run through pipelines](#fastq-data-to-run-through-pipelines)
       - [Truth vcf to compare output to](#truth-vcf-to-compare-output-to)
   - [Benchmarking](#benchmarking)
-    - [human_genomics_pipeline and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)](#humangenomicspipeline-and-vcfannotationpipeline)
+    - [human_genomics_pipeline and vcf_annotation_pipeline](#humangenomicspipeline-and-vcfannotationpipeline)
       - [Compare the truth and query vcf](#compare-the-truth-and-query-vcf)
         - [Option one - bcftools](#option-one---bcftools)
         - [Option two - vcftools](#option-two---vcftools)
         - [Option three - rtg vcfeval](#option-three---rtg-vcfeval)
+        - [Option four - hap.py](#option-four---happy)
     - [Nvidia parabricks germline](#nvidia-parabricks-germline)
   - [Results of benchmarking](#results-of-benchmarking)
   - [Notes](#notes)
@@ -44,7 +46,16 @@ conda activate vcftools_env
 conda install -c bioconda=0.1.16
 ```
 
-#### Option two - [hap.py](https://github.com/Illumina/hap.py) and [RTG Tools](https://github.com/RealTimeGenomics/rtg-tools/tree/eb13bbb82d2fbeab7d54a92e8493ddd2acf0d349)
+#### Option two - [bcftools](http://samtools.github.io/bcftools/bcftools.html)
+
+```bash
+conda install -c bioconda bcftools=1.10.2
+conda install -c bioconda vcftools=1.1.16
+```
+
+#### Option three and four - rtg vcfeval and hap.py
+
+[hap.py](https://github.com/Illumina/hap.py) and [RTG Tools](https://github.com/RealTimeGenomics/rtg-tools/tree/eb13bbb82d2fbeab7d54a92e8493ddd2acf0d349)
 
 Create a conda environment (we need python 2 in order to get htslib2 that is required for installation)
 
@@ -63,7 +74,7 @@ conda install -c bioconda pybedtools=0.8.1 # Also installs pysam=0.15.3 dependen
 conda install -c bioconda bx-python=0.8.8
 ```
 
-Install hap.py and RTG Tools (using the python and the helper script)
+Install hap.py and RTG Tools (using the python helper script)
 
 ```bash
 cd /store/lkemp/exome_project/benchmarking/NA12878_exome/
@@ -121,7 +132,7 @@ See [here](https://github.com/ga4gh/benchmarking-tools/blob/master/resources/hig
 
 human_genomic_pipeline will undertake pre-processing and variant calling. Because variant filtering occurs with vcf annotation_pipeline, we will benchmark the vcf files that have gone through both pipelines. However, we will use a minimal version of the vcf_annotation_pipeline since the annotation rules are not required for benchmarking.
 
-### [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)
+### human_genomics_pipeline and vcf_annotation_pipeline
 
 See the results and settings of the pipeline runs on the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (NIST7035 and NIST7086) for:
 
@@ -197,19 +208,14 @@ bgzip < ../known/project.NIST.hc.snps.indels.NIST7086.vcf > ../known/project.NIS
 tabix ../known/project.NIST.hc.snps.indels.NIST7086.vcf.gz
 ```
 
-Create a vcf file for both the pipeline output and truth vcf that contain chromosomes common among them (for both NIST7035 and NIST7086)
-
 ##### Option one - bcftools
-
-```bash
-conda install -c bioconda bcftools=1.10.2
-```
 
 1. Create intersection and complements of two sets saving the output in dir/*
 
 - All chromosomes
 
 ```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/
 bcftools isec \
 ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
 ../known/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
@@ -254,14 +260,34 @@ zgrep -v "#" ./NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | w
 zgrep -v "#" ./NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.chrom.adjusted/0000.vcf | wc -l
 ```
 
+To get genotype quality scores (GQ)
+
+```bash
+vcftools \
+--vcf ./NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.chrom.adjusted/0001.vcf \
+--extract-FORMAT-info GQ \
+--out test.vcf
+```
+
+Produce summary of vcf file
+
+```bash
+bcftools stats ./NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.chrom.adjusted/0001.vcf > ./NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.chrom.adjusted/0001.vcf.summary
+```
+
 ##### Option two - vcftools
 
 ```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/
+# Extract all the GQ values
 vcftools \
 --gzvcf ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
 --gzdiff ../known/project.NIST.hc.snps.indels.vcf.gz \
 --diff-site \
 --out ./NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels
+
+# Summarise the GQ values
+
 ```
 
 ##### Option three - rtg vcfeval
@@ -269,6 +295,7 @@ vcftools \
 We need to create an sdf file for the reference human genome (that was used in the benchmarking pipeline run). Create this with the rgt-tools format function:
 
 ```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/
 ../hap.py-install/libexec/rtg-tools-install/rtg format \
 --output ../hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
 /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta
@@ -304,8 +331,44 @@ This will generate VCF files containing called variants that were in the truth V
 
 View ROC plots using `rtg rocplot`
 
-```bash
+##### Option four - hap.py
 
+Create a bed regions file from the known vcf (using bedops)
+
+```bash
+conda install -c bioconda bedops=2.4.39
+```
+
+```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/
+# NIST7035
+vcf2bed < /store/mbenton/benchmarking/NIST7035_NIST.vcf > /store/lkemp/exome_project/benchmarking/NA12878_exome/known/NIST7035.bed
+```
+
+```bash
+# NIST7035
+mkdir happy_NIST7035
+cd happy_NIST7035/
+
+# CPU pipelines (h_g_p and v_a_p)
+/store/lkemp/exome_project/benchmarking/NA12878_exome/hap.py-install/bin/hap.py \
+/store/mbenton/benchmarking/project.NIST.hc.snps.indels.NIST7035.vcf \
+/store/mbenton/benchmarking/NIST7035_NIST_filtered.vcf \
+-f /store/lkemp/exome_project/benchmarking/NA12878_exome/known/NIST7035.bed \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_NIST7035_cpu \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/benchmarking/NA12878_exome/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
+
+# GPU pipeline (parabricks)
+/store/lkemp/exome_project/benchmarking/NA12878_exome/hap.py-install/bin/hap.py \
+/store/mbenton/benchmarking/project.NIST.hc.snps.indels.NIST7035.vcf \
+/store/mbenton/benchmarking/NIST7035_NIST.vcf \
+-f /store/lkemp/exome_project/benchmarking/NA12878_exome/known/NIST7035.bed \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_NIST7035_gpu \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/benchmarking/NA12878_exome/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```
 
 ### [Nvidia parabricks germline](https://github.com/ESR-NZ/ESR-Parabricks)
