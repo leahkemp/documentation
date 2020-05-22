@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/22 14:35:07
+Last modified: 2020/05/22 15:48:56
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use. 
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -28,6 +28,8 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
         - [NIST7035 ('baseline') compared to NIST7086 ('truth')](#nist7035-baseline-compared-to-nist7086-truth)
         - [NIST7086 ('baseline') compared to NIST7035 ('truth')](#nist7086-baseline-compared-to-nist7035-truth)
         - [Compared with hap.py](#compared-with-happy)
+        - [NIST7035 ('baseline') compared to NIST7086 ('truth')](#nist7035-baseline-compared-to-nist7086-truth-1)
+        - [NIST7086 ('baseline') compared to NIST7035 ('truth')](#nist7086-baseline-compared-to-nist7035-truth-1)
     - [bench 1.0](#bench-10)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline)
         - [Compared with bcftool isec](#compared-with-bcftool-isec-1)
@@ -271,6 +273,44 @@ grep -v "#" ./isec_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.i
 ```
 
 ##### Compared with hap.py
+
+##### NIST7035 ('baseline') compared to NIST7086 ('truth')
+
+```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/intra_truth_comparison/
+mkdir happy_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086
+```
+
+```bash
+/store/lkemp/exome_project/benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.bed \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086 \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
+```
+
+##### NIST7086 ('baseline') compared to NIST7035 ('truth')
+
+```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/intra_truth_comparison/
+mkdir happy_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035
+```
+
+```bash
+/store/lkemp/exome_project/benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.bed \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035 \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
+```
 
 ### bench 1.0
 
