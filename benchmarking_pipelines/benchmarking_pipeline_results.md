@@ -8,25 +8,25 @@
   - [intra_truth_comparison](#intratruthcomparison)
     - [Run parameters/settings](#run-parameterssettings)
     - [Results](#results)
-        - [Compared with bcftool isec](#compared-with-bcftool-isec)
+        - [Compared with bedops intersect](#compared-with-bedops-intersect)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools)
   - [bench 1.0](#bench-10)
     - [Run parameters/settings](#run-parameterssettings-1)
     - [Results](#results-1)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline)
-        - [Compared with bcftool isec](#compared-with-bcftool-isec-1)
+        - [Compared with bedops intersect](#compared-with-bedops-intersect-1)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-1)
       - [parabricks germline pipeline](#parabricks-germline-pipeline)
-        - [Compared with bcftool isec](#compared-with-bcftool-isec-2)
+        - [Compared with bedops intersect](#compared-with-bedops-intersect-2)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-2)
   - [bench 1.1](#bench-11)
     - [Run parameters/settings](#run-parameterssettings-2)
     - [Results](#results-2)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-1)
-        - [Compared with bcftool isec](#compared-with-bcftool-isec-3)
+        - [Compared with bedops intersect](#compared-with-bedops-intersect-3)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-3)
       - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
-        - [Compared with bcftool isec](#compared-with-bcftool-isec-4)
+        - [Compared with bedops intersect](#compared-with-bedops-intersect-4)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-4)
 
 ## Known vcf
@@ -40,13 +40,13 @@ Parameters used to create the Genome In A Bottle (GIAB) sample [NA12878](https:/
 - **Description:**
   - NIST7035: (/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf)
     - Total number of variants in NIST7035: 336,003
-    - There are 80,686 variants found in NIST7035 that are not found in NIST7086
-    - 24.01% of variants in NIST7035 are unique to NIST7035
+    - There are 99,141 variants found in NIST7035 that are not found in NIST7086
+    - 29.51% of variants in NIST7035 are unique to NIST7035
 
   - NIST7086 (/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf)
     - Total number of variants in NIST7086: 317,524
-    - There are 99,165 variants found in NIST7086 that are not found in NIST7035
-    - 31.23% of variants in NIST7086 are unique to NIST7086
+    - There are 80,661 variants found in NIST7086 that are not found in NIST7035
+    - 25.40% of variants in NIST7086 are unique to NIST7086
 
 ## intra_truth_comparison
 
@@ -56,27 +56,15 @@ Parameters used to create the Genome In A Bottle (GIAB) sample [NA12878](https:/
 
 ### Results
 
-results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/intra_truth_comparison/ (wintermute)
+Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/intra_truth_comparison/ (wintermute)
 
-##### Compared with bcftool isec
+##### Compared with bedops intersect
 
-- NIST7035 ('baseline') compared to NIST7086 ('truth')
-
-| file                                                                                      | count   | type      |
-|-------------------------------------------------------------------------------------------|---------|-----------|
-| isec_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086/0000.vcf | 80,686  | False-pos |
-| isec_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086/0001.vcf | 99,165  | False-neg |
-| isec_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086/0002.vcf | 236,838 | True-pos  |
-| isec_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086/0003.vcf | 236,838 | True-pos  |
-
-- NIST7086 ('baseline') compared to NIST7035 ('truth')
-
-| file                                                                                      | count   | type      |
-|-------------------------------------------------------------------------------------------|---------|-----------|
-| isec_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035/0000.vcf | 99,165  | False-pos |
-| isec_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035/0001.vcf | 80,686  | False-neg |
-| isec_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035/0002.vcf | 236,838 | True-pos  |
-| isec_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035/0003.vcf | 236,838 | True-pos  |
+| file                                                                                   | count   | type                                               |
+|----------------------------------------------------------------------------------------|---------|----------------------------------------------------|
+| common_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086.vcf | 237,338 | Common                                             |
+| unique_project.NIST.hc.snps.indels.NIST7035.vcf                                        | 99,141  | Unique to project.NIST.hc.snps.indels.NIST7035.vcf |
+| unique_project.NIST.hc.snps.indels.NIST7086.vcf                                        | 80,661  | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
 
 ##### Compared with hap.py + RTG tools
 
@@ -137,25 +125,23 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/ (wi
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with bcftool isec
+##### Compared with bedops intersect
 
 - NIST7035
 
-| file                                                               | count   | type      |
-|--------------------------------------------------------------------|---------|-----------|
-| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 282,524 | False-pos |
-| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 149,980 | False-neg |
-| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 186,023 | True-pos  |
-| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 186,023 | True-pos  |
+| file                                                                     | count   | type                                               |
+|--------------------------------------------------------------------------|---------|----------------------------------------------------|
+| common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf | 188,127 | Common                                             |
+| unique_NIST7035_NIST_filtered.vcf                                        | 280,797 | Unique to NIST7035_NIST_filtered                   |
+| unique_project.NIST.hc.snps.indels.NIST7035.vcf                          | 148,216 | Unique to project.NIST.hc.snps.indels.NIST7035.vcf |
 
 - NIST7086
 
-| file                                                               | count   | type      |
-|--------------------------------------------------------------------|---------|-----------|
-| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 313,189 | False-pos |
-| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 129,086 | False-neg |
-| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 188,438 | True-pos  |
-| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 188,438 | True-pos  |
+| file                                                                     | count   | type                                               |
+|--------------------------------------------------------------------------|---------|----------------------------------------------------|
+| common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf | 190,599 | Common                                             |
+| unique_NIST7086_NIST_filtered.vcf                                        | 311,418 | Unique to NIST7086_NIST_filtered                   |
+| unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,323 | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
 
 ##### Compared with hap.py + RTG tools
 
@@ -179,7 +165,7 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/ (wi
 
 #### parabricks germline pipeline
 
-##### Compared with bcftool isec
+##### Compared with bedops intersect
 
 ##### Compared with hap.py + RTG tools
 
@@ -222,25 +208,23 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wi
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with bcftool isec
+##### Compared with bedops intersect
 
 - NIST7035
 
-| file                                                               | count   | type      |
-|--------------------------------------------------------------------|---------|-----------|
-| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 282,524 | False-pos |
-| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 149,980 | False-neg |
-| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 186,023 | True-pos  |
-| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 186,023 | True-pos  |
+| file                                                                     | count   | type                                               |
+|--------------------------------------------------------------------------|---------|----------------------------------------------------|
+| common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf | 188,127 | Common                                             |
+| unique_NIST7035_NIST_filtered.vcf                                        | 280,797 | Unique to NIST7035_NIST_filtered                   |
+| unique_project.NIST.hc.snps.indels.NIST7035.vcf                          | 148,216 | Unique to project.NIST.hc.snps.indels.NIST7035.vcf |
 
 - NIST7086
 
-| file                                                               | count   | type      |
-|--------------------------------------------------------------------|---------|-----------|
-| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 313,189 | False-pos |
-| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 129,086 | False-neg |
-| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 188,438 | True-pos  |
-| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 188,438 | True-pos  |
+| file                                                                     | count   | type                                               |
+|--------------------------------------------------------------------------|---------|----------------------------------------------------|
+| common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf | 190,599 | Common                                             |
+| unique_NIST7086_NIST_filtered.vcf                                        | 311,418 | Unique to NIST7086_NIST_filtered                   |
+| unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,323 | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
 
 ##### Compared with hap.py + RTG tools
 
@@ -264,6 +248,6 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wi
 
 #### parabricks germline pipeline
 
-##### Compared with bcftool isec
+##### Compared with bedops intersect
 
 ##### Compared with hap.py + RTG tools
