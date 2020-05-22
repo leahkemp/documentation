@@ -5,24 +5,29 @@
 - [Benchmarking results](#benchmarking-results)
   - [Table of contents](#table-of-contents)
   - [Known vcf](#known-vcf)
-  - [bench1.0](#bench10)
+  - [intra_truth_comparison](#intratruthcomparison)
     - [Run parameters/settings](#run-parameterssettings)
     - [Results](#results)
-      - [NIST7035](#nist7035)
-        - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline)
-        - [parabricks germline pipeline](#parabricks-germline-pipeline)
-      - [NIST7086](#nist7086)
-        - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-1)
-        - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
-  - [bench1.1](#bench11)
+        - [Compared with bcftool isec](#compared-with-bcftool-isec)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools)
+  - [bench 1.0](#bench-10)
     - [Run parameters/settings](#run-parameterssettings-1)
     - [Results](#results-1)
-      - [NIST7035](#nist7035-1)
-        - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-2)
-        - [parabricks germline pipeline](#parabricks-germline-pipeline-2)
-      - [NIST7086](#nist7086-1)
-        - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-3)
-        - [parabricks germline pipeline](#parabricks-germline-pipeline-3)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline)
+        - [Compared with bcftool isec](#compared-with-bcftool-isec-1)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-1)
+      - [parabricks germline pipeline](#parabricks-germline-pipeline)
+        - [Compared with bcftool isec](#compared-with-bcftool-isec-2)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-2)
+  - [bench 1.1](#bench-11)
+    - [Run parameters/settings](#run-parameterssettings-2)
+    - [Results](#results-2)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-1)
+        - [Compared with bcftool isec](#compared-with-bcftool-isec-3)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-3)
+      - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
+        - [Compared with bcftool isec](#compared-with-bcftool-isec-4)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-4)
 
 ## Known vcf
 
@@ -33,13 +38,56 @@ Parameters used to create the Genome In A Bottle (GIAB) sample [NA12878](https:/
   - dbSNP database: dbsnp_137.hg19.vcf
 
 - **Description:**
-  - Number of variants: 416,689
+  - NIST7035: (/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf)
+    - Total number of variants in NIST7035: 336,003
+    - There are 80,686 variants found in NIST7035 that are not found in NIST7086
+    - 24.01% of variants in NIST7035 are unique to NIST7035
 
-## bench1.0
+  - NIST7086 (/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf)
+    - Total number of variants in NIST7086: 317,524
+    - There are 99,165 variants found in NIST7086 that are not found in NIST7035
+    - 31.23% of variants in NIST7086 are unique to NIST7086
+
+## intra_truth_comparison
 
 ### Run parameters/settings
 
-- **Aim:** Benchmarking against against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (both NIST7035 and NIST7086)
+- **Aim:** Compare the two 'samples' of the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (NIST7035 and NIST7086)
+
+### Results
+
+results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/intra_truth_comparison/ (wintermute)
+
+##### Compared with bcftool isec
+
+- NIST7035 ('baseline') compared to NIST7086 ('truth')
+
+| file                                                                                      | count   | type      |
+|-------------------------------------------------------------------------------------------|---------|-----------|
+| isec_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086/0000.vcf | 80,686  | False-pos |
+| isec_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086/0001.vcf | 99,165  | False-neg |
+| isec_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086/0002.vcf | 236,838 | True-pos  |
+| isec_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086/0003.vcf | 236,838 | True-pos  |
+
+- NIST7086 ('baseline') compared to NIST7035 ('truth')
+
+| file                                                                                      | count   | type      |
+|-------------------------------------------------------------------------------------------|---------|-----------|
+| isec_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035/0000.vcf | 99,165  | False-pos |
+| isec_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035/0001.vcf | 80,686  | False-neg |
+| isec_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035/0002.vcf | 236,838 | True-pos  |
+| isec_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035/0003.vcf | 236,838 | True-pos  |
+
+##### Compared with hap.py + RTG tools
+
+
+
+## bench 1.0
+
+### Run parameters/settings
+
+- **Aim:** Benchmarking pipelines against against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (both NIST7035 and NIST7086)
+
 - **Pipelines:**
   - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation) an
   - [parabricks germline pipeline](https://www.nvidia.com/en-us/docs/parabricks/germline/)
@@ -69,77 +117,62 @@ Parameters used to create the Genome In A Bottle (GIAB) sample [NA12878](https:/
 
 ### Results
 
-#### NIST7035
+Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/ (wintermute)
 
-##### human_genomics_pipeline + minimal vcf_annotation_pipeline
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-- Compared with bcftool isec
+##### Compared with bcftool isec
 
-| file                                                          | count   | count (chromosome overlap adjusted) | type      |
-|---------------------------------------------------------------|---------|-------------------------------------|-----------|
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 215,888 | 215,875                             | False-pos |
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 164,030 | 164,027                             | False-neg |
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 252,659 | 252,659                             | True-pos  |
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 252,659 | 252,659                             | True-pos  |
+- NIST7035
 
-- Compared with rtg vcfeval
+| file                                                               | count   | type      |
+|--------------------------------------------------------------------|---------|-----------|
+| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 282,524 | False-pos |
+| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 149,980 | False-neg |
+| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 186,023 | True-pos  |
+| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 186,023 | True-pos  |
 
-|Threshold | True-pos-baseline   | True-pos-call  | False-pos | False-neg | Precision | Sensitivity | F-measure |
-|----------|---------------------|----------------|-----------|-----------|-----------|-------------|-----------|
-| 1.000    | 52,666              | 52,667         | 2957      | 4030      | 0.9468    | 0.9289      | 0.9378    |
-| None     | 52,668              | 52,669         | 2961      | 4028      | 0.9468    | 0.9290      | 0.9378    |
+- NIST7086
 
-- Compared with hap.py
+| file                                                               | count   | type      |
+|--------------------------------------------------------------------|---------|-----------|
+| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 313,189 | False-pos |
+| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 129,086 | False-neg |
+| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 188,438 | True-pos  |
+| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 188,438 | True-pos  |
 
-| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
-|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
-| INDEL | ALL    | 33935       | 32265    | 1670     | 57706       | 1595     | 23655     | 733   | 694   | 0.950788      | 0.953158         | 0.409923       | 0.951972        |                        |                        | 0.575724774               | 0.530085807               |
-| INDEL | PASS   | 33935       | 31582    | 2353     | 56457       | 1505     | 23181     | 725   | 628   | 0.930662      | 0.954772         | 0.410596       | 0.942563        |                        |                        | 0.575724774               | 0.498879283               |
-| SNP   | ALL    | 219952      | 216841   | 3111     | 411540      | 190689   | 3974      | 1429  | 6845  | 0.985856      | 0.532127         | 0.009656       | 0.691181        | 2.032894465            | 1.423485638            | 0.577210523               | 0.362133473               |
-| SNP   | PASS   | 219952      | 215192   | 4760     | 408910      | 189812   | 3870      | 1399  | 6523  | 0.978359      | 0.531375         | 0.009464       | 0.688698        | 2.032894465            | 1.422810364            | 0.577210523               | 0.35380422                |
+##### Compared with hap.py + RTG tools
 
-##### parabricks germline pipeline
-
-- Compared with bcftool isec
-
-- Compared with hap.py
+- NIST7035
 
 | Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
 |-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
-| INDEL | ALL    | 33935       | 32805    | 1130     | 54368       | 1236     | 20169     | 598   | 467   | 0.966701      | 0.963859         | 0.370972       | 0.965278        |                        |                        | 0.575724774               | 0.450235194               |
-| INDEL | PASS   | 33935       | 32805    | 1130     | 54368       | 1236     | 20169     | 598   | 467   | 0.966701      | 0.963859         | 0.370972       | 0.965278        |                        |                        | 0.575724774               | 0.450235194               |
-| SNP   | ALL    | 219952      | 218293   | 1659     | 414135      | 195815   | 0         | 1550  | 7445  | 0.992457      | 0.527171         | 0              | 0.688583        | 2.032894465            | 1.42376204             | 0.577210523               | 0.360109056               |
-| SNP   | PASS   | 219952      | 218293   | 1659     | 414135      | 195815   | 0         | 1550  | 7445  | 0.992457      | 0.527171         | 0              | 0.688583        | 2.032894465            | 1.42376204             | 0.577210523               | 0.360109056               |
+| INDEL | ALL    | 29473       | 20889    | 8584     | 57705       | 1684     | 34942     | 687   | 848   | 0.70875       | 0.92602          | 0.605528       | 0.802947        |                        |                        | 0.935843514               | 0.530099933               |
+| INDEL | PASS   | 29473       | 20226    | 9247     | 56456       | 1597     | 34445     | 679   | 780   | 0.686255      | 0.927445         | 0.610121       | 0.788826        |                        |                        | 0.935843514               | 0.498892595               |
+| SNP   | ALL    | 207268      | 163391   | 43877    | 411540      | 1985     | 246129    | 1112  | 372   | 0.788308      | 0.988            | 0.598068       | 0.876929        | 2.101415235            | 1.423485638            | 0.702447561               | 0.362133473               |
+| SNP   | PASS   | 207268      | 161764   | 45504    | 408910      | 1908     | 245202    | 1082  | 347   | 0.780458      | 0.988345         | 0.599648       | 0.872185        | 2.101415235            | 1.422810364            | 0.702447561               | 0.35380422                |
 
-#### NIST7086
+- NIST7086
 
-##### human_genomics_pipeline + minimal vcf_annotation_pipeline
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29475       | 19567    | 9908     | 57706       | 15098    | 22869     | 1998  | 980   | 0.663851      | 0.56661          | 0.396302       | 0.611388        |                        |                        | 0.962033027               | 0.530085807               |
+| INDEL | PASS   | 29475       | 18913    | 10562    | 56457       | 14963    | 22410     | 1989  | 899   | 0.641662      | 0.560519         | 0.396939       | 0.598352        |                        |                        | 0.962033027               | 0.498879283               |
+| SNP   | ALL    | 207267      | 156735   | 50532    | 411540      | 62504    | 192267    | 7763  | 985   | 0.756199      | 0.714949         | 0.467189       | 0.734995        | 2.101557474            | 1.423485638            | 0.720474925               | 0.362133473               |
+| SNP   | PASS   | 207267      | 155113   | 52154    | 408910      | 62418    | 191345    | 7730  | 969   | 0.748373      | 0.713106         | 0.467939       | 0.730314        | 2.101557474            | 1.422810364            | 0.720474925               | 0.35380422                |
 
-- Compared with bcftools isec
+#### parabricks germline pipeline
 
-| file                                                          | count   | count (chromosome overlap adjusted) | type      |
-|---------------------------------------------------------------|---------|-------------------------------------|-----------|
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 230,065 | 230,053                             | False-pos |
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 145,127 | 145,121                             | False-neg |
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 271,562 | 271,562                             | True-pos  |
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 271,562 | 271,562                             | True-pos  |
+##### Compared with bcftool isec
 
-- Compared with rtg vcfeval
+##### Compared with hap.py + RTG tools
 
-|Threshold | True-pos-baseline  | True-pos-call  | False-pos | False-neg | Precision | Sensitivity | F-measure |
-|----------|--------------------|----------------|-----------|-----------|-----------|-------------|-----------|
-| 4.000    | 53,077             | 53,078         | 2872      | 3853      | 0.9487    | 0.9323      | 0.9404    |
-| None     | 53,102             | 53,103         | 2912      | 3828      | 0.9480    | 0.9328      | 0.9403    |
-
-- Compared with hap.py
-
-##### parabricks germline pipeline
-
-## bench1.1
+## bench 1.1
 
 ### Run parameters/settings
 
-- **Aim:** Benchmarking against against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (both NIST7035 and NIST7086)
+- **Aim:** Benchmarking pipelines against against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (both NIST7035 and NIST7086)
+
 - **Pipelines:**
   - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation) an
   - [parabricks germline pipeline](https://www.nvidia.com/en-us/docs/parabricks/germline/)
@@ -169,54 +202,52 @@ Parameters used to create the Genome In A Bottle (GIAB) sample [NA12878](https:/
 
 ### Results
 
-#### NIST7035
+Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wintermute)
 
-##### human_genomics_pipeline + minimal vcf_annotation_pipeline
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-- Compared with bcftool isec
+##### Compared with bcftool isec
 
-| file                                                          | count   | count (chromosome overlap adjusted) | type      |
-|---------------------------------------------------------------|---------|-------------------------------------|-----------|
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 215,888 | 215,875                             | False-pos |
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 164,030 | 164,027                             | False-neg |
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 252,659 | 252,659                             | True-pos  |
-| NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 252,659 | 252,659                             | True-pos  |
+- NIST7035
 
-- Compared with rtg vcfeval
+| file                                                               | count   | type      |
+|--------------------------------------------------------------------|---------|-----------|
+| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 282,524 | False-pos |
+| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 149,980 | False-neg |
+| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 186,023 | True-pos  |
+| isec_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 186,023 | True-pos  |
 
-|Threshold | True-pos-baseline  | True-pos-call  | False-pos | False-neg | Precision | Sensitivity | F-measure |
-|----------|--------------------|----------------|-----------|-----------|-----------|-------------|-----------|
-| 1.000    | 52,717             | 52,718         | 2944      | 3979      | 0.9471    | 0.9298      | 0.9384    |
-| None     | 52,719             | 52,720         | 2948      | 3977      | 0.9470    | 0.9299      | 0.9384    |
+- NIST7086
 
-- Compared with hap.py
+| file                                                               | count   | type      |
+|--------------------------------------------------------------------|---------|-----------|
+| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 313,189 | False-pos |
+| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 129,086 | False-neg |
+| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 188,438 | True-pos  |
+| isec_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 188,438 | True-pos  |
 
-##### parabricks germline pipeline
+##### Compared with hap.py + RTG tools
 
-#### NIST7086
+- NIST7035
 
-##### human_genomics_pipeline + minimal vcf_annotation_pipeline
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29473       | 20889    | 8584     | 57705       | 1684     | 34942     | 687   | 848   | 0.70875       | 0.92602          | 0.605528       | 0.802947        |                        |                        | 0.935843514               | 0.530099933               |
+| INDEL | PASS   | 29473       | 20420    | 9053     | 56725       | 1617     | 34499     | 682   | 793   | 0.692838      | 0.927247         | 0.60818        | 0.793084        |                        |                        | 0.935843514               | 0.504986667               |
+| SNP   | ALL    | 207268      | 163391   | 43877    | 411540      | 1985     | 246129    | 1112  | 372   | 0.788308      | 0.988            | 0.598068       | 0.876929        | 2.101415235            | 1.423485638            | 0.702447561               | 0.362133473               |
+| SNP   | PASS   | 207268      | 161444   | 45824    | 408308      | 1905     | 244923    | 1084  | 347   | 0.778914      | 0.98834          | 0.599849       | 0.871218        | 2.101415235            | 1.421803843            | 0.702447561               | 0.351807141               |
 
-- Compared with bcftools isec
+- NIST7086
 
-| file                                                          | count   | count (chromosome overlap adjusted) | type      |
-|---------------------------------------------------------------|---------|-------------------------------------|-----------|
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0000.vcf | 230,065 | 230,053                             | False-pos |
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0001.vcf | 145,127 | 145,121                             | False-neg |
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0002.vcf | 271,562 | 271,562                             | True-pos  |
-| NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels/0003.vcf | 271,562 | 271,562                             | True-pos  |
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29475       | 19567    | 9908     | 57706       | 15098    | 22869     | 1998  | 980   | 0.663851      | 0.56661          | 0.396302       | 0.611388        |                        |                        | 0.962033027               | 0.530085807               |
+| INDEL | PASS   | 29475       | 19102    | 10373    | 56726       | 15005    | 22448     | 1990  | 922   | 0.648075      | 0.562256         | 0.395727       | 0.602123        |                        |                        | 0.962033027               | 0.504973201               |
+| SNP   | ALL    | 207267      | 156735   | 50532    | 411540      | 62504    | 192267    | 7763  | 985   | 0.756199      | 0.714949         | 0.467189       | 0.734995        | 2.101557474            | 1.423485638            | 0.720474925               | 0.362133473               |
+| SNP   | PASS   | 207267      | 154794   | 52473    | 408308      | 62402    | 191078    | 7731  | 965   | 0.746834      | 0.712738         | 0.467975       | 0.729387        | 2.101557474            | 1.421803843            | 0.720474925               | 0.351807141               |
 
-- Compared with rtg vcfeval
+#### parabricks germline pipeline
 
-|Threshold | True-pos-baseline  | True-pos-call  | False-pos | False-neg | Precision | Sensitivity | F-measure |
-|----------|--------------------|----------------|-----------|-----------|-----------|-------------|-----------|
-| 4.000    | 53,197             | 53,198         | 2941      | 3733      | 0.9476    | 0.9344      | 0.9410    |
-| None     | 53,222             | 53,223         | 2981      | 3708      | 0.9470    | 0.9349      | 0.9409    |
+##### Compared with bcftool isec
 
-- Compared with hap.py
-
-##### parabricks germline pipeline
-
-- Compared with bcftools isec
-  
-- Compared with hap.py
+##### Compared with hap.py + RTG tools
