@@ -167,6 +167,22 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/ (wi
 
 ##### Compared with bedops intersect
 
+- NIST7035
+
+| file                                                                     | count   | type                                               |
+|--------------------------------------------------------------------------|---------|----------------------------------------------------|
+| common_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035.vcf | 188,161 | Common                                             |
+| unique_NIST7035_NIST.vcf                                        | 280,446 | Unique to NIST7035_NIST                   |
+| unique_project.NIST.hc.snps.indels.NIST7035.vcf                          | 148,197 | Unique to project.NIST.hc.snps.indels.NIST7035.vcf |
+
+- NIST7086
+
+| file                                                                     | count   | type                                               |
+|--------------------------------------------------------------------------|---------|----------------------------------------------------|
+| common_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086.vcf | 190,707 | Common                                             |
+| unique_NIST7086_NIST.vcf                                        | 311,598 | Unique to NIST7086_NIST                   |
+| unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,260 | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
+
 ##### Compared with hap.py + RTG tools
 
 ## bench 1.1
