@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/22 22:08:25
+Last modified: 2020/05/25 12:15:47
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use. 
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -106,7 +106,7 @@ wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA
 wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7086_CGTACTAG_L002_R2_001.fastq.gz
 ```
 
-Note: there we some issues with correctly downloading the fastq files (likely due to the ESR proxy). The below can be run to check the integrity of the gunzip files, no error suggests the archive is OK.
+Note: there can be some issues with correctly downloading the fastq files (likely due to the ESR proxy). The below can be run to check the integrity of the gunzip files, no error suggests the archive is OK.
 
 ```bash
 for i in NIST*; do
