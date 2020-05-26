@@ -10,7 +10,7 @@
     - [Results](#results)
         - [Compared with bedops intersect](#compared-with-bedops-intersect)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools)
-  - [bench 1.0](#bench-10)
+  - [bench1.0](#bench10)
     - [Run parameters/settings](#run-parameterssettings-1)
     - [Results](#results-1)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline)
@@ -19,15 +19,17 @@
       - [parabricks germline pipeline](#parabricks-germline-pipeline)
         - [Compared with bedops intersect](#compared-with-bedops-intersect-2)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-2)
-  - [bench 1.1](#bench-11)
+  - [bench1.1](#bench11)
     - [Run parameters/settings](#run-parameterssettings-2)
     - [Results](#results-2)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-1)
         - [Compared with bedops intersect](#compared-with-bedops-intersect-3)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-3)
-      - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
+  - [bench1.2](#bench12)
+    - [Run parameters/settings](#run-parameterssettings-3)
+    - [Results](#results-3)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-2)
         - [Compared with bedops intersect](#compared-with-bedops-intersect-4)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-4)
 
 ## Known vcf
 
@@ -86,7 +88,7 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/intra_truth_c
 | SNP   | ALL    | 207255      | 194643   | 12612    | 207307      | 12616    | 0         | 12604 | 12    | 0.939147      | 0.939143         | 0              | 0.939145        | 2.101641405            | 2.101009497            | 0.720383593               | 0.702762213               |
 | SNP   | PASS   | 207255      | 194643   | 12612    | 207307      | 12616    | 0         | 12604 | 12    | 0.939147      | 0.939143         | 0              | 0.939145        | 2.101641405            | 2.101009497            | 0.720383593               | 0.702762213               |
 
-## bench 1.0
+## bench1.0
 
 ### Run parameters/settings
 
@@ -117,7 +119,7 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/intra_truth_c
 
 *Note. dbsnp_137.hg19.vcf doesn't appear to be available anymore, therefore I used the closest version available*
 
-(see run settings/output for [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.0) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.0) for more detail)
+(see run settings/output for [human_genomics_pipeline - bench1.0](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.0) and [vcf_annotation_pipeline - bench1.0](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.0) for more detail)
 
 ### Results
 
@@ -185,15 +187,32 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/ (wi
 
 ##### Compared with hap.py + RTG tools
 
-## bench 1.1
+- NIST7035
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29473       | 20616    | 8857     | 54367       | 1153     | 32444     | 536   | 491   | 0.699488      | 0.947407         | 0.596759       | 0.804787        |                        |                        | 0.935843514               | 0.450247227               |
+| INDEL | PASS   | 29473       | 20616    | 8857     | 54367       | 1153     | 32444     | 536   | 491   | 0.699488      | 0.947407         | 0.596759       | 0.804787        |                        |                        | 0.935843514               | 0.450247227               |
+| SNP   | ALL    | 207268      | 163947   | 43321    | 414135      | 2033     | 248128    | 1158  | 375   | 0.79099       | 0.987754         | 0.599148       | 0.878489        | 2.101415235            | 1.42376204             | 0.702447561               | 0.360109056               |
+| SNP   | PASS   | 207268      | 163947   | 43321    | 414135      | 2033     | 248128    | 1158  | 375   | 0.79099       | 0.987754         | 0.599148       | 0.878489        | 2.101415235            | 1.42376204             | 0.702447561               | 0.360109056               |
+
+- NIST7086
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29473       | 21269    | 8204     | 58506       | 1111     | 35951     | 511   | 495   | 0.721644      | 0.950743         | 0.614484       | 0.820501        |                        |                        | 0.961832578               | 0.458301072               |
+| INDEL | PASS   | 29473       | 21269    | 8204     | 58506       | 1111     | 35951     | 511   | 495   | 0.721644      | 0.950743         | 0.614484       | 0.820501        |                        |                        | 0.961832578               | 0.458301072               |
+| SNP   | ALL    | 207253      | 165941   | 41312    | 443676      | 1940     | 275768    | 1194  | 333   | 0.800669      | 0.988446         | 0.621553       | 0.884703        | 2.101533628            | 1.419960733            | 0.720358685               | 0.361391578               |
+| SNP   | PASS   | 207253      | 165941   | 41312    | 443676      | 1940     | 275768    | 1194  | 333   | 0.800669      | 0.988446         | 0.621553       | 0.884703        | 2.101533628            | 1.419960733            | 0.720358685               | 0.361391578               |
+
+## bench1.1
 
 ### Run parameters/settings
 
-- **Aim:** Benchmarking pipelines against against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (both NIST7035 and NIST7086)
+- **Aim:** Compare the results of variants filtered using the 1D vs 2D model with pre-trained architecture (for rule gatk CNNScoreVariants)
 
 - **Pipelines:**
-  - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation) an
-  - [parabricks germline pipeline](https://www.nvidia.com/en-us/docs/parabricks/germline/)
+  - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation)
 
 - **Inputs human_genomics_pipeline:**
   - Reference genome: ucsc.hg19.fasta
@@ -216,7 +235,7 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/ (wi
 
 *Note. dbsnp_137.hg19.vcf doesn't appear to be available anymore, therefore I used the closest version available*
 
-(see run settings/output for [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.0) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.0) for more detail)
+(see run settings/output for [human_genomics_pipeline - bench1.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.0) and [vcf_annotation_pipeline - bench1.1](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.0) for more detail)
 
 ### Results
 
@@ -262,8 +281,43 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wi
 | SNP   | ALL    | 207267      | 156735   | 50532    | 411540      | 62504    | 192267    | 7763  | 985   | 0.756199      | 0.714949         | 0.467189       | 0.734995        | 2.101557474            | 1.423485638            | 0.720474925               | 0.362133473               |
 | SNP   | PASS   | 207267      | 154794   | 52473    | 408308      | 62402    | 191078    | 7731  | 965   | 0.746834      | 0.712738         | 0.467975       | 0.729387        | 2.101557474            | 1.421803843            | 0.720474925               | 0.351807141               |
 
-#### parabricks germline pipeline
+## bench1.2
+
+### Run parameters/settings
+
+- **Aim:** Improve the accuracy of variant filtering
+
+- **Pipelines:**
+  - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation) an
+  - [parabricks germline pipeline](https://www.nvidia.com/en-us/docs/parabricks/germline/)
+
+- **Inputs human_genomics_pipeline:**
+  - Reference genome: ucsc.hg19.fasta
+  - dbSNP database: dbsnp_138.hg19.vcf
+
+- **Inputs vcf_annotation_pipeline:**
+  - Reference genome: ucsc.hg19.fasta
+  - dbSNP database: dbsnp_138.hg19.vcf
+  - Hapmap: hapmap_3.3.hg19.sites.vcf.gz
+  - Mills: Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
+  
+- **Inputs for parabricks germline pipeline:**
+  - Reference genome: ucsc.hg19.fasta
+  - dbSNP database: dbsnp_138.hg19.vcf
+
+- **Other settings:**
+  - No padding
+  - No intervals
+  - 2D model with pre-trained architecture (for rule gatk CNNScoreVariants)
+
+*Note. dbsnp_137.hg19.vcf doesn't appear to be available anymore, therefore I used the closest version available*
+
+(see run settings/output for [human_genomics_pipeline - bench1.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.0) and [vcf_annotation_pipeline - bench1.1](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.0) for more detail)
+
+### Results
+
+Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wintermute)
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
 ##### Compared with bedops intersect
-
-##### Compared with hap.py + RTG tools

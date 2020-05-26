@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/25 18:44:13
+Last modified: 2020/05/26 12:44:53
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use. 
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -39,9 +39,6 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-1)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-3)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-2)
-      - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
-        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-4)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-3)
   - [Results of benchmarking](#results-of-benchmarking)
 
 ## Setup
@@ -427,12 +424,14 @@ cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 
 #### parabricks germline pipeline
 
+*Output vcfs were transferred to Wintermute*
+
 ##### Compared with bedtools intersect
 
 - NIST7035
 
 ```bash
-cd /home/lkemp/benchmarking_parabricks/bench1.0/ # ORAC
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/
 mkdir intersect_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
 cd intersect_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
 ```
@@ -440,21 +439,21 @@ cd intersect_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
 ```bash
 # Common
 bedtools intersect \
--a ../NIST7035_NIST.vcf \
--b /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GIAB/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+-a ../parabricks/NIST7035_NIST.vcf \
+-b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
 > common_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035.vcf
 
 # Unique truth
 bedtools intersect \
--a ../NIST7035_NIST.vcf \
--b /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GIAB/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+-a ../parabricks/NIST7035_NIST.vcf \
+-b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
 -v \
 > unique_NIST7035_NIST.vcf
 
 # Unique query
 bedtools intersect \
--a /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GIAB/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--b ../NIST7035_NIST.vcf \
+-a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+-b ../parabricks/NIST7035_NIST.vcf \
 -v \
 > unique_project.NIST.hc.snps.indels.NIST7035.vcf
 ```
@@ -468,7 +467,7 @@ grep -v "#" unique_project.NIST.hc.snps.indels.NIST7035.vcf | wc -l
 - NIST7086
 
 ```bash
-cd /home/lkemp/benchmarking_parabricks/bench1.0/ # ORAC
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/
 mkdir intersect_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 cd intersect_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 ```
@@ -476,21 +475,21 @@ cd intersect_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 ```bash
 # Common
 bedtools intersect \
--a ../NIST7086_NIST.vcf \
--b /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GIAB/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+-a ../parabricks/NIST7086_NIST.vcf \
+-b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
 > common_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086.vcf
 
 # Unique truth
 bedtools intersect \
--a ../NIST7086_NIST.vcf \
--b /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GIAB/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+-a ../parabricks/NIST7086_NIST.vcf \
+-b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
 -v \
 > unique_NIST7086_NIST.vcf
 
 # Unique query
 bedtools intersect \
--a /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GIAB/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--b ../NIST7086_NIST.vcf \
+-a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+-b ../parabricks/NIST7086_NIST.vcf \
 -v \
 > unique_project.NIST.hc.snps.indels.NIST7086.vcf
 ```
@@ -503,6 +502,43 @@ grep -v "#" unique_project.NIST.hc.snps.indels.NIST7086.vcf | wc -l
 
 ##### Compared with hap.py + RTG tools
 
+- NIST7035
+
+```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/
+mkdir happy_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
+```
+
+```bash
+/store/lkemp/exome_project/benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../parabricks/NIST7035_NIST.vcf \
+-f /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.bed \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_NIST7035_NIST_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
+```
+
+- NIST7086
+
+```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/
+mkdir happy_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
+```
+
+```bash
+/store/lkemp/exome_project/benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+../parabricks/NIST7086_NIST.vcf \
+-f /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.bed \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_NIST7086_NIST_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
+```
 
 ### bench 1.1
 
@@ -621,12 +657,6 @@ cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 --engine=vcfeval \
 --engine-vcfeval-template /store/lkemp/exome_project/benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```
-
-#### parabricks germline pipeline
-
-##### Compared with bedtools intersect
-
-##### Compared with hap.py + RTG tools
 
 ## Results of benchmarking
 

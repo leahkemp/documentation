@@ -1,34 +1,41 @@
 # Benchmarking genomic pipelines - resources
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/25 16:39:30
+Last modified: 2020/05/26 11:55:17
 
 - **Aim:** Undertake benchmarking of genomics pipelines to optimise their resource use.
-- **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html)
-- **OS:** Ubuntu 16.04 (Wintermute - research server)
+- **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [samtools 1.9](http://www.htslib.org/), [bedtools 2.25](https://bedtools.readthedocs.io/en/latest/)
+- **OS:** Ubuntu 16.04 (Wintermute - research server) (*add info about production OS*)
 
-The idea is to run these pipelines against a reduced Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) and evaluate the real time and user time for each step in the pipelines.
+The idea is to run these pipelines ([human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)) against a reduced Genome In A Bottle (GIAB) sample [NIST7035](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) dataset and evaluate the real time and user time for each step in the pipelines. Once the resources are optimised for running these pipelines on Wintermute (research server), resource benchmarking will be run again on production to fine tune the optimal resource use for these pipelines running on this machine.
 
 ## Table of contents
 
 - [Benchmarking genomic pipelines - resources](#benchmarking-genomic-pipelines---resources)
   - [Table of contents](#table-of-contents)
   - [Create a test dataset](#create-a-test-dataset)
-    - [Download and prepare the test WES data](#download-and-prepare-the-test-wes-data)
+    - [Download and prepare the test WES data (NIST7035)](#download-and-prepare-the-test-wes-data-nist7035)
     - [Reduce the test dataset size for benchmarking](#reduce-the-test-dataset-size-for-benchmarking)
-      - [Run the two samples (NIST7035 and NIST7086) through the bwa_map step of human_genomics_pipeline](#run-the-two-samples-nist7035-and-nist7086-through-the-bwamap-step-of-humangenomicspipeline)
+      - [Map NIST7035 to the reference genome (ORAC)](#map-nist7035-to-the-reference-genome-orac)
+      - [Extract chr1 from the mapped bam files (retain paired reads) (wintermute)](#extract-chr1-from-the-mapped-bam-files-retain-paired-reads-wintermute)
+      - [Extract the paired fastq reads (R1 and R2) from the raw fastq reads that map to chr1 (wintermute)](#extract-the-paired-fastq-reads-r1-and-r2-from-the-raw-fastq-reads-that-map-to-chr1-wintermute)
   - [Testing](#testing)
     - [Setup](#setup)
     - [Wintermute](#wintermute)
       - [human_genomics_pipeline](#humangenomicspipeline)
-    - [vcf_annotation_pipeline](#vcfannotationpipeline)
+        - [Single sample](#single-sample)
+        - [Cohort sample](#cohort-sample)
+      - [vcf_annotation_pipeline](#vcfannotationpipeline)
+        - [Single sample](#single-sample-1)
+        - [Cohort sample](#cohort-sample-1)
+        - [Both single and cohort samples](#both-single-and-cohort-samples)
     - [Production](#production)
       - [human_genomics_pipeline](#humangenomicspipeline-1)
-    - [vcf_annotation_pipeline](#vcfannotationpipeline-1)
+      - [vcf_annotation_pipeline](#vcfannotationpipeline-1)
 
 ## Create a test dataset
 
-### Download and prepare the test WES data
+### Download and prepare the test WES data (NIST7035)
 
 Download
 
@@ -39,10 +46,6 @@ wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA
 wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
 wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L002_R1_001.fastq.gz
 wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L002_R2_001.fastq.gz
-wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7086_CGTACTAG_L001_R1_001.fastq.gz
-wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7086_CGTACTAG_L001_R2_001.fastq.gz
-wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7086_CGTACTAG_L002_R1_001.fastq.gz
-wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7086_CGTACTAG_L002_R2_001.fastq.gz
 ```
 
 Note: there can be some issues with correctly downloading the fastq files (likely due to the ESR proxy). The below can be run to check the integrity of the gunzip files, no error suggests the archive is OK.
@@ -58,96 +61,83 @@ done
 Collapse pooled runs
 
 ```bash
-# NIST7035
 cat NIST7035*_R1_001.fastq.gz > NIST7035_NIST_R1.fastq.gz
 cat NIST7035*_R2_001.fastq.gz > NIST7035_NIST_R2.fastq.gz
-
-# NIST7086
-cat NIST7086*_R1_001.fastq.gz > NIST7086_NIST_R1.fastq.gz
-cat NIST7086*_R2_001.fastq.gz > NIST7086_NIST_R2.fastq.gz
 ```
 
 ### Reduce the test dataset size for benchmarking
 
-#### Run the two samples (NIST7035 and NIST7086) through the bwa_map step of human_genomics_pipeline
+I will extract the fastq reads that map to chr1 so as to reduce the size of the dataset (width) without reducing the depth of reads that could influence the performance of the downstream rules (which could skew the resource benchmarking results for these steps)
 
-Create a local copy of NIST7035 and NIST7086 fastq files to run through pipeline (and manipulate later)
+#### Map NIST7035 to the reference genome (ORAC)
 
-```bash
-cd /store/lkemp/exome_project/resource_benchmarking/
-
-mkdir fastq
-cd fastq/
-
-cp /store/lkemp/publicData/exomes/NA12878_exome/NIST7035_NIST_R1.fastq.gz .
-cp /store/lkemp/publicData/exomes/NA12878_exome/NIST7035_NIST_R2.fastq.gz .
-cp /store/lkemp/publicData/exomes/NA12878_exome/NIST7086_NIST_R1.fastq.gz .
-cp /store/lkemp/publicData/exomes/NA12878_exome/NIST7086_NIST_R2.fastq.gz .
-```
-
-Clone [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline)
+To increase speed, I will use the bwa-mem step of parabricks on orac
 
 ```bash
-cd ..
-git clone git@github.com:ESR-NZ/human_genomics_pipeline.git
-cd human_genomics_pipeline
+pbrun fq2bam \
+--ref /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GRCh37/ucsc.hg19.fasta \
+--in-fq /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GIAB/NA12878_exome/NIST7035_NIST_R1.fastq.gz /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GIAB/NA12878_exome/NIST7035_NIST_R2.fastq.gz \
+--out-bam /home/lkemp/resource_benchmarking/NIST7035_NIST.bam
 ```
 
-Create and activate a conda environment with pytho, snakemake and samtools installed
+#### Extract chr1 from the mapped bam files (retain paired reads) (wintermute)
+
+See [this documentation](https://gist.github.com/darencard/72ddd9e6c08aaff5ff64ca512a04a6dd))
 
 ```bash
-conda create -n pipeline_env python=3.7
-conda activate pipeline_env
-conda install -c bioconda snakemake=5.14.0
-conda install -c bioconda samtools=1.10
+cd /home/lkemp/resource_benchmarking/
+
+samtools view -u -f 1 -F 12 NIST7035_NIST.bam chr1 -b > NIST7035_NIST_chr1.bam
 ```
 
-Run the pipeline up to and including the gatk_apply_bqsr rule to get a full bam file mapped to the reference genome
+#### Extract the paired fastq reads (R1 and R2) from the raw fastq reads that map to chr1 (wintermute)
+
+Extract:
+
+- reads that mapped properly as pairs
+- reads that didn’t map properly as pairs (both didn’t map, or one didn’t map)
 
 ```bash
-# Dry run
-snakemake -n -j 24 --use-conda --configfile config/resource_benchmarking.yml --until gatk_apply_bqsr
-
-# Full run
-snakemake -j 24 --use-conda --configfile config/resource_benchmarking.yml --until gatk_apply_bqsr
+# R1 unmapped, R2 mapped
+samtools view -u -f 4 -F 264 NIST7035_NIST_chr1.bam > NIST7035_NIST_chr1_unmap_map.bam
+# R1 mapped, R2 unmapped
+samtools view -u -f 8 -F 260 NIST7035_NIST_chr1.bam > NIST7035_NIST_chr1_map_unmap.bam
+# R1 & R2 unmapped
+samtools view -u -f 12 -F 256 NIST7035_NIST_chr1.bam > NIST7035_NIST_chr1_unmap_unmap.bam
 ```
 
-Extract chr1 from the bam files (retain paired reads)
+Merge the three files that contain at least one unmapped pair
 
 ```bash
-cd /store/lkemp/exome_project/resource_benchmarking/human_genomics_pipeline/mapped/
-
-# NIST7035
-samtools view NIST7035_NIST_bwa_recal.bam chr1 -b > NIST7035_NIST_bwa_recal_chr1.bam
-
-# NIST7086
-samtools view NIST7086_NIST_bwa_recal.bam chr1 -b > NIST7086_NIST_bwa_recal_chr1.bam
+samtools merge -u NIST7035_NIST_chr1_unmapped.bam NIST7035_NIST_chr1_unmap_map.bam NIST7035_NIST_chr1_map_unmap.bam NIST7035_NIST_chr1_unmap_unmap.bam
 ```
 
-Extract the fastq reads (R1 and R2) from the raw fastq files that correspond to chr1 (the reads that map to chr1 in the bam files)
+Sort
 
 ```bash
-# NIST7035
-samtools bam2fq NIST7035_NIST_bwa_recal_chr1.bam > NIST7035_NIST_bwa_recal_chr1.fastq
-cat NIST7035_NIST_bwa_recal_chr1.fastq | grep '^@.*/1$' -A 3 --no-group-separator > NIST7035_NIST_chr1_R1.fastq
-cat NIST7035_NIST_bwa_recal_chr1.fastq | grep '^@.*/2$' -A 3 --no-group-separator > NIST7035_NIST_chr1_R2.fastq
-
-# NIST7086
-samtools bam2fq NIST7086_NIST_bwa_recal_chr1.bam > NIST7086_NIST_bwa_recal_chr1.fastq
-cat NIST7086_NIST_bwa_recal_chr1.fastq | grep '^@.*/1$' -A 3 --no-group-separator > NIST7086_NIST_chr1_R1.fastq
-cat NIST7086_NIST_bwa_recal_chr1.fastq | grep '^@.*/2$' -A 3 --no-group-separator > NIST7086_NIST_chr1_R2.fastq
+samtools sort -n NIST7035_NIST_chr1_map_map.bam NIST7035_NIST_chr1_mapped.sort
+samtools sort -n NIST7035_NIST_chr1_unmapped.bam NIST7035_NIST_chr1_unmapped.sort
 ```
 
-Zip fastq files
+Check the files
 
 ```bash
-bgzip NIST7035_NIST_chr1_R1.fastq
-bgzip NIST7035_NIST_chr1_R2.fastq
-bgzip NIST7086_NIST_chr1_R1.fastq
-bgzip NIST7086_NIST_chr1_R2.fastq
+samtools flagstat NIST7035_NIST_chr1.sorted.md.bam
 ```
 
-This will reduce the size of the dataset (width) without reducing the depth of reads that could influence the performance of the downstream rules (which could skew the resource benchmarking results for these steps).
+Extract the FASTQ reads into two paired read files
+
+```bash
+bamToFastq -i NIST7035_NIST_chr1_mapped.sort.bam -fq NIST7035_NIST_chr1_mapped.1.fastq -fq2 NIST7035_NIST_chr1_mapped.2.fastq
+bamToFastq -i NIST7035_NIST_chr1_unmapped.sort.bam -fq NIST7035_NIST_chr1_unmapped.1.fastq -fq2 NIST7035_NIST_chr1_unmapped.2.fastq
+```
+
+Combine both the first and paired reads together from the mapped and unmapped files
+
+```bash
+cat NIST7035_NIST_chr1_mapped.1.fastq NIST7035_NIST_chr1_unmapped.1.fastq > NIST7035_NIST_chr1.1.fastq
+cat NIST7035_NIST_chr1_mapped.2.fastq NIST7035_NIST_chr1_unmapped.2.fastq > NIST7035_NIST_chr1.2.fastq
+```
 
 ## Testing
 
@@ -310,20 +300,68 @@ time snakemake -j 16 --use-conda --configfile config/resource_benchmarking.yml -
 time snakemake -j 32 --use-conda --configfile config/resource_benchmarking.yml --until gatk_base_recalibrator
 ```
 
-- gatk_apply_qgsr
+- gatk_apply_bqsr
+
+```bash
+time snakemake -j 1 --use-conda --configfile config/resource_benchmarking.yml --until gatk_apply_bqsr
+time snakemake -j 2 --use-conda --configfile config/resource_benchmarking.yml --until gatk_apply_bqsr
+time snakemake -j 4 --use-conda --configfile config/resource_benchmarking.yml --until gatk_apply_bqsr
+time snakemake -j 8 --use-conda --configfile config/resource_benchmarking.yml --until gatk_apply_bqsr
+time snakemake -j 16 --use-conda --configfile config/resource_benchmarking.yml --until gatk_apply_bqsr
+time snakemake -j 32 --use-conda --configfile config/resource_benchmarking.yml --until gatk_apply_bqsr
+```
+
+##### Single sample
 
 - gatk_haplotype_caller_single
 
 ```bash
-time snakemake -j 24 --use-conda --configfile config/resource_benchmarking.yml --until bwa_map
+time snakemake -j 1 --use-conda --configfile config/resource_benchmarking.yml --until gatk_haplotype_caller_single
+time snakemake -j 2 --use-conda --configfile config/resource_benchmarking.yml --until gatk_haplotype_caller_single
+time snakemake -j 4 --use-conda --configfile config/resource_benchmarking.yml --until gatk_haplotype_caller_single
+time snakemake -j 8 --use-conda --configfile config/resource_benchmarking.yml --until gatk_haplotype_caller_single
+time snakemake -j 16 --use-conda --configfile config/resource_benchmarking.yml --until gatk_haplotype_caller_single
+time snakemake -j 32 --use-conda --configfile config/resource_benchmarking.yml --until gatk_haplotype_caller_single
 ```
 
-### vcf_annotation_pipeline
+##### Cohort sample
+
+- gatk_haplotype_caller_gvcf
+
+- gatk_combine_gvcf
+
+- gatk_genotype_gvcf
+
+#### vcf_annotation_pipeline
 
 resource_benchmarking_wintermute branch?
+
+##### Single sample
+
+- gatk_cnn_score_variants
+
+- gatk_filter_variant_tranches
+
+##### Cohort sample
+
+- gatk_variant_recalibrator_indel
+
+- gatk_variant_recalibrator_snp
+
+- gatk_vqsr_indel
+
+- gatk_vqsr_snp
+
+##### Both single and cohort samples
+
+- snpsift_dbnsfp
+
+- vep
+
+- genmod_cadd
 
 ### Production
 
 #### human_genomics_pipeline
 
-### vcf_annotation_pipeline
+#### vcf_annotation_pipeline
