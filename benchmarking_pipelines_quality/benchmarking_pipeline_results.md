@@ -30,6 +30,10 @@
     - [Results](#results-3)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-2)
         - [Compared with bedops intersect](#compared-with-bedops-intersect-4)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-4)
+      - [parabricks germline pipeline?](#parabricks-germline-pipeline-1)
+        - [Compared with bedops intersect](#compared-with-bedops-intersect-5)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-5)
 
 ## Known vcf
 
@@ -92,7 +96,7 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/intra_truth_c
 
 ### Run parameters/settings
 
-- **Aim:** Benchmarking pipelines against against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (both NIST7035 and NIST7086)
+- **Aim:** Benchmarking pipelines against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (both NIST7035 and NIST7086) using the same settings that were used to create the truth vcf
 
 - **Pipelines:**
   - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation) an
@@ -116,10 +120,12 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/intra_truth_c
   - No padding
   - No intervals
   - 2D model with pre-trained architecture (for rule gatk CNNScoreVariants)
+  - SNP tranches: 99.95 (for rule gatk4_FilterVariantTranches)
+  - Indel tranches: 99.40 (for rule gatk4_FilterVariantTranches)
 
 *Note. dbsnp_137.hg19.vcf doesn't appear to be available anymore, therefore I used the closest version available*
 
-(see run settings/output for [human_genomics_pipeline - bench1.0](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.0) and [vcf_annotation_pipeline - bench1.0](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.0) for more detail)
+(see run settings/output for [human_genomics_pipeline - bench1.0](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.0), [vcf_annotation_pipeline - bench1.0](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.0) and [parabricks - bench1.0]() for more detail)
 
 ### Results
 
@@ -209,7 +215,7 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/ (wi
 
 ### Run parameters/settings
 
-- **Aim:** Compare the results of variants filtered using the 1D vs 2D model with pre-trained architecture (for rule gatk CNNScoreVariants)
+- **Aim:** See if the quality of variants (tp, fp, fn) are different when variants are filtered using the 1D model with pre-trained architecture (for rule gatk CNNScoreVariants) compared to the 2D model (see description of these models [here](https://gatk.broadinstitute.org/hc/en-us/articles/360037226672-CNNScoreVariants))
 
 - **Pipelines:**
   - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation)
@@ -231,11 +237,13 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/ (wi
 - **Other settings:**
   - No padding
   - No intervals
-  - 1D model with pre-trained architecture (for rule gatk CNNScoreVariants)
+  - :star: 1D model with pre-trained architecture (for rule gatk CNNScoreVariants) :star:
+  - SNP tranches: 99.95 (for rule gatk4_FilterVariantTranches)
+  - Indel tranches: 99.40 (for rule gatk4_FilterVariantTranches)
 
-*Note. dbsnp_137.hg19.vcf doesn't appear to be available anymore, therefore I used the closest version available*
+*Note. because the settings in the first pipeline (human_genomics_pipeline) was not changed in this bench1.0 (just changes to settings in vcf_annotation_pipeline), I used the human_genomics_pipeline output from bench1.0*
 
-(see run settings/output for [human_genomics_pipeline - bench1.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.0) and [vcf_annotation_pipeline - bench1.1](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.0) for more detail)
+(see run settings/output for [human_genomics_pipeline - bench1.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.1) and [vcf_annotation_pipeline - bench1.1](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.1) for more detail)
 
 ### Results
 
@@ -285,7 +293,7 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wi
 
 ### Run parameters/settings
 
-- **Aim:** Improve the accuracy of variant filtering
+- **Aim:** Improve the accuracy of variant filtering in the gatk4_FilterVariantTranches rule (see description of this step [here](https://gatk.broadinstitute.org/hc/en-us/articles/360037227632-FilterVariantTranches)). I'll use a number of difference tranches to get a gauge of what kind of sensitivity will be needed for the filtering of snps and indels.
 
 - **Pipelines:**
   - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation) an
@@ -309,15 +317,41 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wi
   - No padding
   - No intervals
   - 2D model with pre-trained architecture (for rule gatk CNNScoreVariants)
+  - :star: SNP tranches: 80.00 81.00 82.00 83.00 84.00 85.00 86.00 87.00 88.00 89.00 90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00 100.00 (for rule gatk4_FilterVariantTranches) :star:
+  - :star: Indel tranches: 80.00 81.00 82.00 83.00 84.00 85.00 86.00 87.00 88.00 89.00 90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00 100.00 (for rule gatk4_FilterVariantTranches) :star:
 
-*Note. dbsnp_137.hg19.vcf doesn't appear to be available anymore, therefore I used the closest version available*
+*Note. because the settings in the first pipeline (human_genomics_pipeline) was not changed in this bench1.0 (just changes to settings in vcf_annotation_pipeline), I used the human_genomics_pipeline output from bench1.0*
 
-(see run settings/output for [human_genomics_pipeline - bench1.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.0) and [vcf_annotation_pipeline - bench1.1](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.0) for more detail)
+(see run settings/output for [human_genomics_pipeline - bench1.2](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.2), [vcf_annotation_pipeline - bench1.2](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.2) and [parabricks - bench1.2]() for more detail)
 
 ### Results
 
-Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wintermute)
+Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/ (wintermute)
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
 ##### Compared with bedops intersect
+
+- NIST7035
+
+- NIST7086
+
+##### Compared with hap.py + RTG tools
+
+- NIST7035
+
+- NIST7086
+
+#### parabricks germline pipeline?
+
+##### Compared with bedops intersect
+
+- NIST7035
+
+- NIST7086
+
+##### Compared with hap.py + RTG tools
+
+- NIST7035
+
+- NIST7086

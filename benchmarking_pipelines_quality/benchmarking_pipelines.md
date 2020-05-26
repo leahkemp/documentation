@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/26 13:16:53
+Last modified: 2020/05/27 10:31:27
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use. 
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -39,6 +39,10 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-1)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-3)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-2)
+    - [bench 1.2](#bench-12)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-2)
+        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-4)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-3)
   - [Results of benchmarking](#results-of-benchmarking)
 
 ## Setup
@@ -643,6 +647,134 @@ cd happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 
 ```bash
 cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/
+mkdir happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+```
+
+```bash
+/store/lkemp/exome_project/benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.bed \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
+```
+
+### bench 1.2
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline
+
+Extract snps and indels based on filter tranche levels in vcf pipeline output (stored in the 'FILTER' column) so they can be compared separately
+
+```bash
+# PASS ()
+```
+
+```bash
+
+```
+
+##### Compared with bedtools intersect
+
+- NIST7035
+
+```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/
+mkdir intersect_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+cd intersect_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+```
+
+```bash
+# Common
+bedtools intersect \
+-a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+-b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+> common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf
+
+# Unique truth
+bedtools intersect \
+-a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+-b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+-v \
+> unique_NIST7035_NIST_filtered.vcf
+
+# Unique query
+bedtools intersect \
+-a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+-b ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+-v \
+> unique_project.NIST.hc.snps.indels.NIST7035.vcf
+```
+
+```bash
+grep -v "#" common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf | wc -l
+grep -v "#" unique_NIST7035_NIST_filtered.vcf | wc -l
+grep -v "#" unique_project.NIST.hc.snps.indels.NIST7035.vcf | wc -l
+```
+
+- NIST7086
+
+```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/
+mkdir intersect_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+cd intersect_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+```
+
+```bash
+# Common
+bedtools intersect \
+-a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
+-b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+> common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf
+
+# Unique truth
+bedtools intersect \
+-a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
+-b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+-v \
+> unique_NIST7086_NIST_filtered.vcf
+
+# Unique query
+bedtools intersect \
+-a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+-b ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
+-v \
+> unique_project.NIST.hc.snps.indels.NIST7086.vcf
+```
+
+```bash
+grep -v "#" common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf | wc -l
+grep -v "#" unique_NIST7086_NIST_filtered.vcf | wc -l
+grep -v "#" unique_project.NIST.hc.snps.indels.NIST7086.vcf | wc -l
+```
+
+##### Compared with hap.py + RTG tools
+
+- NIST7035
+
+```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/
+mkdir happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+```
+
+```bash
+/store/lkemp/exome_project/benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.bed \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
+```
+
+- NIST7086
+
+```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/
 mkdir happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 ```

@@ -1,10 +1,10 @@
 # Benchmarking genomic pipelines - resources
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/26 11:55:17
+Last modified: 2020/05/26 17:17:55
 
 - **Aim:** Undertake benchmarking of genomics pipelines to optimise their resource use.
-- **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [samtools 1.9](http://www.htslib.org/), [bedtools 2.25](https://bedtools.readthedocs.io/en/latest/)
+- **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [samtools 1.9](http://www.htslib.org/), [bedtools 2.25](https://bedtools.readthedocs.io/en/latest/), [bgzip 1.2.1](http://www.htslib.org/doc/bgzip.html)
 - **OS:** Ubuntu 16.04 (Wintermute - research server) (*add info about production OS*)
 
 The idea is to run these pipelines ([human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)) against a reduced Genome In A Bottle (GIAB) sample [NIST7035](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) dataset and evaluate the real time and user time for each step in the pipelines. Once the resources are optimised for running these pipelines on Wintermute (research server), resource benchmarking will be run again on production to fine tune the optimal resource use for these pipelines running on this machine.
@@ -82,12 +82,19 @@ pbrun fq2bam \
 
 #### Extract chr1 from the mapped bam files (retain paired reads) (wintermute)
 
+Extract chromosome one
+
+```bash
+cd /store/lkemp/exome_project/resource_benchmarking/
+samtools view NIST7035_NIST.bam chr1 -b > NIST7035_NIST_chr1.bam
+```
+
+Extract the reads for which both paired reads were mapped
+
 See [this documentation](https://gist.github.com/darencard/72ddd9e6c08aaff5ff64ca512a04a6dd))
 
 ```bash
-cd /home/lkemp/resource_benchmarking/
-
-samtools view -u -f 1 -F 12 NIST7035_NIST.bam chr1 -b > NIST7035_NIST_chr1.bam
+samtools view -u -f 1 -F 12 NIST7035_NIST_chr1.bam > NIST7035_NIST_chr1_map_map.bam
 ```
 
 #### Extract the paired fastq reads (R1 and R2) from the raw fastq reads that map to chr1 (wintermute)
@@ -115,28 +122,68 @@ samtools merge -u NIST7035_NIST_chr1_unmapped.bam NIST7035_NIST_chr1_unmap_map.b
 Sort
 
 ```bash
-samtools sort -n NIST7035_NIST_chr1_map_map.bam NIST7035_NIST_chr1_mapped.sort
-samtools sort -n NIST7035_NIST_chr1_unmapped.bam NIST7035_NIST_chr1_unmapped.sort
+samtools sort -n NIST7035_NIST_chr1_map_map.bam -o NIST7035_NIST_chr1_mapped.sort
+samtools sort -n NIST7035_NIST_chr1_unmapped.bam -o NIST7035_NIST_chr1_unmapped.sort
 ```
 
-Check the files
+Check that the number of unmapped and mapped reads total the number of reads in the original bam file (for chr1)
 
 ```bash
-samtools flagstat NIST7035_NIST_chr1.sorted.md.bam
+# Original file
+samtools flagstat NIST7035_NIST_chr1.bam
 ```
 
-Extract the FASTQ reads into two paired read files
+My output:
 
 ```bash
-bamToFastq -i NIST7035_NIST_chr1_mapped.sort.bam -fq NIST7035_NIST_chr1_mapped.1.fastq -fq2 NIST7035_NIST_chr1_mapped.2.fastq
-bamToFastq -i NIST7035_NIST_chr1_unmapped.sort.bam -fq NIST7035_NIST_chr1_unmapped.1.fastq -fq2 NIST7035_NIST_chr1_unmapped.2.fastq
+8223836 + 0 in total (QC-passed reads + QC-failed reads)
+0 + 0 secondary
+2650 + 0 supplementary
+933687 + 0 duplicates
+8214293 + 0 mapped (99.88% : N/A)
+8221186 + 0 paired in sequencing
+4111231 + 0 read1
+4109955 + 0 read2
+8152956 + 0 properly paired (99.17% : N/A)
+8202100 + 0 with itself and mate mapped
+9543 + 0 singletons (0.12% : N/A)
+8456 + 0 with mate mapped to a different chr
+5219 + 0 with mate mapped to a different chr (mapQ>=5)
+```
+
+```bash
+# Mapped
+samtools view -c NIST7035_NIST_chr1_mapped.sort
+# Unmapped
+samtools view -c NIST7035_NIST_chr1_unmapped.sort
+```
+
+My output:
+
+```bash
+8204729
+19107
+```
+
+Extract the mapped FASTQ reads into two paired read files
+
+```bash
+bamToFastq -i NIST7035_NIST_chr1_mapped.sort -fq NIST7035_NIST_chr1_mapped.1.fastq -fq2 NIST7035_NIST_chr1_mapped.2.fastq
+bamToFastq -i NIST7035_NIST_chr1_unmapped.sort -fq NIST7035_NIST_chr1_unmapped.1.fastq -fq2 NIST7035_NIST_chr1_unmapped.2.fastq
 ```
 
 Combine both the first and paired reads together from the mapped and unmapped files
 
 ```bash
-cat NIST7035_NIST_chr1_mapped.1.fastq NIST7035_NIST_chr1_unmapped.1.fastq > NIST7035_NIST_chr1.1.fastq
-cat NIST7035_NIST_chr1_mapped.2.fastq NIST7035_NIST_chr1_unmapped.2.fastq > NIST7035_NIST_chr1.2.fastq
+cat NIST7035_NIST_chr1_mapped.1.fastq NIST7035_NIST_chr1_unmapped.1.fastq > NIST7035_NIST_chr1_R1.fastq
+cat NIST7035_NIST_chr1_mapped.2.fastq NIST7035_NIST_chr1_unmapped.2.fastq > NIST7035_NIST_chr1_R2.fastq
+```
+
+Bgzip
+
+```bash
+bgzip NIST7035_NIST_chr1_R1.fastq
+bgzip NIST7035_NIST_chr1_R2.fastq
 ```
 
 ## Testing
@@ -150,20 +197,20 @@ Approach:
 
 ### Setup
 
-Replace the full fastq input file with the reduced ones
+Copy the reduced dataset (fastq files for chr1) to where we will do the resource benchmarking
 
 ```bash
-cd /store/lkemp/exome_project/resource_benchmarking/fastq/
-rm -r NIST70*
-cp ../human_genomics_pipeline/mapped/NIST7035_NIST_chr1* .
-cp ../human_genomics_pipeline/mapped/NIST7086_NIST_chr1* .
+mkdir fastq
+cd fastq/
+
+cp ../NIST7035_NIST_chr1_R1.fastq.gz .
+cp ../NIST7035_NIST_chr1_R2.fastq.gz .
 ```
 
-Clone a fresh pipeline and checkout the branch for resource benchmarking on Wintermute
+Clone pipeline and checkout the branch for resource benchmarking on Wintermute
 
 ```bash
-cd ..
-rm -r human_genomic_pipeline
+cd /store/lkemp/exome_project/resource_benchmarking/
 git clone git@github.com:ESR-NZ/human_genomics_pipeline.git
 cd human_genomics_pipeline
 git checkout resource_benchmarking_wintermute
