@@ -317,8 +317,8 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wi
   - No padding
   - No intervals
   - 2D model with pre-trained architecture (for rule gatk CNNScoreVariants)
-  - :star: SNP tranches: 80.00 81.00 82.00 83.00 84.00 85.00 86.00 87.00 88.00 89.00 90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00 100.00 (for rule gatk4_FilterVariantTranches) :star:
-  - :star: Indel tranches: 80.00 81.00 82.00 83.00 84.00 85.00 86.00 87.00 88.00 89.00 90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00 100.00 (for rule gatk4_FilterVariantTranches) :star:
+  - :star: SNP tranches: 80.00 81.00 82.00 83.00 84.00 85.00 86.00 87.00 88.00 89.00 90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00 (for rule gatk4_FilterVariantTranches) :star:
+  - :star: Indel tranches: 80.00 81.00 82.00 83.00 84.00 85.00 86.00 87.00 88.00 89.00 90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00 (for rule gatk4_FilterVariantTranches) :star:
 
 *Note. because the settings in the first pipeline (human_genomics_pipeline) was not changed in this bench1.0 (just changes to settings in vcf_annotation_pipeline), I used the human_genomics_pipeline output from bench1.0*
 
