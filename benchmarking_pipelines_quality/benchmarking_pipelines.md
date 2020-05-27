@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/27 10:31:27
+Last modified: 2020/05/27 17:04:49
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use. 
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -41,6 +41,8 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-2)
     - [bench 1.2](#bench-12)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-2)
+        - [NIST7035](#nist7035)
+        - [NIST7086](#nist7086)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-4)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-3)
   - [Results of benchmarking](#results-of-benchmarking)
@@ -86,6 +88,7 @@ conda activate benchmarking_env
 conda install -c bioconda bedtools=2.29.2
 conda install -c bioconda bcftools=1.10.2
 conda install -c bioconda bedops=2.4.39
+conda install -c bioconda gatk=3.8
 ```
 
 ### Download and prepare data
@@ -210,6 +213,18 @@ tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
 
 ```bash
 cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/
+# Pipeline output vcf (NIST7035)
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
+# Pipeline output vcf (NIST7086)
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
+```
+
+- bench1.2
+
+```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/
 # Pipeline output vcf (NIST7035)
 bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
 tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
@@ -666,14 +681,201 @@ cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-Extract snps and indels based on filter tranche levels in vcf pipeline output (stored in the 'FILTER' column) so they can be compared separately
+Extract snps and indels based on filter tranche levels in vcf pipeline output (stored in the 'FILTER' column) so they can be compared separately (see [here](https://gatkforums.broadinstitute.org/gatk/discussion/1255/using-jexl-to-apply-hard-filters-or-select-variants-based-on-annotation-values) and [here](https://gatkforums.broadinstitute.org/gatk/discussion/12406/selectvariants-from-filter-column-gatk4) for info on passing selection conditions to gatk SelectVariants)
+
+##### NIST7035
+
+- SNPS
 
 ```bash
-# PASS ()
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/vcf_annotation_pipeline/filtered/
+
+# Extract all snps
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered.vcf \
+--select-type-to-include SNP \
+-O NIST7035_NIST_filtered_SNP.vcf
+
+# Extract all PASS
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered_SNP.vcf \
+-select "vc.isNotFiltered()" \
+-O NIST7035_NIST_filtered_SNP_PASS.vcf
+
+# Extract all FILTERED
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered_SNP.vcf \
+-select "vc.isFiltered()" \
+-O NIST7035_NIST_filtered_SNP_FILTERED.vcf
+
+# Extract for each tranche
+for i in 'CNN_2D_SNP_Tranche_99.00_100.00' 'CNN_2D_SNP_Tranche_98.00_99.00' 'CNN_2D_SNP_Tranche_97.00_98.00' 'CNN_2D_SNP_Tranche_96.00_97.00' 'CNN_2D_SNP_Tranche_95.00_96.00' 'CNN_2D_SNP_Tranche_94.00_95.00' 'CNN_2D_SNP_Tranche_93.00_94.00' 'CNN_2D_SNP_Tranche_92.00_93.00' 'CNN_2D_SNP_Tranche_91.00_92.00' 'CNN_2D_SNP_Tranche_90.00_91.00' 'CNN_2D_SNP_Tranche_89.00_90.00' 'CNN_2D_SNP_Tranche_88.00_89.00' 'CNN_2D_SNP_Tranche_87.00_88.00' 'CNN_2D_SNP_Tranche_86.00_87.00' 'CNN_2D_SNP_Tranche_85.00_86.00' 'CNN_2D_SNP_Tranche_84.00_85.00' 'CNN_2D_SNP_Tranche_83.00_84.00' 'CNN_2D_SNP_Tranche_82.00_83.00' 'CNN_2D_SNP_Tranche_81.00_82.00' 'CNN_2D_SNP_Tranche_80.00_81.00'
+do gatk SelectVariants \
+  -R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+  -V NIST7035_NIST_filtered.vcf \
+  --select "vc.getFilters().contains('$i')" \
+  -O NIST7035_NIST_filtered_$i.vcf
+done
+
+# Get number of variants in each tranche
+for i in 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_99.00_100.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_98.00_99.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_97.00_98.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_96.00_97.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_95.00_96.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_94.00_95.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_93.00_94.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_92.00_93.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_91.00_92.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_90.00_91.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_89.00_90.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_88.00_89.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_87.00_88.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_86.00_87.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_85.00_86.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_84.00_85.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_83.00_84.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_82.00_83.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_81.00_82.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_SNP_Tranche_80.00_81.00.vcf'
+do cat $i | grep -v '##' | wc -l
+done
 ```
 
-```bash
+- INDELS
 
+```bash
+# Extract all indels
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered.vcf \
+--select-type-to-include INDEL \
+-O NIST7035_NIST_filtered_INDEL.vcf
+
+# Extract all PASS
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered_INDEL.vcf \
+-select "vc.isNotFiltered()" \
+-O NIST7035_NIST_filtered_INDEL_PASS.vcf
+
+# Extract all FILTERED
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered_INDEL.vcf \
+-select "vc.isFiltered()" \
+-O NIST7035_NIST_filtered_INDEL_FILTERED.vcf
+
+# Extract for each tranche
+for i in 'CNN_2D_INDEL_Tranche_99.00_100.00' 'CNN_2D_INDEL_Tranche_98.00_99.00' 'CNN_2D_INDEL_Tranche_97.00_98.00' 'CNN_2D_INDEL_Tranche_96.00_97.00' 'CNN_2D_INDEL_Tranche_95.00_96.00' 'CNN_2D_INDEL_Tranche_94.00_95.00' 'CNN_2D_INDEL_Tranche_93.00_94.00' 'CNN_2D_INDEL_Tranche_92.00_93.00' 'CNN_2D_INDEL_Tranche_91.00_92.00' 'CNN_2D_INDEL_Tranche_90.00_91.00' 'CNN_2D_INDEL_Tranche_89.00_90.00' 'CNN_2D_INDEL_Tranche_88.00_89.00' 'CNN_2D_INDEL_Tranche_87.00_88.00' 'CNN_2D_INDEL_Tranche_86.00_87.00' 'CNN_2D_INDEL_Tranche_85.00_86.00' 'CNN_2D_INDEL_Tranche_84.00_85.00' 'CNN_2D_INDEL_Tranche_83.00_84.00' 'CNN_2D_INDEL_Tranche_82.00_83.00' 'CNN_2D_INDEL_Tranche_81.00_82.00' 'CNN_2D_INDEL_Tranche_80.00_81.00'
+do gatk SelectVariants \
+  -R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+  -V NIST7035_NIST_filtered.vcf \
+  --select "vc.getFilters().contains('$i')" \
+  -O NIST7035_NIST_filtered_$i.vcf
+done
+
+# Get number of variants in each tranche
+for i in 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_99.00_100.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_98.00_99.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_97.00_98.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_96.00_97.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_95.00_96.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_94.00_95.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_93.00_94.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_92.00_93.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_91.00_92.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_90.00_91.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_89.00_90.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_88.00_89.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_87.00_88.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_86.00_87.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_85.00_86.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_84.00_85.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_83.00_84.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_82.00_83.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_81.00_82.00.vcf' 'NIST7035_NIST_filtered_CNN_2D_INDEL_Tranche_80.00_81.00.vcf'
+do cat $i | grep -v '##' | wc -l
+done
+```
+
+##### NIST7086
+
+- SNPS
+
+```bash
+cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/vcf_annotation_pipeline/filtered/
+
+# Extract all snps
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered.vcf \
+--select-type-to-include SNP \
+-O NIST7086_NIST_filtered_SNP.vcf
+
+# Extract all PASS
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered_SNP.vcf \
+-select "vc.isNotFiltered()" \
+-O NIST7086_NIST_filtered_SNP_PASS.vcf
+
+# Extract all FILTERED
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered_SNP.vcf \
+-select "vc.isFiltered()" \
+-O NIST7086_NIST_filtered_SNP_FILTERED.vcf
+
+# Extract for each tranche
+for i in 'CNN_2D_SNP_Tranche_99.00_100.00' 'CNN_2D_SNP_Tranche_98.00_99.00' 'CNN_2D_SNP_Tranche_97.00_98.00' 'CNN_2D_SNP_Tranche_96.00_97.00' 'CNN_2D_SNP_Tranche_95.00_96.00' 'CNN_2D_SNP_Tranche_94.00_95.00' 'CNN_2D_SNP_Tranche_93.00_94.00' 'CNN_2D_SNP_Tranche_92.00_93.00' 'CNN_2D_SNP_Tranche_91.00_92.00' 'CNN_2D_SNP_Tranche_90.00_91.00' 'CNN_2D_SNP_Tranche_89.00_90.00' 'CNN_2D_SNP_Tranche_88.00_89.00' 'CNN_2D_SNP_Tranche_87.00_88.00' 'CNN_2D_SNP_Tranche_86.00_87.00' 'CNN_2D_SNP_Tranche_85.00_86.00' 'CNN_2D_SNP_Tranche_84.00_85.00' 'CNN_2D_SNP_Tranche_83.00_84.00' 'CNN_2D_SNP_Tranche_82.00_83.00' 'CNN_2D_SNP_Tranche_81.00_82.00' 'CNN_2D_SNP_Tranche_80.00_81.00'
+do gatk SelectVariants \
+  -R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+  -V NIST7086_NIST_filtered.vcf \
+  --select "vc.getFilters().contains('$i')" \
+  -O NIST7086_NIST_filtered_$i.vcf
+done
+
+# Get number of variants in each tranche
+for i in 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_99.00_100.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_98.00_99.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_97.00_98.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_96.00_97.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_95.00_96.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_94.00_95.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_93.00_94.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_92.00_93.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_91.00_92.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_90.00_91.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_89.00_90.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_88.00_89.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_87.00_88.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_86.00_87.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_85.00_86.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_84.00_85.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_83.00_84.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_82.00_83.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_81.00_82.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_SNP_Tranche_80.00_81.00.vcf'
+do cat $i | grep -v '##' | wc -l
+done
+```
+
+- INDELS
+
+```bash
+# Extract all indels
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered.vcf \
+--select-type-to-include INDEL \
+-O NIST7086_NIST_filtered_INDEL.vcf
+
+# Extract all PASS
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered_INDEL.vcf \
+-select "vc.isNotFiltered()" \
+-O NIST7086_NIST_filtered_INDEL_PASS.vcf
+
+# Extract all FILTERED
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered_INDEL.vcf \
+-select "vc.isFiltered()" \
+-O NIST7086_NIST_filtered_INDEL_FILTERED.vcf
+
+# Extract for each tranche
+for i in 'CNN_2D_INDEL_Tranche_99.00_100.00' 'CNN_2D_INDEL_Tranche_98.00_99.00' 'CNN_2D_INDEL_Tranche_97.00_98.00' 'CNN_2D_INDEL_Tranche_96.00_97.00' 'CNN_2D_INDEL_Tranche_95.00_96.00' 'CNN_2D_INDEL_Tranche_94.00_95.00' 'CNN_2D_INDEL_Tranche_93.00_94.00' 'CNN_2D_INDEL_Tranche_92.00_93.00' 'CNN_2D_INDEL_Tranche_91.00_92.00' 'CNN_2D_INDEL_Tranche_90.00_91.00' 'CNN_2D_INDEL_Tranche_89.00_90.00' 'CNN_2D_INDEL_Tranche_88.00_89.00' 'CNN_2D_INDEL_Tranche_87.00_88.00' 'CNN_2D_INDEL_Tranche_86.00_87.00' 'CNN_2D_INDEL_Tranche_85.00_86.00' 'CNN_2D_INDEL_Tranche_84.00_85.00' 'CNN_2D_INDEL_Tranche_83.00_84.00' 'CNN_2D_INDEL_Tranche_82.00_83.00' 'CNN_2D_INDEL_Tranche_81.00_82.00' 'CNN_2D_INDEL_Tranche_80.00_81.00'
+do gatk SelectVariants \
+  -R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+  -V NIST7086_NIST_filtered.vcf \
+  --select "vc.getFilters().contains('$i')" \
+  -O NIST7086_NIST_filtered_$i.vcf
+done
+
+# Get number of variants in each tranche
+for i in 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_99.00_100.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_98.00_99.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_97.00_98.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_96.00_97.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_95.00_96.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_94.00_95.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_93.00_94.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_92.00_93.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_91.00_92.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_90.00_91.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_89.00_90.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_88.00_89.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_87.00_88.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_86.00_87.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_85.00_86.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_84.00_85.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_83.00_84.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_82.00_83.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_81.00_82.00.vcf' 'NIST7086_NIST_filtered_CNN_2D_INDEL_Tranche_80.00_81.00.vcf'
+do cat $i | grep -v '##' | wc -l
+done
+```
+
+This data was then explored in R - see the output on Methead at this directory: /home/lkemp/bench1.2/
+
+From these results, I wanted to filter the data from a tranche of around 82.00. I'll extract variants (snps and indels) that are in a tranche lower than 82.00 or are a pass to compare against the truth vcf
+
+```bash
+# NIST7035
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_81.00_82.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_80.00_81.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_81.00_82.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_80.00_81.00') || vc.isNotFiltered()" \
+-O NIST7035_NIST_filtered_less_than_82.00.vcf
+
+# NIST7086
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_81.00_82.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_80.00_81.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_81.00_82.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_80.00_81.00') || vc.isNotFiltered()" \
+-O NIST7086_NIST_filtered_less_than_82.00.vcf
+```
+
+Bgzip and index
+
+```bash
+# NIST7035
+bgzip NIST7035_NIST_filtered_less_than_82.00.vcf
+tabix NIST7035_NIST_filtered_less_than_82.00.vcf.gz
+# NIST7086
+bgzip NIST7086_NIST_filtered_less_than_82.00.vcf
+tabix NIST7086_NIST_filtered_less_than_82.00.vcf.gz
 ```
 
 ##### Compared with bedtools intersect
@@ -682,35 +884,35 @@ Extract snps and indels based on filter tranche levels in vcf pipeline output (s
 
 ```bash
 cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/
-mkdir intersect_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
-cd intersect_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+mkdir intersect_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
+cd intersect_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
 ```
 
 ```bash
 # Common
 bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+-a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00.vcf.gz \
 -b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
-> common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf
+> common_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035.vcf
 
 # Unique truth
 bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+-a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00.vcf.gz \
 -b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
 -v \
-> unique_NIST7035_NIST_filtered.vcf
+> unique_NIST7035_NIST_filtered_less_than_82.00.vcf
 
 # Unique query
 bedtools intersect \
 -a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--b ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+-b ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00.vcf.gz \
 -v \
 > unique_project.NIST.hc.snps.indels.NIST7035.vcf
 ```
 
 ```bash
-grep -v "#" common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf | wc -l
-grep -v "#" unique_NIST7035_NIST_filtered.vcf | wc -l
+grep -v "#" common_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035.vcf | wc -l
+grep -v "#" unique_NIST7035_NIST_filtered_less_than_82.00.vcf | wc -l
 grep -v "#" unique_project.NIST.hc.snps.indels.NIST7035.vcf | wc -l
 ```
 
@@ -718,36 +920,36 @@ grep -v "#" unique_project.NIST.hc.snps.indels.NIST7035.vcf | wc -l
 
 ```bash
 cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/
-mkdir intersect_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
-cd intersect_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+mkdir intersect_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
+cd intersect_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
 ```
 
 ```bash
 # Common
 bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
+-a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00.vcf.gz \
 -b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
-> common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf
+> common_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086.vcf
 
 # Unique truth
 bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
+-a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00.vcf.gz \
 -b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
 -v \
-> unique_NIST7086_NIST_filtered.vcf
+> unique_NIST7086_NIST_filtered_less_than_82.00.vcf
 
 # Unique query
 bedtools intersect \
 -a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--b ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
+-b ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00.vcf.gz \
 -v \
 > unique_project.NIST.hc.snps.indels.NIST7086.vcf
 ```
 
 ```bash
-grep -v "#" common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf | wc -l
-grep -v "#" unique_NIST7086_NIST_filtered.vcf | wc -l
-grep -v "#" unique_project.NIST.hc.snps.indels.NIST7086.vcf | wc -l
+for i in 'common_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086.vcf' 'unique_NIST7086_NIST_filtered_less_than_82.00.vcf' 'unique_project.NIST.hc.snps.indels.NIST7086.vcf'
+do grep -v "#" $i | wc -l
+done
 ```
 
 ##### Compared with hap.py + RTG tools
@@ -756,17 +958,17 @@ grep -v "#" unique_project.NIST.hc.snps.indels.NIST7086.vcf | wc -l
 
 ```bash
 cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/
-mkdir happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
-cd happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+mkdir happy_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
 ```
 
 ```bash
 /store/lkemp/exome_project/benchmarking/hap.py-install/bin/hap.py \
 /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
-../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00.vcf.gz \
 -f /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.bed \
 -r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--o happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels \
+-o happy_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels \
 --engine=vcfeval \
 --engine-vcfeval-template /store/lkemp/exome_project/benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```
@@ -775,17 +977,17 @@ cd happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 
 ```bash
 cd /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/
-mkdir happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
-cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+mkdir happy_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
 ```
 
 ```bash
 /store/lkemp/exome_project/benchmarking/hap.py-install/bin/hap.py \
 /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
-../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00.vcf.gz \
 -f /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.bed \
 -r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--o happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels \
+-o happy_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels \
 --engine=vcfeval \
 --engine-vcfeval-template /store/lkemp/exome_project/benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```

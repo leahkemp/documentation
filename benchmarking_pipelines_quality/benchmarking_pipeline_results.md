@@ -34,6 +34,9 @@
       - [parabricks germline pipeline?](#parabricks-germline-pipeline-1)
         - [Compared with bedops intersect](#compared-with-bedops-intersect-5)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-5)
+  - [bench1.3](#bench13)
+    - [Run parameters/settings](#run-parameterssettings-4)
+    - [Results](#results-4)
 
 ## Known vcf
 
@@ -296,7 +299,7 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wi
 - **Aim:** Improve the accuracy of variant filtering in the gatk4_FilterVariantTranches rule (see description of this step [here](https://gatk.broadinstitute.org/hc/en-us/articles/360037227632-FilterVariantTranches)). I'll use a number of difference tranches to get a gauge of what kind of sensitivity will be needed for the filtering of snps and indels.
 
 - **Pipelines:**
-  - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation) an
+  - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation)
   - [parabricks germline pipeline](https://www.nvidia.com/en-us/docs/parabricks/germline/)
 
 - **Inputs human_genomics_pipeline:**
@@ -326,7 +329,7 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wi
 
 ### Results
 
-Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/ (wintermute)
+Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/ (wintermute) and /home/lkemp/bench1.2/ (methhead)
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
@@ -334,13 +337,39 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/ (wi
 
 - NIST7035
 
+| file                                                                                     | count   | type                                               |
+|------------------------------------------------------------------------------------------|---------|----------------------------------------------------|
+| common_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035.vcf | 139,328 | Common                                             |
+| unique_NIST7035_NIST_filtered_less_than_82.00.vcf                                        | 172,013 | Unique to NIST7035_NIST_filtered_less_than_82.00   |
+| unique_project.NIST.hc.snps.indels.NIST7035.vcf                                          | 196,693 | Unique to project.NIST.hc.snps.indels.NIST7035.vcf |
+
 - NIST7086
+
+| file                                                                                     | count   | type                                               |
+|------------------------------------------------------------------------------------------|---------|----------------------------------------------------|
+| common_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086.vcf | 140,929 | Common                                             |
+| unique_NIST7086_NIST_filtered_less_than_82.00.vcf                                        | 192,300 | Unique to NIST7086_NIST_filtered_less_than_82.00   |
+| unique_project.NIST.hc.snps.indels.NIST7086.vcf                                          | 176,602 | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
 
 ##### Compared with hap.py + RTG tools
 
 - NIST7035
 
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29470       | 14545    | 14925    | 40762       | 783      | 25280     | 421   | 323   | 0.493553      | 0.949425         | 0.620185       | 0.649478        |                        |                        | 0.935772466               | 0.344969335               |
+| INDEL | PASS   | 29470       | 14138    | 15332    | 39434       | 750      | 24395     | 411   | 307   | 0.479742      | 0.95013          | 0.618629       | 0.637564        |                        |                        | 0.935772466               | 0.339235756               |
+| SNP   | ALL    | 207268      | 123729   | 83539    | 271067      | 422      | 146881    | 315   | 51    | 0.596952      | 0.996602         | 0.541862       | 0.746662        | 2.101415235            | 1.717486092            | 0.702447561               | 0.252478245               |
+| SNP   | PASS   | 207268      | 121830   | 85438    | 261115      | 405      | 138845    | 306   | 50    | 0.58779       | 0.996688         | 0.531739       | 0.739478        | 2.101415235            | 1.763760279            | 0.702447561               | 0.258217343               |
+
 - NIST7086
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29472       | 13502    | 15970    | 40762       | 11934    | 15183     | 1460  | 395   | 0.45813       | 0.533445         | 0.372479       | 0.492927        |                        |                        | 0.961962775               | 0.344969335               |
+| INDEL | PASS   | 29472       | 13139    | 16333    | 39434       | 11598    | 14556     | 1406  | 375   | 0.445813      | 0.533805         | 0.369123       | 0.485857        |                        |                        | 0.961962775               | 0.339235756               |
+| SNP   | ALL    | 207267      | 119356   | 87911    | 271067      | 49435    | 102243    | 4688  | 368   | 0.575856      | 0.70718          | 0.377187       | 0.634797        | 2.101557474            | 1.717486092            | 0.720474925               | 0.252478245               |
+| SNP   | PASS   | 207267      | 117611   | 89656    | 261115      | 48525    | 94946     | 4525  | 357   | 0.567437      | 0.707978         | 0.363618       | 0.629964        | 2.101557474            | 1.763760279            | 0.720474925               | 0.258217343               |
 
 #### parabricks germline pipeline?
 
@@ -355,3 +384,41 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/ (wi
 - NIST7035
 
 - NIST7086
+
+## bench1.3
+
+### Run parameters/settings
+
+- **Aim:** Improve the accuracy of variant filtering in the gatk4_FilterVariantTranches rule (see description of this step [here](https://gatk.broadinstitute.org/hc/en-us/articles/360037227632-FilterVariantTranches)). There are still a number of false positive being called even when the tranches (for both snps and indels) are reduced to from the defaults of around 99.00 to 82.00. I will try another (lower) set of tranches to get a gauge of what kind of sensitivity will be needed for the filtering of snps and indels.
+
+- **Pipelines:**
+  - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation)
+  - [parabricks germline pipeline](https://www.nvidia.com/en-us/docs/parabricks/germline/)
+
+- **Inputs human_genomics_pipeline:**
+  - Reference genome: ucsc.hg19.fasta
+  - dbSNP database: dbsnp_138.hg19.vcf
+
+- **Inputs vcf_annotation_pipeline:**
+  - Reference genome: ucsc.hg19.fasta
+  - dbSNP database: dbsnp_138.hg19.vcf
+  - Hapmap: hapmap_3.3.hg19.sites.vcf.gz
+  - Mills: Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
+  
+- **Inputs for parabricks germline pipeline:**
+  - Reference genome: ucsc.hg19.fasta
+  - dbSNP database: dbsnp_138.hg19.vcf
+
+- **Other settings:**
+  - No padding
+  - No intervals
+  - 2D model with pre-trained architecture (for rule gatk CNNScoreVariants)
+  - :star: SNP tranches: 70.00 71.00 72.00 73.00 74.00 75.00 76.00 77.00 78.00 79.00 80.00 81.00 82.00 (for rule gatk4_FilterVariantTranches) :star:
+  - :star: Indel tranches: 70.00 71.00 72.00 73.00 74.00 75.00 76.00 77.00 78.00 79.00 80.00 81.00 82.00 (for rule gatk4_FilterVariantTranches) :star:
+
+*Note. because the settings in the first pipeline (human_genomics_pipeline) was not changed in this bench1.0 (just changes to settings in vcf_annotation_pipeline), I used the human_genomics_pipeline output from bench1.0*
+
+(see run settings/output for [human_genomics_pipeline - bench1.3](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.3), [vcf_annotation_pipeline - bench1.3](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.3) and [parabricks - bench1.3]() for more detail)
+
+### Results
+
