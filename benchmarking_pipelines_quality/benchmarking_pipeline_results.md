@@ -334,11 +334,13 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wi
 
 Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/ (Wintermute) and /home/lkemp/benchmarking_resources/ (Methead)
 
-Variants from tranche 82.00 or less were extracted for the following comparisons. 'PASS' indicates a variant in a tranche below 80.00.
+Variants from tranche 82.00 or less were extracted for the following comparisons
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
 ##### Compared with bedops intersect
+
+*Note: these comparisons are made with variants that fall within a tranche less than 82.00*
 
 - NIST7035
 
@@ -357,6 +359,8 @@ Variants from tranche 82.00 or less were extracted for the following comparisons
 | unique_project.NIST.hc.snps.indels.NIST7086.vcf                                          | 176,602 | Unique to known vcf                                |
 
 ##### Compared with hap.py + RTG tools
+
+*Note: 'PASS' indicates a variant in a tranche below 80.00 and 'ALL' indicate a variant in a tranche below 82.00*
 
 - NIST7035
 
@@ -429,29 +433,33 @@ Variants from tranche 82.00 or less were extracted for the following comparisons
 
 Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.3/ (Wintermute) and /home/lkemp/benchmarking_resources/ (Methead)
 
-Variants from tranche 82.00 or less were extracted for the following comparisons. 'PASS' indicates a variant in a tranche below 70.00.
+Variants from tranche 82.00 or less, and 70.00 or less were extracted for the following comparisons
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
 ##### Compared with bedops intersect
 
+*Note: these comparisons are made with variants that fall within a tranche less than 70.00*
+
 - NIST7035
 
 | file                                                                                     | count   | type                                               |
 |------------------------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035.vcf | 139,328 | Common                                             |
-| unique_NIST7035_NIST_filtered_less_than_82.00.vcf                                        | 172,013 | Unique to h_g_p + v_a_p output                     |
-| unique_project.NIST.hc.snps.indels.NIST7035.vcf                                          | 196,693 | Unique to known vcf                                |
+| common_NIST7035_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7035.vcf | 127,584 | Common                                             |
+| unique_NIST7035_NIST_filtered_less_than_70.00.vcf                                        | 124,942 | Unique to h_g_p + v_a_p output                     |
+| unique_project.NIST.hc.snps.indels.NIST7035.vcf                                          | 208,425 | Unique to known vcf                                |
 
 - NIST7086
 
 | file                                                                                     | count   | type                                               |
 |------------------------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086.vcf | 140,929 | Common                                             |
-| unique_NIST7086_NIST_filtered_less_than_82.00.vcf                                        | 192,300 | Unique to h_g_p + v_a_p output                     |
-| unique_project.NIST.hc.snps.indels.NIST7086.vcf                                          | 176,602 | Unique to known vcf                                |
+| common_NIST7086_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7086.vcf | 129,870 | Common                                             |
+| unique_NIST7086_NIST_filtered_less_than_70.00.vcf                                        | 141,363 | Unique to h_g_p + v_a_p output                     |
+| unique_project.NIST.hc.snps.indels.NIST7086.vcf                                          | 187,658 | Unique to known vcf                                |
 
 ##### Compared with hap.py + RTG tools
+
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 82.00*
 
 - NIST7035
 
