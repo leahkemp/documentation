@@ -5,7 +5,7 @@
 - [Benchmarking results](#benchmarking-results)
   - [Table of contents](#table-of-contents)
   - [Known vcf](#known-vcf)
-  - [intra_truth_comparison](#intratruthcomparison)
+  - [intra_truth_comparison](#intra_truth_comparison)
     - [Run parameters/settings](#run-parameterssettings)
     - [Results](#results)
         - [Compared with bedops intersect](#compared-with-bedops-intersect)
@@ -13,7 +13,7 @@
   - [bench1.0](#bench10)
     - [Run parameters/settings](#run-parameterssettings-1)
     - [Results](#results-1)
-      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline)
         - [Compared with bedops intersect](#compared-with-bedops-intersect-1)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-1)
       - [parabricks germline pipeline](#parabricks-germline-pipeline)
@@ -22,13 +22,13 @@
   - [bench1.1](#bench11)
     - [Run parameters/settings](#run-parameterssettings-2)
     - [Results](#results-2)
-      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-1)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-1)
         - [Compared with bedops intersect](#compared-with-bedops-intersect-3)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-3)
   - [bench1.2](#bench12)
     - [Run parameters/settings](#run-parameterssettings-3)
     - [Results](#results-3)
-      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#humangenomicspipeline--minimal-vcfannotationpipeline-2)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-2)
         - [Compared with bedops intersect](#compared-with-bedops-intersect-4)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-4)
       - [parabricks germline pipeline?](#parabricks-germline-pipeline-1)
@@ -37,6 +37,9 @@
   - [bench1.3](#bench13)
     - [Run parameters/settings](#run-parameterssettings-4)
     - [Results](#results-4)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-3)
+        - [Compared with bedops intersect](#compared-with-bedops-intersect-6)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-6)
 
 ## Known vcf
 
@@ -99,7 +102,7 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/intra_truth_c
 
 ### Run parameters/settings
 
-- **Aim:** Benchmarking pipelines against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (both NIST7035 and NIST7086) using the same settings that were used to create the truth vcf
+- **Aim:** Benchmarking pipelines against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (both NIST7035 and NIST7086) using the same input data were used to create the truth vcf and using hte default pipeline settings
 
 - **Pipelines:**
   - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation) an
@@ -143,16 +146,16 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/ (wi
 | file                                                                     | count   | type                                               |
 |--------------------------------------------------------------------------|---------|----------------------------------------------------|
 | common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf | 188,127 | Common                                             |
-| unique_NIST7035_NIST_filtered.vcf                                        | 280,797 | Unique to NIST7035_NIST_filtered                   |
-| unique_project.NIST.hc.snps.indels.NIST7035.vcf                          | 148,216 | Unique to project.NIST.hc.snps.indels.NIST7035.vcf |
+| unique_NIST7035_NIST_filtered.vcf                                        | 280,797 | Unique to h_g_p + v_a_p output                     |
+| unique_project.NIST.hc.snps.indels.NIST7035.vcf                          | 148,216 | Unique to known vcf                                |
 
 - NIST7086
 
 | file                                                                     | count   | type                                               |
 |--------------------------------------------------------------------------|---------|----------------------------------------------------|
 | common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf | 190,599 | Common                                             |
-| unique_NIST7086_NIST_filtered.vcf                                        | 311,418 | Unique to NIST7086_NIST_filtered                   |
-| unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,323 | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
+| unique_NIST7086_NIST_filtered.vcf                                        | 311,418 | Unique to h_g_p + v_a_p output                     |
+| unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,323 | Unique to known vcf                                |
 
 ##### Compared with hap.py + RTG tools
 
@@ -169,10 +172,10 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/ (wi
 
 | Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
 |-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
-| INDEL | ALL    | 29475       | 19567    | 9908     | 57706       | 15098    | 22869     | 1998  | 980   | 0.663851      | 0.56661          | 0.396302       | 0.611388        |                        |                        | 0.962033027               | 0.530085807               |
-| INDEL | PASS   | 29475       | 18913    | 10562    | 56457       | 14963    | 22410     | 1989  | 899   | 0.641662      | 0.560519         | 0.396939       | 0.598352        |                        |                        | 0.962033027               | 0.498879283               |
-| SNP   | ALL    | 207267      | 156735   | 50532    | 411540      | 62504    | 192267    | 7763  | 985   | 0.756199      | 0.714949         | 0.467189       | 0.734995        | 2.101557474            | 1.423485638            | 0.720474925               | 0.362133473               |
-| SNP   | PASS   | 207267      | 155113   | 52154    | 408910      | 62418    | 191345    | 7730  | 969   | 0.748373      | 0.713106         | 0.467939       | 0.730314        | 2.101557474            | 1.422810364            | 0.720474925               | 0.35380422                |
+| INDEL | ALL    | 29475       | 21439    | 8036     | 62207       | 1750     | 38823     | 744   | 883   | 0.727362      | 0.925163         | 0.624094       | 0.814424        |                        |                        | 0.961967923               | 0.537195213               |
+| INDEL | PASS   | 29475       | 20764    | 8711     | 60928       | 1658     | 38312     | 735   | 812   | 0.704461      | 0.926689         | 0.628808       | 0.800437        |                        |                        | 0.961967923               | 0.507733625               |
+| SNP   | ALL    | 207264      | 165322   | 41942    | 440207      | 1947     | 272906    | 1187  | 339   | 0.79764       | 0.988362         | 0.619949       | 0.882818        | 2.101558993            | 1.419227578            | 0.720450017               | 0.3631554                 |
+| SNP   | PASS   | 207264      | 163448   | 43816    | 437144      | 1872     | 271792    | 1151  | 327   | 0.788598      | 0.988679         | 0.621745       | 0.877376        | 2.101558993            | 1.418276144            | 0.720450017               | 0.354108053               |
 
 #### parabricks germline pipeline
 
@@ -182,17 +185,17 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.0/ (wi
 
 | file                                                                     | count   | type                                               |
 |--------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035.vcf | 188,161 | Common                                             |
-| unique_NIST7035_NIST.vcf                                        | 280,446 | Unique to NIST7035_NIST                   |
-| unique_project.NIST.hc.snps.indels.NIST7035.vcf                          | 148,197 | Unique to project.NIST.hc.snps.indels.NIST7035.vcf |
+| common_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035.vcf          | 188,161 | Common                                             |
+| unique_NIST7035_NIST.vcf                                                 | 280,446 | Unique to parabricks output                        |
+| unique_project.NIST.hc.snps.indels.NIST7035.vcf                          | 148,197 | Unique to known vcf                                |
 
 - NIST7086
 
 | file                                                                     | count   | type                                               |
 |--------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086.vcf | 190,707 | Common                                             |
-| unique_NIST7086_NIST.vcf                                        | 311,598 | Unique to NIST7086_NIST                   |
-| unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,260 | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
+| common_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086.vcf          | 190,707 | Common                                             |
+| unique_NIST7086_NIST.vcf                                                 | 311,598 | Unique to parabricks output                        |
+| unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,260 | Unique to known vcf                                |
 
 ##### Compared with hap.py + RTG tools
 
@@ -287,10 +290,10 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wi
 
 | Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
 |-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
-| INDEL | ALL    | 29475       | 19567    | 9908     | 57706       | 15098    | 22869     | 1998  | 980   | 0.663851      | 0.56661          | 0.396302       | 0.611388        |                        |                        | 0.962033027               | 0.530085807               |
-| INDEL | PASS   | 29475       | 19102    | 10373    | 56726       | 15005    | 22448     | 1990  | 922   | 0.648075      | 0.562256         | 0.395727       | 0.602123        |                        |                        | 0.962033027               | 0.504973201               |
-| SNP   | ALL    | 207267      | 156735   | 50532    | 411540      | 62504    | 192267    | 7763  | 985   | 0.756199      | 0.714949         | 0.467189       | 0.734995        | 2.101557474            | 1.423485638            | 0.720474925               | 0.362133473               |
-| SNP   | PASS   | 207267      | 154794   | 52473    | 408308      | 62402    | 191078    | 7731  | 965   | 0.746834      | 0.712738         | 0.467975       | 0.729387        | 2.101557474            | 1.421803843            | 0.720474925               | 0.351807141               |
+| INDEL | ALL    | 29475       | 21439    | 8036     | 62207       | 1750     | 38823     | 744   | 883   | 0.727362      | 0.925163         | 0.624094       | 0.814424        |                        |                        | 0.961967923               | 0.537195213               |
+| INDEL | PASS   | 29475       | 20904    | 8571     | 61136       | 1680     | 38358     | 735   | 832   | 0.709211      | 0.926245         | 0.627421       | 0.803327        |                        |                        | 0.961967923               | 0.511903579               |
+| SNP   | ALL    | 207264      | 165322   | 41942    | 440207      | 1947     | 272906    | 1187  | 339   | 0.79764       | 0.988362         | 0.619949       | 0.882818        | 2.101558993            | 1.419227578            | 0.720450017               | 0.3631554                 |
+| SNP   | PASS   | 207264      | 163334   | 43930    | 436902      | 1876     | 271660    | 1158  | 327   | 0.788048      | 0.988647         | 0.621787       | 0.877023        | 2.101558993            | 1.417673127            | 0.720450017               | 0.353316271               |
 
 ## bench1.2
 
@@ -329,7 +332,9 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.1/ (wi
 
 ### Results
 
-Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/ (wintermute) and /home/lkemp/bench1.2/ (methhead)
+Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/ (Wintermute) and /home/lkemp/benchmarking_resources/ (Methead)
+
+Variants from tranche 82.00 or less were extracted for the following comparisons. 'PASS' indicates a variant in a tranche below 80.00.
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
@@ -340,16 +345,16 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/ (wi
 | file                                                                                     | count   | type                                               |
 |------------------------------------------------------------------------------------------|---------|----------------------------------------------------|
 | common_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035.vcf | 139,328 | Common                                             |
-| unique_NIST7035_NIST_filtered_less_than_82.00.vcf                                        | 172,013 | Unique to NIST7035_NIST_filtered_less_than_82.00   |
-| unique_project.NIST.hc.snps.indels.NIST7035.vcf                                          | 196,693 | Unique to project.NIST.hc.snps.indels.NIST7035.vcf |
+| unique_NIST7035_NIST_filtered_less_than_82.00.vcf                                        | 172,013 | Unique to h_g_p + v_a_p output                     |
+| unique_project.NIST.hc.snps.indels.NIST7035.vcf                                          | 196,693 | Unique to known vcf                                |
 
 - NIST7086
 
 | file                                                                                     | count   | type                                               |
 |------------------------------------------------------------------------------------------|---------|----------------------------------------------------|
 | common_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086.vcf | 140,929 | Common                                             |
-| unique_NIST7086_NIST_filtered_less_than_82.00.vcf                                        | 192,300 | Unique to NIST7086_NIST_filtered_less_than_82.00   |
-| unique_project.NIST.hc.snps.indels.NIST7086.vcf                                          | 176,602 | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
+| unique_NIST7086_NIST_filtered_less_than_82.00.vcf                                        | 192,300 | Unique to h_g_p + v_a_p output                     |
+| unique_project.NIST.hc.snps.indels.NIST7086.vcf                                          | 176,602 | Unique to known vcf                                |
 
 ##### Compared with hap.py + RTG tools
 
@@ -366,10 +371,10 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/ (wi
 
 | Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
 |-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
-| INDEL | ALL    | 29472       | 13502    | 15970    | 40762       | 11934    | 15183     | 1460  | 395   | 0.45813       | 0.533445         | 0.372479       | 0.492927        |                        |                        | 0.961962775               | 0.344969335               |
-| INDEL | PASS   | 29472       | 13139    | 16333    | 39434       | 11598    | 14556     | 1406  | 375   | 0.445813      | 0.533805         | 0.369123       | 0.485857        |                        |                        | 0.961962775               | 0.339235756               |
-| SNP   | ALL    | 207267      | 119356   | 87911    | 271067      | 49435    | 102243    | 4688  | 368   | 0.575856      | 0.70718          | 0.377187       | 0.634797        | 2.101557474            | 1.717486092            | 0.720474925               | 0.252478245               |
-| SNP   | PASS   | 207267      | 117611   | 89656    | 261115      | 48525    | 94946     | 4525  | 357   | 0.567437      | 0.707978         | 0.363618       | 0.629964        | 2.101557474            | 1.763760279            | 0.720474925               | 0.258217343               |
+| INDEL | ALL    | 29471       | 14531    | 14940    | 43800       | 871      | 28247     | 457   | 373   | 0.493061      | 0.943998         | 0.644909       | 0.647779        |                        |                        | 0.962095573               | 0.350436614               |
+| INDEL | PASS   | 29471       | 14152    | 15319    | 42375       | 840      | 27235     | 443   | 360   | 0.480201      | 0.944518         | 0.642714       | 0.636699        |                        |                        | 0.962095573               | 0.345535714               |
+| SNP   | ALL    | 207267      | 125305   | 81962    | 289995      | 403      | 164254    | 311   | 39    | 0.604558      | 0.996795         | 0.566403       | 0.752639        | 2.101557474            | 1.727640365            | 0.720474925               | 0.248334919               |
+| SNP   | PASS   | 207267      | 123441   | 83826    | 279425      | 386      | 155566    | 302   | 33    | 0.595565      | 0.996884         | 0.556736       | 0.745656        | 2.101557474            | 1.776386902            | 0.720474925               | 0.253609857               |
 
 #### parabricks germline pipeline?
 
@@ -421,4 +426,41 @@ Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.2/ (wi
 (see run settings/output for [human_genomics_pipeline - bench1.3](https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.3), [vcf_annotation_pipeline - bench1.3](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.3) and [parabricks - bench1.3]() for more detail)
 
 ### Results
+
+Results dir: /store/lkemp/exome_project/benchmarking/NA12878_exome/bench1.3/ (Wintermute) and /home/lkemp/benchmarking_resources/ (Methead)
+
+Variants from tranche 82.00 or less were extracted for the following comparisons. 'PASS' indicates a variant in a tranche below 70.00.
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline
+
+##### Compared with bedops intersect
+
+- NIST7035
+
+| file                                                                                     | count   | type                                               |
+|------------------------------------------------------------------------------------------|---------|----------------------------------------------------|
+| common_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035.vcf | 139,328 | Common                                             |
+| unique_NIST7035_NIST_filtered_less_than_82.00.vcf                                        | 172,013 | Unique to h_g_p + v_a_p output                     |
+| unique_project.NIST.hc.snps.indels.NIST7035.vcf                                          | 196,693 | Unique to known vcf                                |
+
+- NIST7086
+
+| file                                                                                     | count   | type                                               |
+|------------------------------------------------------------------------------------------|---------|----------------------------------------------------|
+| common_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086.vcf | 140,929 | Common                                             |
+| unique_NIST7086_NIST_filtered_less_than_82.00.vcf                                        | 192,300 | Unique to h_g_p + v_a_p output                     |
+| unique_project.NIST.hc.snps.indels.NIST7086.vcf                                          | 176,602 | Unique to known vcf                                |
+
+##### Compared with hap.py + RTG tools
+
+- NIST7035
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29470       | 14545    | 14925    | 40762       | 783      | 25280     | 421   | 323   | 0.493553      | 0.949425         | 0.620185       | 0.649478        |                        |                        | 0.935772466               | 0.344969335               |
+| INDEL | PASS   | 29470       | 12356    | 17114    | 33299       | 628      | 20182     | 348   | 256   | 0.419274      | 0.952123         | 0.606084       | 0.582181        |                        |                        | 0.935772466               | 0.314825097               |
+| SNP   | ALL    | 207268      | 123729   | 83539    | 271067      | 422      | 146881    | 315   | 51    | 0.596952      | 0.996602         | 0.541862       | 0.746662        | 2.101415235            | 1.717486092            | 0.702447561               | 0.252478245               |
+| SNP   | PASS   | 207268      | 113396   | 93872    | 214503      | 345      | 100727    | 270   | 43    | 0.547098      | 0.996968         | 0.469583       | 0.706498        | 2.101415235            | 2.07447586             | 0.702447561               | 0.309019661               |
+
+- NIST7086
 
