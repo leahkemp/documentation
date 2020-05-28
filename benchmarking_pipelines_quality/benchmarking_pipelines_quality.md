@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/28 16:29:11
+Last modified: 2020/05/28 16:20:08
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -35,7 +35,7 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
       - [parabricks germline pipeline](#parabricks-germline-pipeline)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-2)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-1)
-    - [bench1.1](#bench11)
+    - [bench 1.1](#bench-11)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-1)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-3)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-2)
@@ -45,7 +45,7 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
         - [NIST7086](#nist7086)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-4)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-3)
-    - [quality_bench1.3](#quality_bench13)
+    - [bench1.3](#bench13)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-3)
         - [NIST7035](#nist7035-1)
         - [NIST7086](#nist7086-1)
@@ -214,10 +214,10 @@ bgzip < project.NIST.hc.snps.indels.NIST7086.vcf > project.NIST.hc.snps.indels.N
 tabix project.NIST.hc.snps.indels.NIST7086.vcf.gz
 ```
 
-- quality_bench1.0
+- bench1.0
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.0/
 
 bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
 tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
@@ -225,10 +225,10 @@ bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_an
 tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
 ```
 
-- quality_bench1.1
+- bench1.1
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.1/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.1/
 # Pipeline output vcf (NIST7035)
 bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
 tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
@@ -237,10 +237,10 @@ bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_an
 tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
 ```
 
-- quality_bench1.2
+- bench1.2
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.2/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.2/
 # Pipeline output vcf (NIST7035)
 bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
 tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
@@ -249,10 +249,10 @@ bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_an
 tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
 ```
 
-- quality_bench1.3
+- bench1.3
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.3/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.3/
 # Pipeline output vcf (NIST7035)
 bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
 tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
@@ -267,8 +267,8 @@ human_genomic_pipeline will undertake pre-processing and variant calling. Becaus
 
 See the results and settings of the pipeline runs on the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (NIST7035 and NIST7086) for:
 
-- human_genomics_pipeline at https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.0
-- vcf_annotation_pipeline at https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.0
+- human_genomics_pipeline at https://github.com/ESR-NZ/human_genomics_pipeline/tree/bench1.0
+- vcf_annotation_pipeline at https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/bench1.0
 - parabricks germline pipeline at ...
 
 ### intra_truth_comparison
@@ -360,7 +360,7 @@ cd happy_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST
 - NIST7035
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.0/
 mkdir intersect_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 cd intersect_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 ```
@@ -396,7 +396,7 @@ done
 - NIST7086
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.0/
 mkdir intersect_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 cd intersect_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 ```
@@ -434,7 +434,7 @@ done
 - NIST7035
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.0/
 mkdir happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 cd happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 ```
@@ -453,7 +453,7 @@ cd happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 - NIST7086
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.0/
 mkdir happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 ```
@@ -478,7 +478,7 @@ cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 - NIST7035
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.0/
 mkdir intersect_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
 cd intersect_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
 ```
@@ -514,7 +514,7 @@ done
 - NIST7086
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.0/
 mkdir intersect_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 cd intersect_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 ```
@@ -552,7 +552,7 @@ done
 - NIST7035
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.0/
 mkdir happy_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
 cd happy_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
 ```
@@ -571,7 +571,7 @@ cd happy_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
 - NIST7086
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.0/
 mkdir happy_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 cd happy_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 ```
@@ -587,7 +587,7 @@ cd happy_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 --engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```
 
-### bench1.1
+### bench 1.1
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
@@ -596,7 +596,7 @@ cd happy_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 - NIST7035
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.1/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.1/
 mkdir intersect_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 cd intersect_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 ```
@@ -632,7 +632,7 @@ done
 - NIST7086
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.1/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.1/
 mkdir intersect_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 cd intersect_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 ```
@@ -670,7 +670,7 @@ done
 - NIST7035
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.1/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.1/
 mkdir happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 cd happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 ```
@@ -689,7 +689,7 @@ cd happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 - NIST7086
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.1/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.1/
 mkdir happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 ```
@@ -716,7 +716,7 @@ Extract snps and indels based on filter tranche levels in vcf pipeline output (s
 - SNPS
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.2/vcf_annotation_pipeline/filtered/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.2/vcf_annotation_pipeline/filtered/
 
 # Extract all snps
 gatk SelectVariants \
@@ -798,7 +798,7 @@ done
 - SNPS
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.2/vcf_annotation_pipeline/filtered/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.2/vcf_annotation_pipeline/filtered/
 
 # Extract all snps
 gatk SelectVariants \
@@ -911,7 +911,7 @@ tabix NIST7086_NIST_filtered_less_than_82.00.vcf.gz
 - NIST7035
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.2/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.2/
 mkdir intersect_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
 cd intersect_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
 ```
@@ -947,7 +947,7 @@ done
 - NIST7086
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.2/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.2/
 mkdir intersect_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
 cd intersect_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
 ```
@@ -985,7 +985,7 @@ done
 - NIST7035
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.2/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.2/
 mkdir happy_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
 cd happy_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
 ```
@@ -1004,7 +1004,7 @@ cd happy_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NI
 - NIST7086
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.2/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.2/
 mkdir happy_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
 cd happy_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
 ```
@@ -1020,7 +1020,7 @@ cd happy_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NI
 --engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```
 
-### quality_bench1.3
+### bench1.3
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
@@ -1031,7 +1031,7 @@ Extract snps and indels based on filter tranche levels in vcf pipeline output (s
 - SNPS
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.3/vcf_annotation_pipeline/filtered/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.3/vcf_annotation_pipeline/filtered/
 
 # Extract all snps
 gatk SelectVariants \
@@ -1113,7 +1113,7 @@ done
 - SNPS
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.3/vcf_annotation_pipeline/filtered/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.3/vcf_annotation_pipeline/filtered/
 
 # Extract all snps
 gatk SelectVariants \
@@ -1242,7 +1242,7 @@ tabix NIST7086_NIST_filtered_less_than_70.00.vcf.gz
 - NIST7035
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.3/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.3/
 mkdir intersect_NIST7035_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7035
 cd intersect_NIST7035_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7035
 ```
@@ -1278,7 +1278,7 @@ done
 - NIST7086
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.3/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.3/
 mkdir intersect_NIST7086_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7086
 cd intersect_NIST7086_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7086
 ```
@@ -1316,7 +1316,7 @@ done
 - NIST7035
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.3/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.3/
 mkdir happy_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
 cd happy_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
 ```
@@ -1335,7 +1335,7 @@ cd happy_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NI
 - NIST7086
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.3/
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/bench1.3/
 mkdir happy_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
 cd happy_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
 ```
