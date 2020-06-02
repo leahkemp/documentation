@@ -7,7 +7,8 @@ Documentation for various tasks related to projects at ESR
 Projects:
 
 - [Human genomic pipelines](human_genomic_pipelines)
-- [Benchmarking pipelines](benchmarking_pipelines)
+- [Benchmarking pipelines - quality](benchmarking_pipelines_quality)
+- [Benchmarking pipelines - resources](benchmarking_pipelines_resources)
 - [Scout](scout)
 - [Opentrons](opentrons)
 - [Graph genomes](graph_genomes)
