@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/28 16:20:08
+Last modified: 2020/06/02 13:20:02
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -1355,4 +1355,4 @@ cd happy_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NI
 
 ## Results of quality_benchmarking
 
-See [here](https://github.com/leahkemp/documentation/blob/master/benchmarking_pipelines_quality/benchmarking_pipeline_results.md)
+See [here](https://github.com/leahkemp/documentation/blob/master/benchmarking_pipelines_quality/benchmarking_pipelines_quality_results.md)
