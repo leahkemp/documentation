@@ -462,9 +462,9 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 
 ##### Compared with hap.py + RTG tools
 
-*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 82.00*
-
 - NIST7035
+
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 82.00*
 
 | Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
 |-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
@@ -473,7 +473,54 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 | SNP   | ALL    | 207268      | 123729   | 83539    | 271067      | 422      | 146881    | 315   | 51    | 0.596952      | 0.996602         | 0.541862       | 0.746662        | 2.101415235            | 1.717486092            | 0.702447561               | 0.252478245               |
 | SNP   | PASS   | 207268      | 113396   | 93872    | 214503      | 345      | 100727    | 270   | 43    | 0.547098      | 0.996968         | 0.469583       | 0.706498        | 2.101415235            | 2.07447586             | 0.702447561               | 0.309019661               |
 
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 80.00*
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29470       | 14140    | 15330    | 39434       | 750      | 24395     | 411   | 307   | 0.47981       | 0.95013          | 0.618629       | 0.637624        |                        |                        | 0.935772466               | 0.339235756               |
+| INDEL | PASS   | 29470       | 12358    | 17112    | 33299       | 628      | 20182     | 348   | 256   | 0.419342      | 0.952123         | 0.606084       | 0.582246        |                        |                        | 0.935772466               | 0.314825097               |
+| SNP   | ALL    | 207268      | 121829   | 85439    | 261115      | 405      | 138845    | 306   | 50    | 0.587785      | 0.996688         | 0.531739       | 0.739474        | 2.101415235            | 1.763760279            | 0.702447561               | 0.258217343               |
+| SNP   | PASS   | 207268      | 113395   | 93873    | 214503      | 345      | 100727    | 270   | 43    | 0.547094      | 0.996968         | 0.469583       | 0.706494        | 2.101415235            | 2.07447586             | 0.702447561               | 0.309019661               |
+
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 78.00*
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29470       | 13792    | 15678    | 38203       | 721      | 23545     | 398   | 293   | 0.468001      | 0.950812         | 0.616313       | 0.627258        |                        |                        | 0.935772466               | 0.333812647               |
+| INDEL | PASS   | 29470       | 12358    | 17112    | 33299       | 628      | 20182     | 348   | 256   | 0.419342      | 0.952123         | 0.606084       | 0.582246        |                        |                        | 0.935772466               | 0.314825097               |
+| SNP   | ALL    | 207268      | 120089   | 87179    | 251513      | 388      | 131000    | 299   | 48    | 0.57939       | 0.99678          | 0.520848       | 0.73282         | 2.101415235            | 1.813614299            | 0.702447561               | 0.265719377               |
+| SNP   | PASS   | 207268      | 113395   | 93873    | 214503      | 345      | 100727    | 270   | 43    | 0.547094      | 0.996968         | 0.469583       | 0.706494        | 2.101415235            | 2.07447586             | 0.702447561               | 0.309019661               |
+
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 76.00*
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29470       | 13399    | 16071    | 36888       | 692      | 22654     | 382   | 280   | 0.454666      | 0.951384         | 0.614129       | 0.615287        |                        |                        | 0.935772466               | 0.327717725               |
+| INDEL | PASS   | 29470       | 12358    | 17112    | 33299       | 628      | 20182     | 348   | 256   | 0.419342      | 0.952123         | 0.606084       | 0.582246        |                        |                        | 0.935772466               | 0.314825097               |
+| SNP   | ALL    | 207268      | 118394   | 88874    | 242017      | 371      | 123216    | 289   | 45    | 0.571212      | 0.996877         | 0.509121       | 0.72627         | 2.101415235            | 1.871989274            | 0.702447561               | 0.274695114               |
+| SNP   | PASS   | 207268      | 113395   | 93873    | 214503      | 345      | 100727    | 270   | 43    | 0.547094      | 0.996968         | 0.469583       | 0.706494        | 2.101415235            | 2.07447586             | 0.702447561               | 0.309019661               |
+
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 74.00*
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29470       | 13050    | 16420    | 35668       | 670      | 21813     | 370   | 272   | 0.442823      | 0.951642         | 0.611557       | 0.604403        |                        |                        | 0.935772466               | 0.323247755               |
+| INDEL | PASS   | 29470       | 12358    | 17112    | 33299       | 628      | 20182     | 348   | 256   | 0.419342      | 0.952123         | 0.606084       | 0.582246        |                        |                        | 0.935772466               | 0.314825097               |
+| SNP   | ALL    | 207268      | 116693   | 90575    | 232629      | 361      | 115539    | 281   | 44    | 0.563005      | 0.996917         | 0.496666       | 0.719612        | 2.101415235            | 1.939323117            | 0.702447561               | 0.284884042               |
+| SNP   | PASS   | 207268      | 113395   | 93873    | 214503      | 345      | 100727    | 270   | 43    | 0.547094      | 0.996968         | 0.469583       | 0.706494        | 2.101415235            | 2.07447586             | 0.702447561               | 0.309019661               |
+
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 72.00*
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29470       | 12672    | 16798    | 34468       | 649      | 21016     | 359   | 264   | 0.429997      | 0.951754         | 0.609725       | 0.592366        |                        |                        | 0.935772466               | 0.318148646               |
+| INDEL | PASS   | 29470       | 12358    | 17112    | 33299       | 628      | 20182     | 348   | 256   | 0.419342      | 0.952123         | 0.606084       | 0.582246        |                        |                        | 0.935772466               | 0.314825097               |
+| SNP   | ALL    | 207268      | 115056   | 92212    | 223551      | 351      | 108108    | 275   | 43    | 0.555107      | 0.99696          | 0.483594       | 0.713139        | 2.101415235            | 2.005686325            | 0.702447561               | 0.296306607               |
+| SNP   | PASS   | 207268      | 113395   | 93873    | 214503      | 345      | 100727    | 270   | 43    | 0.547094      | 0.996968         | 0.469583       | 0.706494        | 2.101415235            | 2.07447586             | 0.702447561               | 0.309019661               |
+
 - NIST7086
+
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 82.00*
 
 | Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
 |-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
@@ -482,13 +529,21 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 | SNP   | ALL    | 207267      | 125305   | 81962    | 289995      | 403      | 164254    | 311   | 39    | 0.604558      | 0.996795         | 0.566403       | 0.752639        | 2.101557474            | 1.727640365            | 0.720474925               | 0.248334919               |
 | SNP   | PASS   | 207267      | 115544   | 91723    | 230523      | 347      | 114600    | 280   | 28    | 0.557465      | 0.997007         | 0.49713        | 0.715093        | 2.101557474            | 2.08224489             | 0.720474925               | 0.29987085                |
 
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 80.00*
+
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 78.00*
+
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 76.00*
+
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 74.00*
+
+*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 72.00*
+
 ## quality_bench1.4
 
 ### Run parameters/settings
 
-- **Aim:** We have filtered out a number of false positives, however we are failing to call a number of variants (we have a large number of false negatives):
-  - NIST7035: 236,738 (total known variants: snps + indels) - 127,584 (true positive variants) = 109,154‬ variants missing
-  - NIST7086: 236,738 (total known variants: snps + indels) - 129,870 (true positive variants) = 106,868 variants missing
+- **Aim:** We have filtered out a number of false positives, however we are failing to call a number of variants (we have a large number of false negatives). Therefore we will first try to improve hte variant calling. Although the very stringent filtering (very low tranches) reduces the number of false positives, it starts to filter out a number of correctly called variants. Therefore we will use a more lenient filtering threshold of ... which can be further refined later once the variant calling is improved (the number of false negatives is reduced).
 
 - **Pipelines:**
   - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation)
@@ -512,8 +567,8 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
   - No padding
   - No intervals
   - 2D model with pre-trained architecture (for rule gatk CNNScoreVariants)
-  - :star: SNP tranches: 70.00 (for rule gatk4_FilterVariantTranches) :star:
-  - :star: Indel tranches: 70.00 (for rule gatk4_FilterVariantTranches) :star:
+  - SNP tranches: (for rule gatk4_FilterVariantTranches)
+  - Indel tranches: (for rule gatk4_FilterVariantTranches)
 
 *Note. because the settings in the first pipeline (human_genomics_pipeline) was not changed in this quality_bench1.0 (just changes to settings in vcf_annotation_pipeline), I used the human_genomics_pipeline output from quality_bench1.0*
 
