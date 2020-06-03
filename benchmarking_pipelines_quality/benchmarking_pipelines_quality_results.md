@@ -105,25 +105,25 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/intra
 
 ### Run parameters/settings
 
-- **Aim:** Benchmarking pipelines against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (both NIST7035 and NIST7086) using the same input data were used to create the truth vcf and using hte default pipeline settings
+- **Aim:** Benchmarking pipelines against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (both NIST7035 and NIST7086) using the same input data were used to create the truth vcf and using the default pipeline settings
 
 - **Pipelines:**
   - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation) an
   - [parabricks germline pipeline](https://www.nvidia.com/en-us/docs/parabricks/germline/)
 
 - **Inputs human_genomics_pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
 
 - **Inputs vcf_annotation_pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
-  - Hapmap: hapmap_3.3.hg19.sites.vcf.gz
-  - Mills: Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
+  - hapmap_3.3.hg19.sites.vcf.gz
+  - Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
   
 - **Inputs for parabricks germline pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
 
 - **Other settings:**
   - No padding
@@ -230,18 +230,18 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
   - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation)
 
 - **Inputs human_genomics_pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
 
 - **Inputs vcf_annotation_pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
-  - Hapmap: hapmap_3.3.hg19.sites.vcf.gz
-  - Mills: Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
+  - ucsc.hg19.fasta
+  - ddbsnp_138.hg19.vcf
+  - hapmap_3.3.hg19.sites.vcf.gz
+  - Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
   
 - **Inputs for parabricks germline pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
 
 - **Other settings:**
   - No padding
@@ -309,18 +309,18 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
   - [parabricks germline pipeline](https://www.nvidia.com/en-us/docs/parabricks/germline/)
 
 - **Inputs human_genomics_pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
 
 - **Inputs vcf_annotation_pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
-  - Hapmap: hapmap_3.3.hg19.sites.vcf.gz
-  - Mills: Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
+  - hapmap_3.3.hg19.sites.vcf.gz
+  - Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
   
 - **Inputs for parabricks germline pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
 
 - **Other settings:**
   - No padding
@@ -408,18 +408,18 @@ Variants from tranche 82.00 or less were extracted for the following comparisons
   - [parabricks germline pipeline](https://www.nvidia.com/en-us/docs/parabricks/germline/)
 
 - **Inputs human_genomics_pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
 
 - **Inputs vcf_annotation_pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
-  - Hapmap: hapmap_3.3.hg19.sites.vcf.gz
-  - Mills: Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
+  - hapmap_3.3.hg19.sites.vcf.gz
+  - Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
   
 - **Inputs for parabricks germline pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
 
 - **Other settings:**
   - No padding
@@ -543,25 +543,31 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 
 ### Run parameters/settings
 
-- **Aim:** We have filtered out a number of false positives, however we are failing to call a number of variants (we have a large number of false negatives). Therefore we will first try to improve hte variant calling. Although the very stringent filtering (very low tranches) reduces the number of false positives, it starts to filter out a number of correctly called variants. Therefore we will use a more lenient filtering threshold of ... which can be further refined later once the variant calling is improved (the number of false negatives is reduced).
+- **Aim:** Although the very stringent filtering (very low tranches) reduces the number of false positives, it starts to filter out a number of correctly called variants. Therefore we will use a more lenient filtering threshold of ... which can be further refined later once the variant calling is improved (the number of false negatives is reduced). We are still failing to call a number of variants (we have a large number of false negatives). Therefore we will first try to improve the variant calling by passing databases to the `--known-variants` flag in [gatk BaseRecalibrator](https://gatk.broadinstitute.org/hc/en-us/articles/360036898312-BaseRecalibrator) (rule: gatk4_BaseRecalibrator).
+
+  - [This document](https://gatkforums.broadinstitute.org/gatk/discussion/1247/what-should-i-use-as-known-variants-sites-for-running-tool-x) recommends passing dbSNP, Mills and 1000G indels to BaseRecalibrator (we are currently passing none of these databases to BaseRecalibrator), so pass them we will!
+  - They also recommend passing dbSNP, Mills, hapmap and omni to VariantRecalibrator (currently only Mills and Hapmap are being passed), again, pass them we will!
 
 - **Pipelines:**
   - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation)
   - [parabricks germline pipeline](https://www.nvidia.com/en-us/docs/parabricks/germline/)
 
 - **Inputs human_genomics_pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
+  - :star: Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz :star:
+  - :star: 1000G_phase1.indels.hg19.sites.vcf.gz :star:
 
 - **Inputs vcf_annotation_pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
-  - Hapmap: hapmap_3.3.hg19.sites.vcf.gz
-  - Mills: Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
+  - hapmap_3.3.hg19.sites.vcf.gz
+  - Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
+  - :star: 1000G_omni2.5.hg19.sites.vcf.gz :star:
   
 - **Inputs for parabricks germline pipeline:**
-  - Reference genome: ucsc.hg19.fasta
-  - dbSNP database: dbsnp_138.hg19.vcf
+  - ucsc.hg19.fasta
+  - dbsnp_138.hg19.vcf
 
 - **Other settings:**
   - No padding
@@ -569,8 +575,6 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
   - 2D model with pre-trained architecture (for rule gatk CNNScoreVariants)
   - SNP tranches: (for rule gatk4_FilterVariantTranches)
   - Indel tranches: (for rule gatk4_FilterVariantTranches)
-
-*Note. because the settings in the first pipeline (human_genomics_pipeline) was not changed in this quality_bench1.0 (just changes to settings in vcf_annotation_pipeline), I used the human_genomics_pipeline output from quality_bench1.0*
 
 (see run settings/output for [human_genomics_pipeline - quality_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.4), [vcf_annotation_pipeline - quality_bench1.4](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.4) and [parabricks - quality_bench1.4]() for more detail)
 
