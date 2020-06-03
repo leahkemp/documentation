@@ -39,11 +39,11 @@
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-5)
   - [quality_bench1.4](#quality_bench14)
     - [Run parameters/settings](#run-parameterssettings-5)
+    - [Results](#results-5)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-4)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-6)
       - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-7)
-    - [Results](#results-5)
 
 ## Known vcf
 
@@ -555,6 +555,10 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 
 (see run settings/output for [human_genomics_pipeline - quality_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.4), [vcf_annotation_pipeline - quality_bench1.4](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.4) and [parabricks - quality_bench1.4]() for more detail)
 
+### Results
+
+Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quality_bench1.4/ (Wintermute) and /home/lkemp/benchmarking_quality/ (Methead)
+
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
 ##### Compared with hap.py + RTG tools
@@ -588,7 +592,3 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 - NIST7035
 
 - NIST7086
-
-### Results
-
-Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quality_bench1.4/ (Wintermute) and /home/lkemp/benchmarking_quality/ (Methead)
