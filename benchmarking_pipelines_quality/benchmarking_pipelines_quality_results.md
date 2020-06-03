@@ -585,6 +585,13 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 
 *Note: 'PASS' indicates a variant in a tranche below 90.00 and 'ALL' indicate a variant in a tranche below 99.00*
 
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 29473       | 20886    | 8587     | 57698       | 1683     | 34939     | 686   | 848   | 0.708649      | 0.926051         | 0.60555        | 0.802893        |                        |                        | 0.935843514               | 0.529980812               |
+| INDEL | PASS   | 29473       | 17501    | 11972    | 49793       | 1131     | 30993     | 550   | 500   | 0.593798      | 0.93984          | 0.622437       | 0.727779        |                        |                        | 0.935843514               | 0.402428325               |
+| SNP   | ALL    | 207268      | 163377   | 43891    | 411486      | 1975     | 246099    | 1102  | 372   | 0.78824       | 0.988058         | 0.598074       | 0.87691         | 2.101415235            | 1.423661245            | 0.702447561               | 0.362070735               |
+| SNP   | PASS   | 207268      | 143797   | 63471    | 363218      | 893      | 218492    | 557   | 125   | 0.693773      | 0.99383          | 0.601545       | 0.817126        | 2.101415235            | 1.458424411            | 0.702447561               | 0.281573134               |
+
 - NIST7086
 
 *Note: 'PASS' indicates a variant in a tranche below 90.00 and 'ALL' indicate a variant in a tranche below 99.00*

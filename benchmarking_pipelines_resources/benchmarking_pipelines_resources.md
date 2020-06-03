@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - resources
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/05/28 18:51:21
+Last modified: 2020/06/03 16:36:05
 
 - **Aim:** Undertake benchmarking of genomics pipelines to optimise their resource use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [samtools 1.9](http://www.htslib.org/), [bedtools 2.25](https://bedtools.readthedocs.io/en/latest/), [bgzip 1.2.1](http://www.htslib.org/doc/bgzip.html)
@@ -13,22 +13,33 @@ The idea is to run these pipelines ([human_genomics_pipeline](https://github.com
 
 - [Benchmarking genomic pipelines - resources](#benchmarking-genomic-pipelines---resources)
   - [Table of contents](#table-of-contents)
-  - [Create a test dataset](#create-a-test-dataset)
-    - [Download and prepare the test WES data (NIST7035)](#download-and-prepare-the-test-wes-data-nist7035)
-    - [Reduce the test dataset size for benchmarking](#reduce-the-test-dataset-size-for-benchmarking)
-      - [Map NIST7035 to the reference genome (ORAC)](#map-nist7035-to-the-reference-genome-orac)
+  - [resource_bench1.*](#resource_bench1)
+    - [Create a test dataset](#create-a-test-dataset)
+      - [Download and prepare the test WES data (NIST7035)](#download-and-prepare-the-test-wes-data-nist7035)
+      - [Reduce the test dataset size for benchmarking](#reduce-the-test-dataset-size-for-benchmarking)
+        - [Map NIST7035 to the reference genome (ORAC)](#map-nist7035-to-the-reference-genome-orac)
       - [Extract chr1 from the mapped bam files (retain paired reads) (wintermute)](#extract-chr1-from-the-mapped-bam-files-retain-paired-reads-wintermute)
       - [Extract the paired fastq reads (R1 and R2) from the raw fastq reads that map to chr1 (wintermute)](#extract-the-paired-fastq-reads-r1-and-r2-from-the-raw-fastq-reads-that-map-to-chr1-wintermute)
-  - [Testing](#testing)
-    - [Setup](#setup)
-    - [Wintermute](#wintermute)
-    - [Production](#production)
-      - [human_genomics_pipeline](#human_genomics_pipeline)
-      - [vcf_annotation_pipeline](#vcf_annotation_pipeline)
+    - [Testing](#testing)
+      - [Setup](#setup)
+      - [Run benchmarking on Wintermute](#run-benchmarking-on-wintermute)
+      - [Results](#results)
+  - [resource_bench2.*](#resource_bench2)
+    - [Create a test dataset](#create-a-test-dataset-1)
+      - [Reduce the test dataset size for benchmarking](#reduce-the-test-dataset-size-for-benchmarking-1)
+        - [Map NIST7035 to the reference genome (ORAC)](#map-nist7035-to-the-reference-genome-orac-1)
+      - [Extract chr1 from the mapped bam files (retain paired reads) (wintermute)](#extract-chr1-from-the-mapped-bam-files-retain-paired-reads-wintermute-1)
+      - [Extract the paired fastq reads (R1 and R2) from the raw fastq reads that map to chr1 (wintermute)](#extract-the-paired-fastq-reads-r1-and-r2-from-the-raw-fastq-reads-that-map-to-chr1-wintermute-1)
+    - [Testing](#testing-1)
+      - [Setup](#setup-1)
+      - [Run benchmarking on Wintermute](#run-benchmarking-on-wintermute-1)
+      - [Results](#results-1)
 
-## Create a test dataset
+## resource_bench1.*
 
-### Download and prepare the test WES data (NIST7035)
+### Create a test dataset
+
+#### Download and prepare the test WES data (NIST7035)
 
 Download
 
@@ -58,11 +69,11 @@ cat NIST7035*_R1_001.fastq.gz > NIST7035_NIST_R1.fastq.gz
 cat NIST7035*_R2_001.fastq.gz > NIST7035_NIST_R2.fastq.gz
 ```
 
-### Reduce the test dataset size for benchmarking
+#### Reduce the test dataset size for benchmarking
 
 I will extract the fastq reads that map to chr1 so as to reduce the size of the dataset (width) without reducing the depth of reads that could influence the performance of the downstream rules (which could skew the resource benchmarking results for these steps)
 
-#### Map NIST7035 to the reference genome (ORAC)
+##### Map NIST7035 to the reference genome (ORAC)
 
 To increase speed, I will use the bwa-mem step of parabricks on orac
 
@@ -179,7 +190,7 @@ bgzip NIST7035_NIST_chr1_R1.fastq
 bgzip NIST7035_NIST_chr1_R2.fastq
 ```
 
-## Testing
+### Testing
 
 Approach:
 
@@ -188,7 +199,7 @@ Approach:
 - Compare real time vs. user time (minimise any divergence between them)
 - Re-run benchmarking on new machines (eg. production) to fine-tune resource allocation
 
-### Setup
+#### Setup
 
 Copy the reduced dataset (fastq files for chr1) to where we will do the resource benchmarking
 
@@ -209,7 +220,7 @@ cd human_genomics_pipeline
 git checkout resource_benchmarking_wintermute
 ```
 
-### Wintermute
+#### Run benchmarking on Wintermute
 
 - Create a resource_benchmarking branch for the pipeline
 
@@ -247,10 +258,45 @@ bash run_16_thread.sh
 bash run_32_thread.sh
 ```
 
-Extract the times from the output times files and plot
+- Extract the times from the output times files and plot
 
-### Production
+#### Results
 
-#### human_genomics_pipeline
+- Full run settings for each threading level can be found at [resource_bench1.0](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.0), [resource_bench1.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.1), [resource_bench1.2](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.2), [resource_bench1.3](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.3), [resource_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.4), [resource_bench1.5](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.5)
+- Plotting/report can be found at /home/lkemp/benchmarking_pipelines/resource_benchmarking/ on Methead)
 
-#### vcf_annotation_pipeline
+## resource_bench2.*
+
+The test dataset used in resource_bench1.* turned out to be too small for the benchmarking and there were some rules that were running much faster than the 15 mins on a single core that is more optimal for benchmarking. Therefore we will increase the test dataset and re-run the benchmarking. In this new test, a different time command will be used (the time command used in resource_bench1.* was not the command intended to be used). I'll also automate extracting the times from the output files into an excel spreadsheet for plotting
+
+### Create a test dataset
+
+#### Reduce the test dataset size for benchmarking
+
+I will extract the fastq reads that map to chr1 and ... so as to reduce the size of the dataset (width) without reducing the depth of reads that could influence the performance of the downstream rules (which could skew the resource benchmarking results for these steps)
+
+##### Map NIST7035 to the reference genome (ORAC)
+
+To increase speed, I will use the bwa-mem step of parabricks on orac
+
+```bash
+pbrun fq2bam \
+--ref /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GRCh37/ucsc.hg19.fasta \
+--in-fq /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GIAB/NA12878_exome/NIST7035_NIST_R1.fastq.gz /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GIAB/NA12878_exome/NIST7035_NIST_R2.fastq.gz \
+--out-bam /home/lkemp/resource_benchmarking/NIST7035_NIST.bam
+```
+
+#### Extract chr1 from the mapped bam files (retain paired reads) (wintermute)
+
+#### Extract the paired fastq reads (R1 and R2) from the raw fastq reads that map to chr1 (wintermute)
+
+### Testing
+
+#### Setup
+
+#### Run benchmarking on Wintermute
+
+#### Results
+
+- Full run settings for each threading level can be found at [resource_bench2.0](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.0), [resource_bench2.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.1), [resource_bench2.2](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.2), [resource_bench2.3](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.3), [resource_bench2.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.4), [resource_bench2.5](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.5)
+- Plotting/report can be found at /home/lkemp/benchmarking_pipelines/resource_benchmarking/ on Methead)

@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/03 16:06:41
+Last modified: 2020/06/04 09:42:59
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -21,7 +21,6 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
     - [Other setup](#other-setup)
       - [sdf files for hap.py + RTG vcfeval](#sdf-files-for-happy--rtg-vcfeval)
       - [bed regions files for hap.py + RTG vcfeval](#bed-regions-files-for-happy--rtg-vcfeval)
-      - [Formatting vcf files for all vcf comparisons](#formatting-vcf-files-for-all-vcf-comparisons)
   - [Benchmarking](#benchmarking)
     - [intra_truth_comparison](#intra_truth_comparison)
       - [Compared with bedtools intersect](#compared-with-bedtools-intersect)
@@ -193,75 +192,6 @@ vcf2bed < /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.inde
 vcf2bed < /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf > /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.bed
 ```
 
-See how much overlap there is between the two bed files
-
-```bash
-windowBed \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.bed \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.bed \
--w 10
-```
-
-#### Formatting vcf files for all vcf comparisons
-
-The vcf files for comparison need to be bgzipped and have a tabix index file (.tbi) (write to new files so as to not modify the original files):
-
-- Known vcf
-
-```bash
-bgzip < project.NIST.hc.snps.indels.NIST7035.vcf > project.NIST.hc.snps.indels.NIST7035.vcf.gz
-tabix project.NIST.hc.snps.indels.NIST7035.vcf.gz
-bgzip < project.NIST.hc.snps.indels.NIST7086.vcf > project.NIST.hc.snps.indels.NIST7086.vcf.gz
-tabix project.NIST.hc.snps.indels.NIST7086.vcf.gz
-```
-
-- bench1.0
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
-
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
-```
-
-- bench1.1
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.1/
-# Pipeline output vcf (NIST7035)
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
-# Pipeline output vcf (NIST7086)
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
-```
-
-- bench1.2
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.2/
-# Pipeline output vcf (NIST7035)
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
-# Pipeline output vcf (NIST7086)
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
-```
-
-- bench1.3
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.3/
-# Pipeline output vcf (NIST7035)
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
-# Pipeline output vcf (NIST7086)
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
-```
-
 ## Benchmarking
 
 human_genomic_pipeline will undertake pre-processing and variant calling. Because variant filtering occurs with vcf annotation_pipeline, we will benchmark the vcf files that have gone through both pipelines. However, we will use a minimal version of the vcf_annotation_pipeline since the annotation rules are not required for benchmarking.
@@ -275,6 +205,15 @@ See the results and settings of the pipeline runs on the Genome In A Bottle (GIA
 ### intra_truth_comparison
 
 Compare the two truth sample vcfs (NIST7035 and NIST7086)
+
+bgzip and index vcfs for comparison
+
+```bash
+bgzip < project.NIST.hc.snps.indels.NIST7035.vcf > project.NIST.hc.snps.indels.NIST7035.vcf.gz
+tabix project.NIST.hc.snps.indels.NIST7035.vcf.gz
+bgzip < project.NIST.hc.snps.indels.NIST7086.vcf > project.NIST.hc.snps.indels.NIST7086.vcf.gz
+tabix project.NIST.hc.snps.indels.NIST7086.vcf.gz
+```
 
 #### Compared with bedtools intersect
 
@@ -548,6 +487,17 @@ do grep -v "#" $i | wc -l
 done
 ```
 
+bgzip and index vcfs for comparison
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
+
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
+```
+
 ##### Compared with hap.py + RTG tools
 
 - NIST7035
@@ -589,6 +539,18 @@ cd happy_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 ```
 
 ### bench 1.1
+
+bgzip and index vcfs for comparison
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.1/
+# Pipeline output vcf (NIST7035)
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
+# Pipeline output vcf (NIST7086)
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
+```
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
@@ -896,15 +858,20 @@ gatk SelectVariants \
 -O NIST7086_NIST_filtered_less_than_82.00.vcf
 ```
 
-Bgzip and index
+bgzip and index vcfs for comparison
 
 ```bash
-# NIST7035
-bgzip NIST7035_NIST_filtered_less_than_82.00.vcf
-tabix NIST7035_NIST_filtered_less_than_82.00.vcf.gz
-# NIST7086
-bgzip NIST7086_NIST_filtered_less_than_82.00.vcf
-tabix NIST7086_NIST_filtered_less_than_82.00.vcf.gz
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.2/
+# Pipeline output vcf (NIST7035)
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00.vcf.gz
+# Pipeline output vcf (NIST7086)
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00.vcf.gz
 ```
 
 ##### Compared with bedtools intersect
@@ -1223,19 +1190,24 @@ gatk SelectVariants \
 -O NIST7086_NIST_filtered_less_than_70.00.vcf
 ```
 
-Bgzip and index
+bgzip and index vcfs for comparison
 
 ```bash
-# NIST7035
-bgzip NIST7035_NIST_filtered_less_than_82.00.vcf
-tabix NIST7035_NIST_filtered_less_than_82.00.vcf.gz
-bgzip NIST7035_NIST_filtered_less_than_70.00.vcf
-tabix NIST7035_NIST_filtered_less_than_70.00.vcf.gz
-# NIST7086
-bgzip NIST7086_NIST_filtered_less_than_82.00.vcf
-tabix NIST7086_NIST_filtered_less_than_82.00.vcf.gz
-bgzip NIST7086_NIST_filtered_less_than_70.00.vcf
-tabix NIST7086_NIST_filtered_less_than_70.00.vcf.gz
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.3/
+# Pipeline output vcf (NIST7035)
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00..vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00..vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00..vcf.gz
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_70.00.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_70.00.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_70.00.vcf.gz
+# Pipeline output vcf (NIST7086)
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00..vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00..vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00..vcf.gz
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_70.00.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_70.00.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_70.00.vcf.gz
 ```
 
 I also want to compare the filtering of the other tranches, I'll extract them so they can be compared to the known vcf with hap.py
@@ -1304,7 +1276,7 @@ gatk SelectVariants \
 -O NIST7086_NIST_filtered_less_than_80.00.vcf
 ```
 
-Bgzip and index
+bgzip and index vcfs for comparison
 
 ```bash
 for i in 'NIST7035_NIST_filtered_less_than_72.00.vcf' 'NIST7035_NIST_filtered_less_than_74.00.vcf' 'NIST7035_NIST_filtered_less_than_76.00.vcf' 'NIST7035_NIST_filtered_less_than_78.00.vcf' 'NIST7035_NIST_filtered_less_than_80.00.vcf' 'NIST7086_NIST_filtered_less_than_72.00.vcf' 'NIST7086_NIST_filtered_less_than_74.00.vcf' 'NIST7086_NIST_filtered_less_than_76.00.vcf' 'NIST7086_NIST_filtered_less_than_78.00.vcf' 'NIST7086_NIST_filtered_less_than_80.00.vcf'
@@ -1589,6 +1561,18 @@ cd happy_NIST7086_NIST_filtered_less_than_72.00_v_project.NIST.hc.snps.indels.NI
 ```
 
 ### Bench1.4
+
+bgzip and index vcfs for comparison
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.4/
+# Pipeline output vcf (NIST7035)
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
+# Pipeline output vcf (NIST7086)
+bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
+tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
+```
 
 ##### Compared with hap.py + RTG tools
 
