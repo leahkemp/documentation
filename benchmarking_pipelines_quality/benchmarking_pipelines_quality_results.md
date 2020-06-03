@@ -42,6 +42,7 @@
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-6)
   - [quality_bench1.4](#quality_bench14)
     - [Run parameters/settings](#run-parameterssettings-5)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-7)
     - [Results](#results-5)
 
 ## Known vcf
@@ -573,10 +574,20 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
   - No padding
   - No intervals
   - 2D model with pre-trained architecture (for rule gatk CNNScoreVariants)
-  - SNP tranches: (for rule gatk4_FilterVariantTranches)
-  - Indel tranches: (for rule gatk4_FilterVariantTranches)
+  - :star: SNP tranches: 90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00 (for rule gatk4_FilterVariantTranches) :star:
+  - :star: Indel tranches: 90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00 (for rule gatk4_FilterVariantTranches) :star:
 
 (see run settings/output for [human_genomics_pipeline - quality_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.4), [vcf_annotation_pipeline - quality_bench1.4](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.4) and [parabricks - quality_bench1.4]() for more detail)
+
+##### Compared with hap.py + RTG tools
+
+- NIST7035
+
+*Note: 'PASS' indicates a variant in a tranche below 90.00 and 'ALL' indicate a variant in a tranche below 99.00*
+
+- NIST7086
+
+*Note: 'PASS' indicates a variant in a tranche below 90.00 and 'ALL' indicate a variant in a tranche below 99.00*
 
 ### Results
 

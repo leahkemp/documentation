@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/02 14:57:53
+Last modified: 2020/06/03 16:06:41
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -52,6 +52,7 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-5)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-4)
     - [Bench1.4](#bench14)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-5)
   - [Results of quality_benchmarking](#results-of-quality_benchmarking)
 
 ## Setup
@@ -1588,6 +1589,46 @@ cd happy_NIST7086_NIST_filtered_less_than_72.00_v_project.NIST.hc.snps.indels.NI
 ```
 
 ### Bench1.4
+
+##### Compared with hap.py + RTG tools
+
+- NIST7035
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.4/
+mkdir happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.bed \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
+```
+
+- NIST7086
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.4/
+mkdir happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.bed \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
+```
 
 ## Results of quality_benchmarking
 
