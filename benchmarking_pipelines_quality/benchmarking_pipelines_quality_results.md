@@ -31,17 +31,17 @@
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-2)
         - [Compared with bedops intersect](#compared-with-bedops-intersect-4)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-4)
-      - [parabricks germline pipeline?](#parabricks-germline-pipeline-1)
-        - [Compared with bedops intersect](#compared-with-bedops-intersect-5)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-5)
   - [quality_bench1.3](#quality_bench13)
     - [Run parameters/settings](#run-parameterssettings-4)
     - [Results](#results-4)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-3)
-        - [Compared with bedops intersect](#compared-with-bedops-intersect-6)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-6)
+        - [Compared with bedops intersect](#compared-with-bedops-intersect-5)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-5)
   - [quality_bench1.4](#quality_bench14)
     - [Run parameters/settings](#run-parameterssettings-5)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-4)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-6)
+      - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-7)
     - [Results](#results-5)
 
@@ -239,10 +239,6 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
   - ddbsnp_138.hg19.vcf
   - hapmap_3.3.hg19.sites.vcf.gz
   - Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
-  
-- **Inputs for parabricks germline pipeline:**
-  - ucsc.hg19.fasta
-  - dbsnp_138.hg19.vcf
 
 - **Other settings:**
   - No padding
@@ -307,7 +303,6 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 - **Pipelines:**
   - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation)
-  - [parabricks germline pipeline](https://www.nvidia.com/en-us/docs/parabricks/germline/)
 
 - **Inputs human_genomics_pipeline:**
   - ucsc.hg19.fasta
@@ -318,10 +313,6 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
   - dbsnp_138.hg19.vcf
   - hapmap_3.3.hg19.sites.vcf.gz
   - Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
-  
-- **Inputs for parabricks germline pipeline:**
-  - ucsc.hg19.fasta
-  - dbsnp_138.hg19.vcf
 
 - **Other settings:**
   - No padding
@@ -332,7 +323,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 *Note. because the settings in the first pipeline (human_genomics_pipeline) was not changed in this quality_bench1.0 (just changes to settings in vcf_annotation_pipeline), I used the human_genomics_pipeline output from quality_bench1.0*
 
-(see run settings/output for [human_genomics_pipeline - quality_bench1.2](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.2), [vcf_annotation_pipeline - quality_bench1.2](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.2) and [parabricks - quality_bench1.2]() for more detail)
+(see run settings/output for [human_genomics_pipeline - quality_bench1.2](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.2), [vcf_annotation_pipeline - quality_bench1.2](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.2) for more detail)
 
 ### Results
 
@@ -384,20 +375,6 @@ Variants from tranche 82.00 or less were extracted for the following comparisons
 | SNP   | ALL    | 207267      | 125305   | 81962    | 289995      | 403      | 164254    | 311   | 39    | 0.604558      | 0.996795         | 0.566403       | 0.752639        | 2.101557474            | 1.727640365            | 0.720474925               | 0.248334919               |
 | SNP   | PASS   | 207267      | 123441   | 83826    | 279425      | 386      | 155566    | 302   | 33    | 0.595565      | 0.996884         | 0.556736       | 0.745656        | 2.101557474            | 1.776386902            | 0.720474925               | 0.253609857               |
 
-#### parabricks germline pipeline?
-
-##### Compared with bedops intersect
-
-- NIST7035
-
-- NIST7086
-
-##### Compared with hap.py + RTG tools
-
-- NIST7035
-
-- NIST7086
-
 ## quality_bench1.3
 
 ### Run parameters/settings
@@ -406,7 +383,6 @@ Variants from tranche 82.00 or less were extracted for the following comparisons
 
 - **Pipelines:**
   - [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) + minimal [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (no annotation)
-  - [parabricks germline pipeline](https://www.nvidia.com/en-us/docs/parabricks/germline/)
 
 - **Inputs human_genomics_pipeline:**
   - ucsc.hg19.fasta
@@ -417,10 +393,6 @@ Variants from tranche 82.00 or less were extracted for the following comparisons
   - dbsnp_138.hg19.vcf
   - hapmap_3.3.hg19.sites.vcf.gz
   - Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
-  
-- **Inputs for parabricks germline pipeline:**
-  - ucsc.hg19.fasta
-  - dbsnp_138.hg19.vcf
 
 - **Other settings:**
   - No padding
@@ -431,7 +403,7 @@ Variants from tranche 82.00 or less were extracted for the following comparisons
 
 *Note. because the settings in the first pipeline (human_genomics_pipeline) was not changed in this quality_bench1.0 (just changes to settings in vcf_annotation_pipeline), I used the human_genomics_pipeline output from quality_bench1.0*
 
-(see run settings/output for [human_genomics_pipeline - quality_bench1.3](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.3), [vcf_annotation_pipeline - quality_bench1.3](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.3) and [parabricks - quality_bench1.3]() for more detail)
+(see run settings/output for [human_genomics_pipeline - quality_bench1.3](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.3), [vcf_annotation_pipeline - quality_bench1.3](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.3) for more detail)
 
 ### Results
 
@@ -569,6 +541,10 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 - **Inputs for parabricks germline pipeline:**
   - ucsc.hg19.fasta
   - dbsnp_138.hg19.vcf
+  - :star: 1000G_phase1.indels.hg19.sites.vcf.gz :star:
+  - :star: hapmap_3.3.hg19.sites.vcf.gz :star:
+  - :star: Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz :star:
+  - :star: 1000G_omni2.5.hg19.sites.vcf.gz :star:
 
 - **Other settings:**
   - No padding
@@ -578,6 +554,8 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
   - :star: Indel tranches: 90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00 (for rule gatk4_FilterVariantTranches) :star:
 
 (see run settings/output for [human_genomics_pipeline - quality_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.4), [vcf_annotation_pipeline - quality_bench1.4](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.4) and [parabricks - quality_bench1.4]() for more detail)
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
 ##### Compared with hap.py + RTG tools
 
@@ -602,6 +580,14 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 | INDEL | PASS   | 29475       | 17657    | 11818    | 53831       | 1206     | 34791     | 599   | 531   | 0.59905       | 0.93666          | 0.6463         | 0.730745        |                        |                        | 0.961967923               | 0.411055223               |
 | SNP   | ALL    | 207264      | 165322   | 41942    | 440207      | 1947     | 272906    | 1187  | 339   | 0.79764       | 0.988362         | 0.619949       | 0.882818        | 2.101558993            | 1.419227578            | 0.720450017               | 0.3631554                 |
 | SNP   | PASS   | 207264      | 144837   | 62427    | 388446      | 838      | 242741    | 558   | 119   | 0.698804      | 0.994249         | 0.624903       | 0.820748        | 2.101558993            | 1.454573024            | 0.720450017               | 0.283950332               |
+
+#### parabricks germline pipeline
+
+##### Compared with hap.py + RTG tools
+
+- NIST7035
+
+- NIST7086
 
 ### Results
 
