@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/04 15:21:21
+Last modified: 2020/06/04 21:08:40
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -1897,11 +1897,9 @@ cd happy_quality_bench1.2_re-run_NIST7086_NIST_filtered_less_than_82.00_v_projec
 
 - NIST7035
 
-RUN FROM HERE
-
 ```bash
 cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
-mkdir happy_quality_bench1.4_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+mkdir happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
 ```
 
@@ -1911,7 +1909,7 @@ cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_v_project.NIST.hc.snps.i
 ../../quality_bench1.4/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
 -f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
 -r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--o happy_quality_bench1.4_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels \
+-o happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels \
 --engine=vcfeval \
 --engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
 --type ga4gh \
@@ -1922,8 +1920,8 @@ cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_v_project.NIST.hc.snps.i
 
 ```bash
 cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
-mkdir happy_quality_bench1.4_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
-cd happy_quality_bench1.4_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+mkdir happy_quality_bench1.4_re-run_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_quality_bench1.4_re-run_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 ```
 
 ```bash
@@ -1945,8 +1943,8 @@ cd happy_quality_bench1.4_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.N
 
 ```bash
 cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
-mkdir happy_quality_bench1.4_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
-cd happy_quality_bench1.4_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
+mkdir happy_quality_bench1.4_re-run_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.4_re-run_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
 ```
 
 ```bash
@@ -1966,8 +1964,8 @@ cd happy_quality_bench1.4_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
 
 ```bash
 cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
-mkdir happy_quality_bench1.4_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
-cd happy_quality_bench1.4_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
+mkdir happy_quality_bench1.4_re-run_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_quality_bench1.4_re-run_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 ```
 
 ```bash
