@@ -44,6 +44,17 @@
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-6)
       - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-7)
+  - [quality_bench1.5](#quality_bench15)
+    - [Run parameters/settings](#run-parameterssettings-6)
+    - [Results](#results-6)
+      - [no pipeline (intra_truth_comparison re-run)](#no-pipeline-intra_truth_comparison-re-run)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.0 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench10-re-run)
+      - [parabricks germline pipeline (quality_bench1.0 re-run)](#parabricks-germline-pipeline-quality_bench10-re-run)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.1 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench11-re-run)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.2 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench12-re-run)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.3 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench13-re-run)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.4 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench14-re-run)
+      - [parabricks germline pipeline (quality_bench1.4 re-run)](#parabricks-germline-pipeline-quality_bench14-re-run)
 
 ## Known vcf
 
@@ -516,7 +527,7 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 
 ### Run parameters/settings
 
-- **Aim:** Although the very stringent filtering (very low tranches) reduces the number of false positives, it starts to filter out a number of correctly called variants. Therefore we will use a more lenient filtering threshold of ... which can be further refined later once the variant calling is improved (the number of false negatives is reduced). We are still failing to call a number of variants (we have a large number of false negatives). Therefore we will first try to improve the variant calling by passing databases to the `--known-variants` flag in [gatk BaseRecalibrator](https://gatk.broadinstitute.org/hc/en-us/articles/360036898312-BaseRecalibrator) (rule: gatk4_BaseRecalibrator).
+- **Aim:** Although the very stringent filtering (very low tranches) reduces the number of false positives, it starts to filter out a number of correctly called variants. Therefore we will use a more lenient filtering threshold range of 90.00-99.00 which can be further refined later once the variant calling is improved (the number of false negatives is reduced). We are still failing to call a number of variants (we have a large number of false negatives). Therefore we will first try to improve the variant calling by passing databases to the `--known-variants` flag in [gatk BaseRecalibrator](https://gatk.broadinstitute.org/hc/en-us/articles/360036898312-BaseRecalibrator) (rule: gatk4_BaseRecalibrator).
 
   - [This document](https://gatkforums.broadinstitute.org/gatk/discussion/1247/what-should-i-use-as-known-variants-sites-for-running-tool-x) recommends passing dbSNP, Mills and 1000G indels to BaseRecalibrator (we are currently passing none of these databases to BaseRecalibrator), so pass them we will!
   - They also recommend passing dbSNP, Mills, hapmap and omni to VariantRecalibrator (currently only Mills and Hapmap are being passed), again, pass them we will!
@@ -606,3 +617,129 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 | INDEL | PASS   | 29473       | 21269    | 8204     | 58506       | 1111     | 35951     | 511   | 495   | 0.721644      | 0.950743         | 0.614484       | 0.820501        |                        |                        | 0.961832578               | 0.458301072               |
 | SNP   | ALL    | 207253      | 165940   | 41313    | 443676      | 1940     | 275769    | 1194  | 333   | 0.800664      | 0.988446         | 0.621555       | 0.8847          | 2.101533628            | 1.419947535            | 0.720358685               | 0.3613874                 |
 | SNP   | PASS   | 207253      | 165940   | 41313    | 443676      | 1940     | 275769    | 1194  | 333   | 0.800664      | 0.988446         | 0.621555       | 0.8847          | 2.101533628            | 1.419947535            | 0.720358685               | 0.3613874                 |
+
+## quality_bench1.5
+
+### Run parameters/settings
+
+- **Aim:** Adding the additional recommended databases in quality_bench1.4 did virtually nothing to improve the false-negative calls. I looked back at the documentation for running the vcf comparison tool hap.py, and realised there is some issue with how we were comparing the vcfs/evaluating tp, fn, fp etc. More specifically, we were passing a bed regions file we created (see [here](https://github.com/leahkemp/documentation/blob/master/benchmarking_pipelines_quality/benchmarking_pipelines_quality.md#bed-regions-files-for-happy--rtg-vcfeval)) from the truth vcf to the `-f/--false-positives` flag in hap.py. Instead we are supposed to pass a confident calls regions file provided by the truth dataset (https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz). We would have been getting more 'false-negative' calls in the hap.py output since there exist low confidence calls in the truth set that would not have been accounted for, ie. we only want to know if we are calling high-confidence variants, not low-confidence variants that are present in the truth vcf. I also found a couple other hap.py parameters I want to add `--type ga4gh` and `--threads 16`. In quality_bench1.5 I'll re-run the hap.py vcf comparisons on previous pipeline runs (quality_bench1.0 to quality_bench1.4)
+
+### Results
+
+#### no pipeline (intra_truth_comparison re-run)
+
+- NIST7035 ('baseline') compared to NIST7086 ('truth')
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 6974        | 6589     | 385      | 29856       | 398      | 22750     | 376   | 22    | 0.944795      | 0.943991         | 0.761991       | 0.944393        |                        |                        | 2.260743602               | 1.004385373               |
+| INDEL | PASS   | 6974        | 6589     | 385      | 29856       | 398      | 22750     | 376   | 22    | 0.944795      | 0.943991         | 0.761991       | 0.944393        |                        |                        | 2.260743602               | 1.004385373               |
+| SNP   | ALL    | 49101       | 48638    | 463      | 207312      | 464      | 158193    | 460   | 4     | 0.99057       | 0.990554         | 0.763067       | 0.990562        | 2.418766532            | 2.10111721             | 1.638411094               | 0.720834267               |
+| SNP   | PASS   | 49101       | 48638    | 463      | 207312      | 464      | 158193    | 460   | 4     | 0.99057       | 0.990554         | 0.763067       | 0.990562        | 2.418766532            | 2.10111721             | 1.638411094               | 0.720834267               |
+
+- NIST7086 ('baseline') compared to NIST7035 ('truth')
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 6974        | 6586     | 388      | 29850       | 396      | 22749     | 379   | 17    | 0.944365      | 0.944233         | 0.762111       | 0.944299        |                        |                        | 2.306372549               | 0.976708591               |
+| INDEL | PASS   | 6974        | 6586     | 388      | 29850       | 396      | 22749     | 379   | 17    | 0.944365      | 0.944233         | 0.762111       | 0.944299        |                        |                        | 2.306372549               | 0.976708591               |
+| SNP   | ALL    | 49101       | 48638    | 463      | 207312      | 463      | 158194    | 460   | 3     | 0.99057       | 0.990574         | 0.763072       | 0.990572        | 2.418696923            | 2.1009601              | 1.647715627               | 0.702795077               |
+| SNP   | PASS   | 49101       | 48638    | 463      | 207312      | 463      | 158194    | 460   | 3     | 0.99057       | 0.990574         | 0.763072       | 0.990572        | 2.418696923            | 2.1009601              | 1.647715627               | 0.702795077               |
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.0 re-run)
+
+- NIST7035
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 6976        | 5969     | 1007     | 57705       | 1734     | 49898     | 252   | 443   | 0.855648      | 0.777892         | 0.864708       | 0.814919        |                        |                        | 2.261709319               | 0.530099933               |
+| INDEL | PASS   | 6976        | 5608     | 1368     | 56456       | 1512     | 49234     | 248   | 376   | 0.803899      | 0.79064          | 0.872077       | 0.797214        |                        |                        | 2.261709319               | 0.498892595               |
+| SNP   | ALL    | 49108       | 47486    | 1622     | 411540      | 2359     | 361681    | 116   | 474   | 0.966971      | 0.952687         | 0.878848       | 0.959776        | 2.418539912            | 1.423485638            | 1.638787358               | 0.362133473               |
+| SNP   | PASS   | 49108       | 46750    | 2358     | 408910      | 1944     | 360201    | 110   | 345   | 0.951983      | 0.96009          | 0.880881       | 0.956019        | 2.418539912            | 1.422810364            | 1.638787358               | 0.35380422                |
+
+- NIST7086
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 6976        | 6082     | 894      | 62208       | 1806     | 54214     | 244   | 455   | 0.871846      | 0.774081         | 0.871496       | 0.82006         |                        |                        | 2.307352941               | 0.537220043               |
+| INDEL | PASS   | 6976        | 5728     | 1248     | 60929       | 1571     | 53523     | 240   | 389   | 0.821101      | 0.787875         | 0.878449       | 0.804145        |                        |                        | 2.307352941               | 0.507758492               |
+| SNP   | ALL    | 49108       | 47703    | 1405     | 440210      | 2560     | 389931    | 129   | 500   | 0.97139       | 0.949084         | 0.885784       | 0.960107        | 2.418470318            | 1.419217477            | 1.648093209               | 0.363164693               |
+| SNP   | PASS   | 49108       | 46840    | 2268     | 437147      | 2058     | 388233    | 123   | 340   | 0.953816      | 0.957926         | 0.888106       | 0.955867        | 2.418470318            | 1.418265987            | 1.648093209               | 0.354117348               |
+
+#### parabricks germline pipeline (quality_bench1.0 re-run)
+
+- NIST7035
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 6976        | 5900     | 1076     | 54367       | 1257     | 47135     | 211   | 271   | 0.845757      | 0.826189         | 0.866978       | 0.835859        |                        |                        | 2.261709319               | 0.450247227               |
+| INDEL | PASS   | 6976        | 5900     | 1076     | 54367       | 1257     | 47135     | 211   | 271   | 0.845757      | 0.826189         | 0.866978       | 0.835859        |                        |                        | 2.261709319               | 0.450247227               |
+| SNP   | ALL    | 49108       | 47525    | 1583     | 414135      | 2371     | 364227    | 118   | 474   | 0.967765      | 0.952493         | 0.879489       | 0.960068        | 2.418539912            | 1.42376204             | 1.638787358               | 0.360109056               |
+| SNP   | PASS   | 49108       | 47525    | 1583     | 414135      | 2371     | 364227    | 118   | 474   | 0.967765      | 0.952493         | 0.879489       | 0.960068        | 2.418539912            | 1.42376204             | 1.638787358               | 0.360109056               |
+
+- NIST7086
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 6974        | 6056     | 918      | 58508       | 1229     | 51138     | 176   | 260   | 0.868368      | 0.833243         | 0.874034       | 0.850443        |                        |                        | 2.306372549               | 0.458351025               |
+| INDEL | PASS   | 6974        | 6056     | 918      | 58508       | 1229     | 51138     | 176   | 260   | 0.868368      | 0.833243         | 0.874034       | 0.850443        |                        |                        | 2.306372549               | 0.458351025               |
+| SNP   | ALL    | 49099       | 47730    | 1369     | 443679      | 2527     | 393406    | 119   | 489   | 0.972118      | 0.949734         | 0.886691       | 0.960796        | 2.418557706            | 1.419963896            | 1.647607746               | 0.361400784               |
+| SNP   | PASS   | 49099       | 47730    | 1369     | 443679      | 2527     | 393406    | 119   | 489   | 0.972118      | 0.949734         | 0.886691       | 0.960796        | 2.418557706            | 1.419963896            | 1.647607746               | 0.361400784               |
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.1 re-run)
+
+- NIST7035
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 6976        | 5969     | 1007     | 57705       | 1734     | 49898     | 252   | 443   | 0.855648      | 0.777892         | 0.864708       | 0.814919        |                        |                        | 2.261709319               | 0.530099933               |
+| INDEL | PASS   | 6976        | 5766     | 1210     | 56725       | 1587     | 49269     | 250   | 399   | 0.826548      | 0.787151         | 0.868559       | 0.806369        |                        |                        | 2.261709319               | 0.504986667               |
+| SNP   | ALL    | 49108       | 47486    | 1622     | 411540      | 2359     | 361681    | 116   | 474   | 0.966971      | 0.952687         | 0.878848       | 0.959776        | 2.418539912            | 1.423485638            | 1.638787358               | 0.362133473               |
+| SNP   | PASS   | 49108       | 46636    | 2472     | 408308      | 1863     | 359794    | 110   | 342   | 0.949662      | 0.961599         | 0.881183       | 0.955593        | 2.418539912            | 1.421803843            | 1.638787358               | 0.351807141               |
+
+- NIST7086
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 6976        | 6082     | 894      | 62208       | 1806     | 54214     | 244   | 455   | 0.871846      | 0.774081         | 0.871496       | 0.82006         |                        |                        | 2.307352941               | 0.537220043               |
+| INDEL | PASS   | 6976        | 5844     | 1132     | 61137       | 1663     | 53524     | 241   | 412   | 0.837729      | 0.781558         | 0.875476       | 0.808669        |                        |                        | 2.307352941               | 0.511928429               |
+| SNP   | ALL    | 49108       | 47703    | 1405     | 440210      | 2560     | 389931    | 129   | 500   | 0.97139       | 0.949084         | 0.885784       | 0.960107        | 2.418470318            | 1.419217477            | 1.648093209               | 0.363164693               |
+| SNP   | PASS   | 49108       | 46832    | 2276     | 436905      | 2054     | 388003    | 126   | 353   | 0.953653      | 0.957998         | 0.888072       | 0.95582         | 2.418470318            | 1.417662973            | 1.648093209               | 0.353325567               |
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.2 re-run)
+
+- NIST7035
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 6976        | 3687     | 3289     | 40762       | 439      | 36555     | 157   | 125   | 0.528526      | 0.89565          | 0.896791       | 0.66477         |                        |                        | 2.261709319               | 0.344969335               |
+| INDEL | PASS   | 6976        | 3610     | 3366     | 39434       | 410      | 35334     | 151   | 120   | 0.517489      | 0.9              | 0.896029       | 0.657134        |                        |                        | 2.261709319               | 0.339235756               |
+| SNP   | ALL    | 49108       | 36939    | 12169    | 271067      | 286      | 233827    | 42    | 20    | 0.752199      | 0.99232          | 0.862617       | 0.855734        | 2.418539912            | 1.717486092            | 1.638787358               | 0.252478245               |
+| SNP   | PASS   | 49108       | 36794    | 12314    | 261115      | 275      | 224031    | 42    | 19    | 0.749247      | 0.992584         | 0.857978       | 0.853918        | 2.418539912            | 1.763760279            | 1.638787358               | 0.258217343               |
+
+- NIST7086
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 6976        | 3684     | 3292     | 43800       | 476      | 39553     | 147   | 134   | 0.528096      | 0.887921         | 0.903037       | 0.662291        |                        |                        | 2.307352941               | 0.350436614               |
+| INDEL | PASS   | 6976        | 3606     | 3370     | 42375       | 449      | 38234     | 143   | 126   | 0.516915      | 0.891572         | 0.902277       | 0.654414        |                        |                        | 2.307352941               | 0.345535714               |
+| SNP   | ALL    | 49108       | 36907    | 12201    | 289995      | 375      | 252696    | 30    | 28    | 0.751548      | 0.989946         | 0.871381       | 0.854429        | 2.418470318            | 1.727640365            | 1.648093209               | 0.248334919               |
+| SNP   | PASS   | 49108       | 36750    | 12358    | 279425      | 366      | 242293    | 30    | 28    | 0.748351      | 0.990143         | 0.867113       | 0.852432        | 2.418470318            | 1.776386902            | 1.648093209               | 0.253609857               |
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.3 re-run)
+
+- NIST7035
+
+- NIST7086
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.4 re-run)
+
+- NIST7035
+
+- NIST7086
+
+#### parabricks germline pipeline (quality_bench1.4 re-run)
+
+- NIST7035
+
+- NIST7086

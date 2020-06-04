@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/04 10:54:15
+Last modified: 2020/06/04 15:21:21
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -38,7 +38,7 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-1)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-3)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-2)
-    - [bench 1.2](#bench-12)
+    - [quality_bench1.2](#quality_bench12)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-2)
         - [NIST7035](#nist7035)
         - [NIST7086](#nist7086)
@@ -55,6 +55,14 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-5)
       - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-6)
+    - [bench1.5](#bench15)
+      - [no pipeline (intra_truth_comparison re-run)](#no-pipeline-intra_truth_comparison-re-run)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.0 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench10-re-run)
+      - [parabricks germline pipeline (quality_bench1.0 re-run)](#parabricks-germline-pipeline-quality_bench10-re-run)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.1 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench11-re-run)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.2 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench12-re-run)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.4 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench14-re-run)
+      - [parabricks germline pipeline (quality_bench1.4 re-run)](#parabricks-germline-pipeline-quality_bench14-re-run)
   - [Results of quality_benchmarking](#results-of-quality_benchmarking)
 
 ## Setup
@@ -671,7 +679,7 @@ cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 --engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```
 
-### bench 1.2
+### quality_bench1.2
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
@@ -1661,6 +1669,318 @@ cd happy_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 -o happy_NIST7086_NIST_v_project.NIST.hc.snps.indels \
 --engine=vcfeval \
 --engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
+```
+
+### bench1.5
+
+#### no pipeline (intra_truth_comparison re-run)
+
+- NIST7035 ('baseline') compared to NIST7086 ('truth')
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_intra_truth_comparison_re-run_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_intra_truth_comparison_re-run_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_intra_truth_comparison_re-run_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086 \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+- NIST7086 ('baseline') compared to NIST7035 ('truth')
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_intra_truth_comparison_re-run_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_intra_truth_comparison_re-run_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_intra_truth_comparison_re-run_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST7035 \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.0 re-run)
+
+- NIST7035
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_quality_bench1.0_re-run_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.0_re-run_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.0/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.0_re-run_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+- NIST7086
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_quality_bench1.0_re-run_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_quality_bench1.0_re-run_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+../../quality_bench1.0/vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.0_re-run_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+#### parabricks germline pipeline (quality_bench1.0 re-run)
+
+- NIST7035
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_quality_bench1.0_re-run_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.0_re-run_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.0/parabricks/NIST7035_NIST.vcf \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.0_re-run_NIST7035_NIST_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+- NIST7086
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_quality_bench1.0_re-run_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_quality_bench1.0_re-run_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+../../quality_bench1.0/parabricks/NIST7086_NIST.vcf \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.0_re-run_NIST7086_NIST_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.1 re-run)
+
+- NIST7035
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_quality_bench1.1_re-run_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.1_re-run_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.1/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.1_re-run_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+- NIST7086
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_quality_bench1.1_re-run_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_quality_bench1.1_re-run_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+../../quality_bench1.1/vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.1_re-run_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.2 re-run)
+
+- NIST7035
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_quality_bench1.2_re-run_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.2_re-run_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.2/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.2_re-run_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+- NIST7086
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_quality_bench1.2_re-run_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_quality_bench1.2_re-run_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+../../quality_bench1.2/vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.2_re-run_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.4 re-run)
+
+- NIST7035
+
+RUN FROM HERE
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_quality_bench1.4_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.4/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+- NIST7086
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_quality_bench1.4_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_quality_bench1.4_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+../../quality_bench1.4/vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+#### parabricks germline pipeline (quality_bench1.4 re-run)
+
+- NIST7035
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_quality_bench1.4_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.4_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.4/parabricks/NIST7035_NIST.vcf \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_NIST7035_NIST_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+- NIST7086
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.5/
+mkdir happy_quality_bench1.4_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
+cd happy_quality_bench1.4_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
+```
+
+```bash
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+../../quality_bench1.4/parabricks/NIST7086_NIST.vcf \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_NIST7086_NIST_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
 ```
 
 ## Results of quality_benchmarking
