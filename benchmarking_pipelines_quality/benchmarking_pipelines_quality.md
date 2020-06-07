@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/04 21:08:40
+Last modified: 2020/06/08 11:27:15
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -27,14 +27,14 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
         - [Compared with hap.py](#compared-with-happy)
         - [NIST7035 ('baseline') compared to NIST7086 ('truth')](#nist7035-baseline-compared-to-nist7086-truth)
         - [NIST7086 ('baseline') compared to NIST7035 ('truth')](#nist7086-baseline-compared-to-nist7035-truth)
-    - [bench 1.0](#bench-10)
+    - [quality_bench1.0](#quality_bench10)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-1)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools)
       - [parabricks germline pipeline](#parabricks-germline-pipeline)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-2)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-1)
-    - [bench 1.1](#bench-11)
+    - [quality_bench1.1](#quality_bench11)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-1)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-3)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-2)
@@ -44,18 +44,18 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
         - [NIST7086](#nist7086)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-4)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-3)
-    - [bench1.3](#bench13)
+    - [quality_bench1.3](#quality_bench13)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-3)
         - [NIST7035](#nist7035-1)
         - [NIST7086](#nist7086-1)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-5)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-4)
-    - [Bench1.4](#bench14)
+    - [quality_bench1.4](#quality_bench14)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-4)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-5)
       - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-6)
-    - [bench1.5](#bench15)
+    - [quality_bench1.5](#quality_bench15)
       - [no pipeline (intra_truth_comparison re-run)](#no-pipeline-intra_truth_comparison-re-run)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.0 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench10-re-run)
       - [parabricks germline pipeline (quality_bench1.0 re-run)](#parabricks-germline-pipeline-quality_bench10-re-run)
@@ -302,7 +302,7 @@ cd happy_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST
 --engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```
 
-### bench 1.0
+### quality_bench1.0
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
@@ -549,7 +549,7 @@ cd happy_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 --engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```
 
-### bench 1.1
+### quality_bench1.1
 
 bgzip and index vcfs for comparison
 
@@ -999,7 +999,7 @@ cd happy_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NI
 --engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```
 
-### bench1.3
+### quality_bench1.3
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
@@ -1571,7 +1571,7 @@ cd happy_NIST7086_NIST_filtered_less_than_72.00_v_project.NIST.hc.snps.indels.NI
 --engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```
 
-### Bench1.4
+### quality_bench1.4
 
 bgzip and index vcfs for comparison
 
@@ -1671,7 +1671,7 @@ cd happy_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
 --engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```
 
-### bench1.5
+### quality_bench1.5
 
 #### no pipeline (intra_truth_comparison re-run)
 
