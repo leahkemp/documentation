@@ -52,6 +52,7 @@
       - [parabricks germline pipeline (quality_bench1.0 re-run)](#parabricks-germline-pipeline-quality_bench10-re-run)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.1 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench11-re-run)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.2 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench12-re-run)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.3 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench13-re-run)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.4 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench14-re-run)
       - [parabricks germline pipeline (quality_bench1.4 re-run)](#parabricks-germline-pipeline-quality_bench14-re-run)
 
@@ -173,6 +174,8 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 ##### Compared with hap.py + RTG tools
 
+*Note: 'PASS' indicates a snp in a tranche below 99.95 and an indel in a tranche below 99.40*
+
 - NIST7035
 
 | Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
@@ -286,6 +289,8 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 | unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,323 | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
 
 ##### Compared with hap.py + RTG tools
+
+*Note: 'PASS' indicates a snp in a tranche below 99.95 and an indel in a tranche below 99.40*
 
 - NIST7035
 
@@ -647,6 +652,8 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.0 re-run)
 
+*Note: 'PASS' indicates a snp in a tranche below 99.95 and an indel in a tranche below 99.40*
+
 - NIST7035
 
 | Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
@@ -687,6 +694,8 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.1 re-run)
 
+*Note: 'PASS' indicates a snp in a tranche below 99.95 and an indel in a tranche below 99.40*
+
 - NIST7035
 
 | Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
@@ -707,6 +716,8 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.2 re-run)
 
+*Note: 'PASS' indicates a variant in a tranche below 80.00 and 'ALL' indicate a variant in a tranche below 82.00*
+
 - NIST7035
 
 | Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
@@ -725,7 +736,31 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 | SNP   | ALL    | 49108       | 36907    | 12201    | 289995      | 375      | 252696    | 30    | 28    | 0.751548      | 0.989946         | 0.871381       | 0.854429        | 2.418470318            | 1.727640365            | 1.648093209               | 0.248334919               |
 | SNP   | PASS   | 49108       | 36750    | 12358    | 279425      | 366      | 242293    | 30    | 28    | 0.748351      | 0.990143         | 0.867113       | 0.852432        | 2.418470318            | 1.776386902            | 1.648093209               | 0.253609857               |
 
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.3 re-run)
+
+*Note: 'PASS' indicates a variant in a tranche below 70.00*
+
+- NIST7035
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 6976        | 3302     | 3674     | 33865       | 320      | 30172     | 131   | 106   | 0.473337      | 0.91335          | 0.890949       | 0.623533        |                        |                        | 2.261709319               | 0.31620862                |
+| INDEL | PASS   | 6976        | 3270     | 3706     | 33299       | 315      | 29643     | 130   | 105   | 0.46875       | 0.91384          | 0.890207       | 0.619652        |                        |                        | 2.261709319               | 0.314825097               |
+| SNP   | ALL    | 49108       | 36293    | 12815    | 219108      | 235      | 182564    | 42    | 17    | 0.739045      | 0.993569         | 0.833215       | 0.847612        | 2.418539912            | 2.040302442            | 1.638787358               | 0.302295304               |
+| SNP   | PASS   | 49108       | 36253    | 12855    | 214503      | 232      | 178002    | 42    | 17    | 0.73823       | 0.993644         | 0.829835       | 0.847103        | 2.418539912            | 2.07447586             | 1.638787358               | 0.309019661               |
+
+- NIST7086
+
+| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | QUERY.UNK | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.Frac_NA | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|--------|-------------|----------|----------|-------------|----------|-----------|-------|-------|---------------|------------------|----------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | ALL    | 6976        | 3300     | 3676     | 36519       | 360      | 32777     | 129   | 102   | 0.47305       | 0.903795         | 0.897533       | 0.621044        |                        |                        | 2.307352941               | 0.326500839               |
+| INDEL | PASS   | 6976        | 3277     | 3699     | 35865       | 357      | 32150     | 128   | 101   | 0.469753      | 0.903903         | 0.896417       | 0.618221        |                        |                        | 2.307352941               | 0.325171582               |
+| SNP   | ALL    | 49108       | 36273    | 12835    | 235229      | 307      | 198633    | 28    | 25    | 0.738637      | 0.991611         | 0.844424       | 0.846631        | 2.418470318            | 2.046593543            | 1.648093209               | 0.294087223               |
+| SNP   | PASS   | 49108       | 36232    | 12876    | 230523      | 305      | 193970    | 28    | 25    | 0.737802      | 0.991656         | 0.841434       | 0.846099        | 2.418470318            | 2.08224489             | 1.648093209               | 0.29987085                |
+
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.4 re-run)
+
+*Note: 'PASS' indicates a variant in a tranche below 90.00 and 'ALL' indicate a variant in a tranche below 99.00*
 
 - NIST7035
 
