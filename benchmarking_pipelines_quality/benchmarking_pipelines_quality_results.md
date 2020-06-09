@@ -55,6 +55,11 @@
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.3 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench13-re-run)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.4 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench14-re-run)
       - [parabricks germline pipeline (quality_bench1.4 re-run)](#parabricks-germline-pipeline-quality_bench14-re-run)
+  - [quality_bench1.6](#quality_bench16)
+    - [Run parameters/settings](#run-parameterssettings-7)
+    - [Results](#results-7)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-5)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-8)
 
 ## Known vcf
 
@@ -799,3 +804,27 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 | INDEL | PASS   | 6974        | 6056     | 918      | 58508       | 1229     | 51138     | 176   | 260   | 0.868368      | 0.833243         | 0.874034       | 0.850443        |                        |                        | 2.306372549               | 0.458351025               |
 | SNP   | ALL    | 49099       | 47729    | 1370     | 443679      | 2527     | 393407    | 119   | 489   | 0.972097      | 0.949733         | 0.886693       | 0.960785        | 2.418557706            | 1.419950699            | 1.647607746               | 0.361396606               |
 | SNP   | PASS   | 49099       | 47729    | 1370     | 443679      | 2527     | 393407    | 119   | 489   | 0.972097      | 0.949733         | 0.886693       | 0.960785        | 2.418557706            | 1.419950699            | 1.647607746               | 0.361396606               |
+
+## quality_bench1.6
+
+### Run parameters/settings
+
+- **Aim:** Now that the correct databases are being input into BaseRecalibrator and VariantRecalibrator and the hap.py comparison tool is working correctly, I want to re-check the effects that different variant tranches. have on the quality of the variants. quality_bench1.4 was run with the correct databases inputs for BaseRecalibrator and VariantRecalibrator and with a range of variant tranches (90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00). Therefore I'll subset the variants in the pipeline output for quality_bench1.4 by each tranche level that was tested and compare each to the truth vcf with the correct implementation of hap.py.
+
+(see run settings/output for [human_genomics_pipeline - quality_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.4), [vcf_annotation_pipeline - quality_bench1.4](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.4) and [parabricks - quality_bench1.4]() for more detail)
+
+### Results
+
+Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quality_bench1.4/ (Wintermute) and /home/lkemp/benchmarking_quality/ (Methead)
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline
+
+##### Compared with hap.py + RTG tools
+
+- NIST7035
+
+*Note: 'PASS' indicates a variant in a tranche below 90.00 and 'ALL' indicate a variant in a tranche below 99.00*
+
+- NIST7086
+
+*Note: 'PASS' indicates a variant in a tranche below 90.00 and 'ALL' indicate a variant in a tranche below 99.00*
