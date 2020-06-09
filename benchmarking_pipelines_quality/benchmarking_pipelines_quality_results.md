@@ -921,11 +921,48 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
+Location of a few false negative calls:
+
+```bash
+chrM    302     .               A       AC      355.4   .       AC=1;AF=0.5;AN=2;BaseQRankSum=-1.005;ClippingRankSum=-1.368;DP=273;FS=14.323;MLEAC=2;MLEAF=0.5;MQ=58.9;MQ0=0;MQRankSum=1.775;QD=1.3;ReadPosRankSum=-0.051  GT:AD:DP:GQ:PL  0/1:89,23:112:99:142,0,2214
+chr1    17365   .               C       G       450.44  .       AC=1;AF=0.5;AN=2;BaseQRankSum=2.033;ClippingRankSum=-0.732;DP=141;FS=0;MLEAC=2;MLEAF=0.5;MQ=31.46;MQ0=0;MQRankSum=-4.109;QD=3.19;ReadPosRankSum=0.706      GT:AD:DP:GQ:PL  0/1:49,9:58:90:90,0,2633
+chr1    91141   .               G       T       276.54  .       AC=2;AF=1;AN=2;DP=8;FS=0;MLEAC=4;MLEAF=1;MQ=36.3;MQ0=0;QD=34.57 GT:AD:DP:GQ:PL  1/1:0,3:3:9:124,9,0
+chr1    91142   .               G       A       61.48   .       AC=1;AF=0.5;AN=2;BaseQRankSum=-1.92;ClippingRankSum=0.322;DP=8;FS=0;MLEAC=2;MLEAF=0.5;MQ=36.3;MQ0=0;MQRankSum=-0.322;QD=7.68;ReadPosRankSum=1.517  GT:AD:DP:GQ:PL  0/1:1,2:3:25:70,0,25
+chr1    91176   .               C       A       703.11  .       AC=1;AF=0.75;AN=2;BaseQRankSum=-0.625;ClippingRankSum=-1.01;DP=26;FS=0;MLEAC=3;MLEAF=0.75;MQ=36.91;MQ0=0;MQRankSum=-0.144;QD=27.04;ReadPosRankSum=1.491    GT:AD:DP:GQ:PL  0/1:1,7:8:10:209,0,10
+chr1    91214   .               T       A       770.64  .       AC=1;AF=0.75;AN=2;BaseQRankSum=-1.173;ClippingRankSum=1.315;DP=37;FS=0;MLEAC=3;MLEAF=0.75;MQ=36.56;MQ0=0;MQRankSum=0.817;QD=20.83;ReadPosRankSum=-0.533    GT:AD:DP:GQ:PL  0/1:1,8:9:7:180,0,7
+chr1    91256   .               A       G       622.4   .       AC=1;AF=0.75;AN=2;BaseQRankSum=0.788;ClippingRankSum=-0.63;DP=24;FS=3.01;MLEAC=3;MLEAF=0.75;MQ=35.02;MQ0=0;MQRankSum=1.103;QD=25.93;ReadPosRankSum=0       GT:AD:DP:GQ:PL  0/1:1,5:6:16:148,0,16
+chr1    91268   .               G       A       460.63  .       AC=1;AF=0.5;AN=2;BaseQRankSum=1.376;ClippingRankSum=-0.212;DP=22;FS=2.473;MLEAC=2;MLEAF=0.5;MQ=33.58;MQ0=0;MQRankSum=-1.164;QD=20.94;ReadPosRankSum=-0.741 GT:AD:DP:GQ:PL  0/1:1,4:5:19:111,0,19
+chr1    91421   rs28619159      T       C       301.93  .       AC=2;AF=0.75;AN=2;BaseQRankSum=0;ClippingRankSum=0.869;DB;DP=12;FS=0;MLEAC=3;MLEAF=0.75;MQ=28.5;MQ0=0;MQRankSum=-1.738;QD=25.16;ReadPosRankSum=-0.579      GT:AD:DP:GQ:PL  1/1:0,4:4:12:135,12,0
+chr1    91465   .               A       G       169.44  .       AC=2;AF=0.75;AN=2;BaseQRankSum=-0.198;ClippingRankSum=-0.198;DP=8;FS=0;MLEAC=3;MLEAF=0.75;MQ=27.35;MQ0=0;MQRankSum=-0.922;QD=21.18;ReadPosRankSum=0.198    GT:AD:DP:GQ:PL  1/1:0,2:2:6:78,6,0
+chr1    91475   .               G       A       169.44  .       AC=2;AF=0.75;AN=2;BaseQRankSum=0.731;ClippingRankSum=0.731;DP=6;FS=0;MLEAC=3;MLEAF=0.75;MQ=26.77;MQ0=0;MQRankSum=-0.731;QD=28.24;ReadPosRankSum=0.731      GT:AD:DP:GQ:PL  1/1:0,1:1:6:78,6,0
+chr1    91486   rs28555135      G       C       129.41  .       AC=2;AF=0.75;AN=2;BaseQRankSum=-0.731;ClippingRankSum=-0.731;DB;DP=5;FS=0;MLEAC=3;MLEAF=0.75;MQ=26.31;MQ0=0;MQRankSum=-0.731;QD=25.88;ReadPosRankSum=0.731 GT:AD:DP:GQ:PL  1/1:0,1:1:3:34,3,0
+chr1    91490   rs28662916      A       G       129.41  .       AC=2;AF=0.75;AN=2;BaseQRankSum=0.727;ClippingRankSum=-0.727;DB;DP=4;FS=0;MLEAC=3;MLEAF=0.75;MQ=25.59;MQ0=0;MQRankSum=-0.727;QD=32.35;ReadPosRankSum=0.727  GT:AD:DP:GQ:PL  1/1:.:.:3:34,3,0
+chr1    91515   .               A       C       76.31   .       AC=2;AF=1;AN=2;DP=4;FS=0;MLEAC=4;MLEAF=1;MQ=36.06;MQ0=0;QD=19.08        GT:AD:DP:GQ:PL  1/1:0,2:2:6:49,6,0
+chr1    91536   rs77418980      G       T       119.02  .       AC=2;AF=1;AN=2;DB;DP=12;FS=0;MLEAC=4;MLEAF=1;MQ=36.54;MQ0=0;QD=9.92     GT:AD:DP:GQ:PL  1/1:0,3:3:9:83,9,0
+chr1    91581   rs151118460     G       A       119.02  .       AC=2;AF=1;AN=2;DB;DP=11;FS=0;MLEAC=4;MLEAF=1;MQ=36.5;MQ0=0;QD=10.82     GT:AD:DP:GQ:PL  1/1:0,3:3:9:83,9,0
+chr1    136244  .               G       A       122.44  .       AC=1;AF=0.5;AN=2;BaseQRankSum=-0.312;ClippingRankSum=0.66;DP=13;FS=7.16;MLEAC=2;MLEAF=0.5;MQ=25.48;MQ0=0;MQRankSum=-2.424;QD=9.42;ReadPosRankSum=-1.093    GT:AD:DP:GQ:PL  0/1:3,3:6:63:63,0,81
+chr1    136768  .               T       TGGGAGGGGCCGGTGTGAGGCAAGGGGCTCGGGCTGACCTCTCTCAGCGC      5114.4  .       AC=1;AF=0.5;AN=2;BaseQRankSum=0.627;ClippingRankSum=-3.295;DP=450;FS=7.198;MLEAC=2;MLEAF=0.5;MQ=45.81;MQ0=0;MQRankSum=8.383;QD=0.23;ReadPosRankSum=-1.23   GT:AD:DP:GQ:PL  0/1:33,63:96:99:2050,0,1426
+chr1    136962  .               C       T       4600.44 .       AC=1;AF=0.5;AN=2;BaseQRankSum=1.352;ClippingRankSum=3.501;DP=192;FS=8.056;MLEAC=2;MLEAF=0.5;MQ=39.14;MQ0=0;MQRankSum=5.444;QD=23.96;ReadPosRankSum=-1.894  GT:AD:DP:GQ:PL  0/1:14,77:91:99:2336,0,107
+chr1    137032  .               G       A       328.26  .       AC=1;AF=0.75;AN=2;BaseQRankSum=-2.691;ClippingRankSum=-0.135;DP=16;FS=0;MLEAC=3;MLEAF=0.75;MQ=28.91;MQ0=0;MQRankSum=0.269;QD=20.52;ReadPosRankSum=-2.691   GT:AD:DP:GQ:PL  0/1:3,5:8:77:122,0,77
+```
+
 Findings:
 
-- Some false negative calls are being called in regions where only reverse reads are mapped
+- Some false negatives are located in regions where only reverse reads are mapped (chr1 17365)
 
 ![fn call chr1 17365 NIST7035](./images/fn_call_chr1_17365_NIST7035.PNG)
+
+- Some false negatives are located in regions where there is no coverage (chr1 91141-915810)
+
+![fn call chr1 91141 to 91581 NIST7035](./images/fn_call_chr1_91141_to_91581_NIST7035.PNG)
+
+- Some false negatives are located in regions where there is low coverage and only reverse reads are mapped (chr1 136244)
+
+![fn call chr1 136244 NIST7035](./images/fn_call_chr1_136244_NIST7035.PNG)
+
+- Some false negatives are located in regions where 
+
+
 
 ##### Compared with hap.py + RTG tools
 
