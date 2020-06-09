@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/09 09:26:14
+Last modified: 2020/06/09 13:35:22
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -2035,128 +2035,335 @@ See [here](https://github.com/leahkemp/documentation/blob/master/benchmarking_pi
 
 Extract snps and indels based on filter tranche levels in vcf pipeline output (stored in the 'FILTER' column) so they can be compared separately (see [here](https://gatkforums.broadinstitute.org/gatk/discussion/1255/using-jexl-to-apply-hard-filters-or-select-variants-based-on-annotation-values) and [here](https://gatkforums.broadinstitute.org/gatk/discussion/12406/selectvariants-from-filter-column-gatk4) for info on passing selection conditions to gatk SelectVariants)
 
-```bash
-# NIST7035
-gatk SelectVariants \
--R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--V NIST7035_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_81.00_82.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_80.00_81.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_79.00_80.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_78.00_79.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_77.00_78.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_76.00_77.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_81.00_82.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_80.00_81.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_79.00_80.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_78.00_79.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_77.00_78.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_76.00_77.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7035_NIST_filtered_less_than_82.00.vcf
+- NIST7035
 
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.4/vcf_annotation_pipeline/filtered/
+
+# less than 99.0
 gatk SelectVariants \
 -R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
 -V NIST7035_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7035_NIST_filtered_less_than_70.00.vcf
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_96.00_97.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_97.00_98.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_98.00_99.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_96.00_97.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_97.00_98.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_98.00_99.00') || vc.isNotFiltered()" \
+-O NIST7035_NIST_filtered_less_than_99.00.vcf
+
+# less than 98.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_96.00_97.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_97.00_98.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_96.00_97.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_97.00_98.00') || vc.isNotFiltered()"  \
+-O NIST7035_NIST_filtered_less_than_98.00.vcf
+
+# less than 97.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_96.00_97.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_96.00_97.00') || vc.isNotFiltered()"  \
+-O NIST7035_NIST_filtered_less_than_97.00.vcf
+
+# less than 96.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_95.00_96.00') || vc.isNotFiltered()"  \
+-O NIST7035_NIST_filtered_less_than_96.00.vcf
+
+# less than 95.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_94.00_95.00') || vc.isNotFiltered()"  \
+-O NIST7035_NIST_filtered_less_than_95.00.vcf
+
+# less than 94.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_93.00_94.00') || vc.isNotFiltered()"  \
+-O NIST7035_NIST_filtered_less_than_94.00.vcf
+
+# less than 93.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.isNotFiltered()"  \
+-O NIST7035_NIST_filtered_less_than_93.00.vcf
+
+# less than 92.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.isNotFiltered()"  \
+-O NIST7035_NIST_filtered_less_than_92.00.vcf
+
+# less than 91.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.isNotFiltered()"  \
+-O NIST7035_NIST_filtered_less_than_91.00.vcf
+
+# less than 90.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7035_NIST_filtered.vcf \
+--select "vc.isNotFiltered()"  \
+-O NIST7035_NIST_filtered_less_than_90.00.vcf
 
 # NIST7086
-gatk SelectVariants \
--R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--V NIST7086_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_81.00_82.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_80.00_81.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_79.00_80.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_78.00_79.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_77.00_78.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_76.00_77.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_81.00_82.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_80.00_81.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_79.00_80.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_78.00_79.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_77.00_78.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_76.00_77.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7086_NIST_filtered_less_than_82.00.vcf
 
+```bash
+# less than 99.0
 gatk SelectVariants \
 -R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
 -V NIST7086_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7086_NIST_filtered_less_than_70.00.vcf
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_96.00_97.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_97.00_98.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_98.00_99.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_96.00_97.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_97.00_98.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_98.00_99.00') || vc.isNotFiltered()" \
+-O NIST7086_NIST_filtered_less_than_99.00.vcf
+
+# less than 98.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_96.00_97.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_97.00_98.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_96.00_97.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_97.00_98.00') || vc.isNotFiltered()"  \
+-O NIST7086_NIST_filtered_less_than_98.00.vcf
+
+# less than 97.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_96.00_97.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_96.00_97.00') || vc.isNotFiltered()"  \
+-O NIST7086_NIST_filtered_less_than_97.00.vcf
+
+# less than 96.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_95.00_96.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_95.00_96.00') || vc.isNotFiltered()"  \
+-O NIST7086_NIST_filtered_less_than_96.00.vcf
+
+# less than 95.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_94.00_95.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_94.00_95.00') || vc.isNotFiltered()"  \
+-O NIST7086_NIST_filtered_less_than_95.00.vcf
+
+# less than 94.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_93.00_94.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_93.00_94.00') || vc.isNotFiltered()"  \
+-O NIST7086_NIST_filtered_less_than_94.00.vcf
+
+# less than 93.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_92.00_93.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_92.00_93.00') || vc.isNotFiltered()"  \
+-O NIST7086_NIST_filtered_less_than_93.00.vcf
+
+# less than 92.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_91.00_92.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_91.00_92.00') || vc.isNotFiltered()"  \
+-O NIST7086_NIST_filtered_less_than_92.00.vcf
+
+# less than 91.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered.vcf \
+--select "vc.getFilters().contains('CNN_2D_SNP_Tranche_90.00_91.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_90.00_91.00') || vc.isNotFiltered()"  \
+-O NIST7086_NIST_filtered_less_than_91.00.vcf
+
+# less than 90.0
+gatk SelectVariants \
+-R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-V NIST7086_NIST_filtered.vcf \
+--select "vc.isNotFiltered()"  \
+-O NIST7086_NIST_filtered_less_than_90.00.vcf
 ```
 
 bgzip and index vcfs for comparison
 
 ```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.3/
-# Pipeline output vcf (NIST7035)
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00..vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00..vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00..vcf.gz
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_70.00.vcf > ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_70.00.vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_70.00.vcf.gz
-# Pipeline output vcf (NIST7086)
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00..vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00..vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00..vcf.gz
-bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_70.00.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_70.00.vcf.gz
-tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_70.00.vcf.gz
-```
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.4/vcf_annotation_pipeline/filtered/
 
-I also want to compare the filtering of the other tranches, I'll extract them so they can be compared to the known vcf with hap.py
 
-```bash
-# NIST7035
-gatk SelectVariants \
--R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--V NIST7035_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7035_NIST_filtered_less_than_72.00.vcf
-
-gatk SelectVariants \
--R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--V NIST7035_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7035_NIST_filtered_less_than_74.00.vcf
-
-gatk SelectVariants \
--R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--V NIST7035_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7035_NIST_filtered_less_than_76.00.vcf
-
-gatk SelectVariants \
--R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--V NIST7035_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_77.00_78.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_76.00_77.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_77.00_78.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_76.00_77.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7035_NIST_filtered_less_than_78.00.vcf
-
-gatk SelectVariants \
--R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--V NIST7035_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_79.00_80.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_78.00_79.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_77.00_78.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_76.00_77.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_79.00_80.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_78.00_79.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_77.00_78.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_76.00_77.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7035_NIST_filtered_less_than_80.00.vcf
-
-# NIST7086
-gatk SelectVariants \
--R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--V NIST7086_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7086_NIST_filtered_less_than_72.00.vcf
-
-gatk SelectVariants \
--R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--V NIST7086_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7086_NIST_filtered_less_than_74.00.vcf
-
-gatk SelectVariants \
--R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--V NIST7086_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()"  \
--O NIST7086_NIST_filtered_less_than_76.00.vcf
-
-gatk SelectVariants \
--R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--V NIST7086_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_77.00_78.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_76.00_77.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_77.00_78.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_76.00_77.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7086_NIST_filtered_less_than_78.00.vcf
-
-gatk SelectVariants \
--R /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
--V NIST7086_NIST_filtered.vcf \
---select "vc.getFilters().contains('CNN_2D_SNP_Tranche_79.00_80.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_78.00_79.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_77.00_78.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_76.00_77.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_SNP_Tranche_70.00_71.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_79.00_80.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_78.00_79.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_77.00_78.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_76.00_77.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_75.00_76.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_74.00_75.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_73.00_74.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_72.00_73.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_71.00_72.00') || vc.getFilters().contains('CNN_2D_INDEL_Tranche_70.00_71.00') || vc.isNotFiltered()" \
--O NIST7086_NIST_filtered_less_than_80.00.vcf
-```
-
-bgzip and index vcfs for comparison
-
-```bash
-for i in 'NIST7035_NIST_filtered_less_than_72.00.vcf' 'NIST7035_NIST_filtered_less_than_74.00.vcf' 'NIST7035_NIST_filtered_less_than_76.00.vcf' 'NIST7035_NIST_filtered_less_than_78.00.vcf' 'NIST7035_NIST_filtered_less_than_80.00.vcf' 'NIST7086_NIST_filtered_less_than_72.00.vcf' 'NIST7086_NIST_filtered_less_than_74.00.vcf' 'NIST7086_NIST_filtered_less_than_76.00.vcf' 'NIST7086_NIST_filtered_less_than_78.00.vcf' 'NIST7086_NIST_filtered_less_than_80.00.vcf'
+for i in 'NIST7035_NIST_filtered_less_than_99.00.vcf' 'NIST7035_NIST_filtered_less_than_98.00.vcf' 'NIST7035_NIST_filtered_less_than_97.00.vcf' 'NIST7035_NIST_filtered_less_than_96.00.vcf' 'NIST7035_NIST_filtered_less_than_95.00.vcf' 'NIST7035_NIST_filtered_less_than_94.00.vcf' 'NIST7035_NIST_filtered_less_than_93.00.vcf' 'NIST7035_NIST_filtered_less_than_92.00.vcf' 'NIST7035_NIST_filtered_less_than_91.00.vcf' 'NIST7035_NIST_filtered_less_than_90.00.vcf' 'NIST7086_NIST_filtered_less_than_99.00.vcf' 'NIST7086_NIST_filtered_less_than_98.00.vcf' 'NIST7086_NIST_filtered_less_than_97.00.vcf' 'NIST7086_NIST_filtered_less_than_96.00.vcf' 'NIST7086_NIST_filtered_less_than_95.00.vcf' 'NIST7086_NIST_filtered_less_than_94.00.vcf' 'NIST7086_NIST_filtered_less_than_93.00.vcf' 'NIST7086_NIST_filtered_less_than_92.00.vcf' 'NIST7086_NIST_filtered_less_than_91.00.vcf' 'NIST7086_NIST_filtered_less_than_90.00.vcf'
 do bgzip $i
 done
 
-for i in 'NIST7035_NIST_filtered_less_than_72.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_74.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_76.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_78.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_80.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_72.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_74.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_76.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_78.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_80.00.vcf.gz'
+for i in 'NIST7035_NIST_filtered_less_than_99.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_98.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_97.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_96.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_95.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_94.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_93.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_92.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_91.00.vcf.gz' 'NIST7035_NIST_filtered_less_than_90.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_99.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_98.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_97.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_96.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_95.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_94.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_93.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_92.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_91.00.vcf.gz' 'NIST7086_NIST_filtered_less_than_90.00.vcf.gz'
 do tabix $i
 done
 ```
+
+Comparison with hap.py
+
+- NIST7035
+
+```bash
+# less than 99.0
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.6/
+mkdir happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_99.00_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_99.00_v_project.NIST.hc.snps.indels.NIST7035
+
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.4/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_99.00.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_99.00_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+```bash
+# less than 98.0
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.6/
+mkdir happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_98.00_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_98.00_v_project.NIST.hc.snps.indels.NIST7035
+
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.4/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_98.00.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_98.00_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+```bash
+# less than 97.0
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.6/
+mkdir happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_97.00_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_97.00_v_project.NIST.hc.snps.indels.NIST7035
+
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.4/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_97.00.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_97.00_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+```bash
+# less than 96.0
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.6/
+mkdir happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_96.00_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_96.00_v_project.NIST.hc.snps.indels.NIST7035
+
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.4/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_96.00.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_96.00_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+```bash
+# less than 95.0
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.6/
+mkdir happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_95.00_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_95.00_v_project.NIST.hc.snps.indels.NIST7035
+
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.4/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_95.00.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_95.00_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+```bash
+# less than 94.0
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.6/
+mkdir happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_94.00_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_94.00_v_project.NIST.hc.snps.indels.NIST7035
+
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.4/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_94.00.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_94.00_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+```bash
+# less than 93.0
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.6/
+mkdir happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_93.00_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_93.00_v_project.NIST.hc.snps.indels.NIST7035
+
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.4/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_93.00.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_93.00_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+```bash
+# less than 92.0
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.6/
+mkdir happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_92.00_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_92.00_v_project.NIST.hc.snps.indels.NIST7035
+
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.4/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_92.00.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_92.00_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+```bash
+# less than 91.0
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.6/
+mkdir happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_91.00_v_project.NIST.hc.snps.indels.NIST7035
+cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_91.00_v_project.NIST.hc.snps.indels.NIST7035
+
+/store/lkemp/exome_project/quality_benchmarking/hap.py-install/bin/hap.py \
+/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+../../quality_bench1.4/vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_91.00.vcf.gz \
+-f /store/lkemp/publicData/exomes/NA12878_exome/nexterarapidcapture_expandedexome_targetedregions.bed.gz \
+-r /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta \
+-o happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_91.00_v_project.NIST.hc.snps.indels \
+--engine=vcfeval \
+--engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf \
+--type ga4gh \
+--threads 16
+```
+
+- NIST7086
+
