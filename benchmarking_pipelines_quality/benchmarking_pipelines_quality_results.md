@@ -60,6 +60,11 @@
     - [Results](#results-7)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-5)
         - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-8)
+  - [quality_bench1.7](#quality_bench17)
+    - [Run parameters/settings](#run-parameterssettings-8)
+    - [Results](#results-8)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-6)
+        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-9)
 
 ## Known vcf
 
@@ -901,3 +906,27 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 - NIST7086
 
 *Note: 'PASS' indicates a variant in a tranche below 90.00 and 'ALL' indicate a variant in a tranche below 99.00*
+
+## quality_bench1.7
+
+### Run parameters/settings
+
+- **Aim:** We are alot closer to having our pipelines call quality variants, however there still remain some false positives and false negatives. In this test, we use the pipeline output of quality_bench1.4 (with the correct database inputs for BaseRecalibrator and VariantRecalibrator) to generate vcf files including the false positive and false negative calls. These will be viewed in IGV alongside the mapped bam files (/store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.4/bams/NIST7035_NIST_bwa_recal.bam and /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.4/bams/NIST7086_NIST_bwa_recal.bam) to try and identify possible causes of these incorrect calls.
+
+(see run settings/output for [human_genomics_pipeline - quality_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.4), [vcf_annotation_pipeline - quality_bench1.4](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.4) and [parabricks - quality_bench1.4]() for more detail)
+
+### Results
+
+Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quality_bench1.4/ (Wintermute)
+
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline
+
+Findings:
+
+- Some false negative calls are being called in regions where only reverse reads are mapped
+
+![fn call chr1 17365 NIST7035](./images/fn_call_chr1_17365_NIST7035.PNG)
+
+##### Compared with hap.py + RTG tools
+
+- NIST7035

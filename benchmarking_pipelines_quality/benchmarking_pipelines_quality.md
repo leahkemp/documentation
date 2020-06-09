@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/09 13:35:22
+Last modified: 2020/06/10 10:40:21
 
 - **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -66,6 +66,8 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
       - [parabricks germline pipeline (quality_bench1.4 re-run)](#parabricks-germline-pipeline-quality_bench14-re-run)
   - [Results of quality_benchmarking](#results-of-quality_benchmarking)
     - [quality_bench1.6](#quality_bench16)
+- [NIST7086](#nist7086-2)
+    - [quality_bench1.7](#quality_bench17)
 
 ## Setup
 
@@ -2109,6 +2111,7 @@ gatk SelectVariants \
 -V NIST7035_NIST_filtered.vcf \
 --select "vc.isNotFiltered()"  \
 -O NIST7035_NIST_filtered_less_than_90.00.vcf
+```
 
 # NIST7086
 
@@ -2366,4 +2369,79 @@ cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_91.00_v_projec
 ```
 
 - NIST7086
+
+### quality_bench1.7
+
+Create vcf files of false negatives (fn), false positives (fp) so they can be viewed in IGV to try an understand why they might be incorrectly called
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.4/vcf_annotation_pipeline/filtered/
+
+
+# False negatives
+bedtools intersect \
+-a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+-b NIST7035_NIST_filtered.vcf \
+-v \
+-header \
+> ../../fn_project.NIST.hc.snps.indels.NIST7035_v_NIST7035_NIST_filtered.vcf
+
+bedtools intersect \
+-a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+-b NIST7086_NIST_filtered.vcf \
+-v \
+-header \
+> ../../fn_project.NIST.hc.snps.indels.NIST7035_v_NIST7086_NIST_filtered.vcf
+
+# False positives
+bedtools intersect \
+-a NIST7035_NIST_filtered.vcf \
+-b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
+-v \
+-header \
+> ../../fp_project.NIST.hc.snps.indels.NIST7035_v_NIST7035_NIST_filtered.vcf
+
+bedtools intersect \
+-a NIST7086_NIST_filtered.vcf \
+-b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
+-v \
+-header \
+> ../../fp_project.NIST.hc.snps.indels.NIST7035_v_NIST7086_NIST_filtered.vcf
+```
+
+Index the output vcfs
+
+```bash
+cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.4/
+
+for i in 'fn_project.NIST.hc.snps.indels.NIST7035_v_NIST7035_NIST_filtered.vcf' 'fn_project.NIST.hc.snps.indels.NIST7035_v_NIST7086_NIST_filtered.vcf' 'fp_project.NIST.hc.snps.indels.NIST7035_v_NIST7035_NIST_filtered.vcf' 'fp_project.NIST.hc.snps.indels.NIST7035_v_NIST7086_NIST_filtered.vcf'
+do bgzip $i
+done
+
+for i in 'fn_project.NIST.hc.snps.indels.NIST7035_v_NIST7035_NIST_filtered.vcf.gz' 'fn_project.NIST.hc.snps.indels.NIST7035_v_NIST7086_NIST_filtered.vcf.gz' 'fp_project.NIST.hc.snps.indels.NIST7035_v_NIST7035_NIST_filtered.vcf.gz' 'fp_project.NIST.hc.snps.indels.NIST7035_v_NIST7086_NIST_filtered.vcf.gz'
+do tabix $i
+done
+```
+
+Find variants in the vcf file to look at in IGV
+
+```bash
+# False negatives (missed variants) for NIST7035
+zcat fn_project.NIST.hc.snps.indels.NIST7035_v_NIST7035_NIST_filtered.vcf.gz | zgrep -v '#' | head
+```
+
+Output:
+
+```bash
+chrM    302     .               A       AC      355.4   .       AC=1;AF=0.5;AN=2;BaseQRankSum=-1.005;ClippingRankSum=-1.368;DP=273;FS=14.323;MLEAC=2;MLEAF=0.5;MQ=58.9;MQ0=0;MQRankSum=1.775;QD=1.3;ReadPosRankSum=-0.051  GT:AD:DP:GQ:PL  0/1:89,23:112:99:142,0,2214
+chr1    17365   .               C       G       450.44  .       AC=1;AF=0.5;AN=2;BaseQRankSum=2.033;ClippingRankSum=-0.732;DP=141;FS=0;MLEAC=2;MLEAF=0.5;MQ=31.46;MQ0=0;MQRankSum=-4.109;QD=3.19;ReadPosRankSum=0.706      GT:AD:DP:GQ:PL  0/1:49,9:58:90:90,0,2633
+chr1    91141   .               G       T       276.54  .       AC=2;AF=1;AN=2;DP=8;FS=0;MLEAC=4;MLEAF=1;MQ=36.3;MQ0=0;QD=34.57 GT:AD:DP:GQ:PL  1/1:0,3:3:9:124,9,0
+chr1    91142   .               G       A       61.48   .       AC=1;AF=0.5;AN=2;BaseQRankSum=-1.92;ClippingRankSum=0.322;DP=8;FS=0;MLEAC=2;MLEAF=0.5;MQ=36.3;MQ0=0;MQRankSum=-0.322;QD=7.68;ReadPosRankSum=1.517  GT:AD:DP:GQ:PL  0/1:1,2:3:25:70,0,25
+chr1    91176   .               C       A       703.11  .       AC=1;AF=0.75;AN=2;BaseQRankSum=-0.625;ClippingRankSum=-1.01;DP=26;FS=0;MLEAC=3;MLEAF=0.75;MQ=36.91;MQ0=0;MQRankSum=-0.144;QD=27.04;ReadPosRankSum=1.491    GT:AD:DP:GQ:PL  0/1:1,7:8:10:209,0,10
+chr1    91214   .               T       A       770.64  .       AC=1;AF=0.75;AN=2;BaseQRankSum=-1.173;ClippingRankSum=1.315;DP=37;FS=0;MLEAC=3;MLEAF=0.75;MQ=36.56;MQ0=0;MQRankSum=0.817;QD=20.83;ReadPosRankSum=-0.533    GT:AD:DP:GQ:PL  0/1:1,8:9:7:180,0,7
+chr1    91256   .               A       G       622.4   .       AC=1;AF=0.75;AN=2;BaseQRankSum=0.788;ClippingRankSum=-0.63;DP=24;FS=3.01;MLEAC=3;MLEAF=0.75;MQ=35.02;MQ0=0;MQRankSum=1.103;QD=25.93;ReadPosRankSum=0       GT:AD:DP:GQ:PL  0/1:1,5:6:16:148,0,16
+chr1    91268   .               G       A       460.63  .       AC=1;AF=0.5;AN=2;BaseQRankSum=1.376;ClippingRankSum=-0.212;DP=22;FS=2.473;MLEAC=2;MLEAF=0.5;MQ=33.58;MQ0=0;MQRankSum=-1.164;QD=20.94;ReadPosRankSum=-0.741 GT:AD:DP:GQ:PL  0/1:1,4:5:19:111,0,19
+chr1    91421   rs28619159      T       C       301.93  .       AC=2;AF=0.75;AN=2;BaseQRankSum=0;ClippingRankSum=0.869;DB;DP=12;FS=0;MLEAC=3;MLEAF=0.75;MQ=28.5;MQ0=0;MQRankSum=-1.738;QD=25.16;ReadPosRankSum=-0.579      GT:AD:DP:GQ:PL  1/1:0,4:4:12:135,12,0
+chr1    91465   .               A       G       169.44  .       AC=2;AF=0.75;AN=2;BaseQRankSum=-0.198;ClippingRankSum=-0.198;DP=8;FS=0;MLEAC=3;MLEAF=0.75;MQ=27.35;MQ0=0;MQRankSum=-0.922;QD=21.18;ReadPosRankSum=0.198    GT:AD:DP:GQ:PL  1/1:0,2:2:6:78,6,0
+```
 
