@@ -8,42 +8,42 @@
   - [intra_truth_comparison](#intra_truth_comparison)
     - [Run parameters/settings](#run-parameterssettings)
     - [Results](#results)
-        - [Compared with bedops intersect](#compared-with-bedops-intersect)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools)
+        - [Compared with bedtools intersect](#compared-with-bedtools-intersect)
+        - [Compared with hap.py](#compared-with-happy)
   - [quality_bench1.0](#quality_bench10)
     - [Run parameters/settings](#run-parameterssettings-1)
     - [Results](#results-1)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline)
-        - [Compared with bedops intersect](#compared-with-bedops-intersect-1)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-1)
+        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-1)
+        - [Compared with hap.py](#compared-with-happy-1)
       - [parabricks germline pipeline](#parabricks-germline-pipeline)
-        - [Compared with bedops intersect](#compared-with-bedops-intersect-2)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-2)
+        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-2)
+        - [Compared with hap.py](#compared-with-happy-2)
   - [quality_bench1.1](#quality_bench11)
     - [Run parameters/settings](#run-parameterssettings-2)
     - [Results](#results-2)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-1)
-        - [Compared with bedops intersect](#compared-with-bedops-intersect-3)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-3)
+        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-3)
+        - [Compared with hap.py](#compared-with-happy-3)
   - [quality_bench1.2](#quality_bench12)
     - [Run parameters/settings](#run-parameterssettings-3)
     - [Results](#results-3)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-2)
-        - [Compared with bedops intersect](#compared-with-bedops-intersect-4)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-4)
+        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-4)
+        - [Compared with hap.py](#compared-with-happy-4)
   - [quality_bench1.3](#quality_bench13)
     - [Run parameters/settings](#run-parameterssettings-4)
     - [Results](#results-4)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-3)
-        - [Compared with bedops intersect](#compared-with-bedops-intersect-5)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-5)
+        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-5)
+        - [Compared with hap.py](#compared-with-happy-5)
   - [quality_bench1.4](#quality_bench14)
     - [Run parameters/settings](#run-parameterssettings-5)
     - [Results](#results-5)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-4)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-6)
+        - [Compared with hap.py](#compared-with-happy-6)
       - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-7)
+        - [Compared with hap.py](#compared-with-happy-7)
   - [quality_bench1.5](#quality_bench15)
     - [Run parameters/settings](#run-parameterssettings-6)
     - [Results](#results-6)
@@ -59,7 +59,7 @@
     - [Run parameters/settings](#run-parameterssettings-7)
     - [Results](#results-7)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-5)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-8)
+        - [Compared with hap.py](#compared-with-happy-8)
   - [quality_bench1.7](#quality_bench17)
     - [Run parameters/settings](#run-parameterssettings-8)
     - [Results](#results-8)
@@ -73,17 +73,6 @@ Parameters used to create the Genome In A Bottle (GIAB) sample [NA12878](https:/
   - Reference genome: ucsc.hg19.fasta
   - dbSNP database: dbsnp_137.hg19.vcf
 
-- **Description:**
-  - NIST7035: (/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf)
-    - Total number of variants in NIST7035: 336,003
-    - There are 99,141 variants found in NIST7035 that are not found in NIST7086
-    - 29.51% of variants in NIST7035 are unique to NIST7035
-
-  - NIST7086 (/store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf)
-    - Total number of variants in NIST7086: 317,524
-    - There are 80,661 variants found in NIST7086 that are not found in NIST7035
-    - 25.40% of variants in NIST7086 are unique to NIST7086
-
 ## intra_truth_comparison
 
 ### Run parameters/settings
@@ -94,7 +83,7 @@ Parameters used to create the Genome In A Bottle (GIAB) sample [NA12878](https:/
 
 Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/intra_truth_comparison/ (wintermute)
 
-##### Compared with bedops intersect
+##### Compared with bedtools intersect
 
 | file                                                                                   | count   | type                                               |
 |----------------------------------------------------------------------------------------|---------|----------------------------------------------------|
@@ -102,7 +91,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/intra
 | unique_project.NIST.hc.snps.indels.NIST7035.vcf                                        | 99,141  | Unique to project.NIST.hc.snps.indels.NIST7035.vcf |
 | unique_project.NIST.hc.snps.indels.NIST7086.vcf                                        | 80,661  | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035 ('baseline') compared to NIST7086 ('truth')
 
@@ -155,7 +144,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/intra
 
 *Note. dbsnp_137.hg19.vcf doesn't appear to be available anymore, therefore I used the closest version available*
 
-(see run settings/output for [human_genomics_pipeline - quality_bench1.0](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.0), [vcf_annotation_pipeline - quality_bench1.0](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.0) and [parabricks - quality_bench1.0]() for more detail)
+(see run settings/output for [human_genomics_pipeline - quality_bench1.0](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.0), [vcf_annotation_pipeline - quality_bench1.0](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.0) and [parabricks - quality_bench1.0](https://github.com/ESR-NZ/ESR-Parabricks/tree/quality_bench1.0) for more detail)
 
 ### Results
 
@@ -163,7 +152,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with bedops intersect
+##### Compared with bedtools intersect
 
 - NIST7035
 
@@ -181,7 +170,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 | unique_NIST7086_NIST_filtered.vcf                                        | 311,418 | Unique to h_g_p + v_a_p output                     |
 | unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,323 | Unique to known vcf                                |
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 *Note: 'PASS' indicates a snp in a tranche below 99.95 and an indel in a tranche below 99.40*
 
@@ -205,7 +194,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 #### parabricks germline pipeline
 
-##### Compared with bedops intersect
+##### Compared with bedtools intersect
 
 - NIST7035
 
@@ -223,7 +212,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 | unique_NIST7086_NIST.vcf                                                 | 311,598 | Unique to parabricks output                        |
 | unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,260 | Unique to known vcf                                |
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035
 
@@ -279,7 +268,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with bedops intersect
+##### Compared with bedtools intersect
 
 - NIST7035
 
@@ -297,7 +286,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 | unique_NIST7086_NIST_filtered.vcf                                        | 311,418 | Unique to NIST7086_NIST_filtered                   |
 | unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,323 | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 *Note: 'PASS' indicates a snp in a tranche below 99.95 and an indel in a tranche below 99.40*
 
@@ -357,7 +346,7 @@ Variants from tranche 82.00 or less were extracted for the following comparisons
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with bedops intersect
+##### Compared with bedtools intersect
 
 *Note: these comparisons are made with variants that fall within a tranche less than 82.00*
 
@@ -377,7 +366,7 @@ Variants from tranche 82.00 or less were extracted for the following comparisons
 | unique_NIST7086_NIST_filtered_less_than_82.00.vcf                                        | 192,300 | Unique to h_g_p + v_a_p output                     |
 | unique_project.NIST.hc.snps.indels.NIST7086.vcf                                          | 176,602 | Unique to known vcf                                |
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 *Note: 'PASS' indicates a variant in a tranche below 80.00 and 'ALL' indicate a variant in a tranche below 82.00*
 
@@ -437,7 +426,7 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with bedops intersect
+##### Compared with bedtools intersect
 
 *Note: these comparisons are made with variants that fall within a tranche less than 70.00*
 
@@ -457,7 +446,7 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 | unique_NIST7086_NIST_filtered_less_than_70.00.vcf                                        | 141,363 | Unique to h_g_p + v_a_p output                     |
 | unique_project.NIST.hc.snps.indels.NIST7086.vcf                                          | 187,658 | Unique to known vcf                                |
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035
 
@@ -526,16 +515,6 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
 | SNP   | ALL    | 207267      | 125305   | 81962    | 289995      | 403      | 164254    | 311   | 39    | 0.604558      | 0.996795         | 0.566403       | 0.752639        | 2.101557474            | 1.727640365            | 0.720474925               | 0.248334919               |
 | SNP   | PASS   | 207267      | 115544   | 91723    | 230523      | 347      | 114600    | 280   | 28    | 0.557465      | 0.997007         | 0.49713        | 0.715093        | 2.101557474            | 2.08224489             | 0.720474925               | 0.29987085                |
 
-*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 80.00*
-
-*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 78.00*
-
-*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 76.00*
-
-*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 74.00*
-
-*Note: 'PASS' indicates a variant in a tranche below 70.00 and 'ALL' indicate a variant in a tranche below 72.00*
-
 ## quality_bench1.4
 
 ### Run parameters/settings
@@ -577,7 +556,7 @@ Variants from tranche 82.00 or less, and 70.00 or less were extracted for the fo
   - :star: SNP tranches: 90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00 (for rule gatk4_FilterVariantTranches) :star:
   - :star: Indel tranches: 90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00 (for rule gatk4_FilterVariantTranches) :star:
 
-(see run settings/output for [human_genomics_pipeline - quality_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.4), [vcf_annotation_pipeline - quality_bench1.4](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.4) and [parabricks - quality_bench1.4]() for more detail)
+(see run settings/output for [human_genomics_pipeline - quality_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.4), [vcf_annotation_pipeline - quality_bench1.4](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.4) and [parabricks - quality_bench1.4](https://github.com/ESR-NZ/ESR-Parabricks/tree/quality_bench1.4) for more detail)
 
 ### Results
 
@@ -585,7 +564,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035
 
@@ -611,7 +590,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 #### parabricks germline pipeline
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035
 
@@ -815,7 +794,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 - **Aim:** Now that the correct databases are being input into BaseRecalibrator and VariantRecalibrator and the hap.py comparison tool is working correctly, I want to re-check the effects that different variant tranches. have on the quality of the variants. quality_bench1.4 was run with the correct databases inputs for BaseRecalibrator and VariantRecalibrator and with a range of variant tranches (90.00 91.00 92.00 93.00 94.00 95.00 96.00 97.00 98.00 99.00). Therefore I'll subset the variants in the pipeline output for quality_bench1.4 by each tranche level that was tested and compare each to the truth vcf with the correct implementation of hap.py.
 
-(see run settings/output for [human_genomics_pipeline - quality_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.4), [vcf_annotation_pipeline - quality_bench1.4](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.4) and [parabricks - quality_bench1.4]() for more detail)
+(see run settings/output for [human_genomics_pipeline - quality_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.4) and [vcf_annotation_pipeline - quality_bench1.4](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.4) for more detail)
 
 ### Results
 
@@ -823,7 +802,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035
 
@@ -890,18 +869,6 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 | SNP   | ALL    | 49108       | 40591    | 8517     | 378127      | 577      | 336944    | 65    | 58    | 0.826566      | 0.985989         | 0.891087       | 0.899267        | 2.418539912            | 1.434606001            | 1.638787358               | 0.286507218               |
 | SNP   | PASS   | 49108       | 39798    | 9310     | 363218      | 506      | 322899    | 59    | 41    | 0.810418      | 0.98745          | 0.888995       | 0.890218        | 2.418539912            | 1.458424411            | 1.638787358               | 0.281573134               |
 
-*Note: 'ALL' indicates a variant in a tranche below 92.00*
-
-
-
-*Note: 'ALL' indicates a variant in a tranche below 91.00*
-
-
-
-*Note: 'ALL' indicates a variant in a tranche below 90.00*
-
-
-
 - NIST7086
 
 *Note: 'PASS' indicates a variant in a tranche below 90.00 and 'ALL' indicate a variant in a tranche below 99.00*
@@ -912,7 +879,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 - **Aim:** We are alot closer to having our pipelines call quality variants, however there still remain some false positives and false negatives. In this test, we use the pipeline output of quality_bench1.4 (with the correct database inputs for BaseRecalibrator and VariantRecalibrator) to generate vcf files including the false positive and false negative calls. These will be viewed in IGV alongside the mapped bam files (/store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.4/bams/NIST7035_NIST_bwa_recal.bam and /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.4/bams/NIST7086_NIST_bwa_recal.bam) to try and identify possible causes of these incorrect calls.
 
-(see run settings/output for [human_genomics_pipeline - quality_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.4), [vcf_annotation_pipeline - quality_bench1.4](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.4) and [parabricks - quality_bench1.4]() for more detail)
+(see run settings/output for [human_genomics_pipeline - quality_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.4), [vcf_annotation_pipeline - quality_bench1.4](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.4) and [parabricks - quality_bench1.4](https://github.com/ESR-NZ/ESR-Parabricks/tree/quality_bench1.4) for more detail)
 
 ### Results
 

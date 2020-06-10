@@ -1,13 +1,15 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/10 12:55:20
+Last modified: 2020/06/11 10:29:00
 
-- **Aim:** Undertake benchmarking of genomics pipelines to test their quality for clinical use.
+- **Aim:** Undertake best pratice benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
 
-The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) and compare the quality of variant calls in their output vcf files. See the complementary docs for benchmarking the Nvidia Parabricks pipeline [here](https://github.com/ESR-NZ/ESR-Parabricks). Benchmarking will follow the best practices described in [this paper](https://www.nature.com/articles/s41587-019-0054-x).
+The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) and compare the quality of the variant calls to the truth vcf. Benchmarking will follow the best practices described in [this paper](https://www.nature.com/articles/s41587-019-0054-x).
+
+This document aims to document the code used in each quality benchmarking run, whereas [this document](https://github.com/leahkemp/documentation/blob/master/benchmarking_pipelines_quality/benchmarking_pipelines_quality_results.md) aims to describe a few key run parameters and record the results of each quality benchmarking run. The full parameters for each benchmarking run can be found [here](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_benchmarking), [here](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_benchmarking) and [here](https://github.com/ESR-NZ/ESR-Parabricks/quality_benchmarking).
 
 ## Table of contents
 
@@ -19,8 +21,7 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
       - [Fastq data to run through pipelines](#fastq-data-to-run-through-pipelines)
       - [Truth vcf to compare output to](#truth-vcf-to-compare-output-to)
     - [Other setup](#other-setup)
-      - [sdf files for hap.py + RTG vcfeval](#sdf-files-for-happy--rtg-vcfeval)
-      - [bed regions files for hap.py + RTG vcfeval](#bed-regions-files-for-happy--rtg-vcfeval)
+      - [sdf files for hap.py](#sdf-files-for-happy)
   - [Benchmarking](#benchmarking)
     - [intra_truth_comparison](#intra_truth_comparison)
       - [Compared with bedtools intersect](#compared-with-bedtools-intersect)
@@ -30,31 +31,31 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
     - [quality_bench1.0](#quality_bench10)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-1)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools)
+        - [Compared with hap.py](#compared-with-happy-1)
       - [parabricks germline pipeline](#parabricks-germline-pipeline)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-2)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-1)
+        - [Compared with hap.py](#compared-with-happy-2)
     - [quality_bench1.1](#quality_bench11)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-1)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-3)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-2)
+        - [Compared with hap.py](#compared-with-happy-3)
     - [quality_bench1.2](#quality_bench12)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-2)
         - [NIST7035](#nist7035)
         - [NIST7086](#nist7086)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-4)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-3)
+        - [Compared with hap.py](#compared-with-happy-4)
     - [quality_bench1.3](#quality_bench13)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-3)
         - [NIST7035](#nist7035-1)
         - [NIST7086](#nist7086-1)
         - [Compared with bedtools intersect](#compared-with-bedtools-intersect-5)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-4)
+        - [Compared with hap.py](#compared-with-happy-5)
     - [quality_bench1.4](#quality_bench14)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-4)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-5)
+        - [Compared with hap.py](#compared-with-happy-6)
       - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-6)
+        - [Compared with hap.py](#compared-with-happy-7)
     - [quality_bench1.5](#quality_bench15)
       - [no pipeline (intra_truth_comparison re-run)](#no-pipeline-intra_truth_comparison-re-run)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.0 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench10-re-run)
@@ -64,9 +65,8 @@ The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample 
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.3 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench13-re-run)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.4 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench14-re-run)
       - [parabricks germline pipeline (quality_bench1.4 re-run)](#parabricks-germline-pipeline-quality_bench14-re-run)
-  - [Results of quality_benchmarking](#results-of-quality_benchmarking)
     - [quality_bench1.6](#quality_bench16)
-- [NIST7086](#nist7086-2)
+      - [NIST7086](#nist7086-2)
     - [quality_bench1.7](#quality_bench17)
 
 ## Setup
@@ -186,7 +186,7 @@ See [here](https://github.com/ga4gh/benchmarking-tools/blob/master/resources/hig
 
 ### Other setup
 
-#### sdf files for hap.py + RTG vcfeval
+#### sdf files for hap.py
 
 Create an sdf file for the reference human genome (that was used in the benchmarking pipeline run). Create this with the RTG-tools format function:
 
@@ -198,24 +198,9 @@ Create an sdf file for the reference human genome (that was used in the benchmar
 /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta
 ```
 
-#### bed regions files for hap.py + RTG vcfeval
-
-Create a bed regions file from the known vcfs (using bedops)
-
-```bash
-vcf2bed < /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf > /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.bed
-vcf2bed < /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf > /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.bed
-```
-
 ## Benchmarking
 
 human_genomic_pipeline will undertake pre-processing and variant calling. Because variant filtering occurs with vcf annotation_pipeline, we will benchmark the vcf files that have gone through both pipelines. However, we will use a minimal version of the vcf_annotation_pipeline since the annotation rules are not required for benchmarking.
-
-See the results and settings of the pipeline runs on the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) (NIST7035 and NIST7086) for:
-
-- human_genomics_pipeline at https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.0
-- vcf_annotation_pipeline at https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.0
-- parabricks germline pipeline at ...
 
 ### intra_truth_comparison
 
@@ -384,7 +369,7 @@ do grep -v "#" $i | wc -l
 done
 ```
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035
 
@@ -513,7 +498,7 @@ bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_an
 tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
 ```
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035
 
@@ -643,7 +628,7 @@ do grep -v "#" $i | wc -l
 done
 ```
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035
 
@@ -963,7 +948,7 @@ do grep -v "#" $i | wc -l
 done
 ```
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035
 
@@ -1377,7 +1362,7 @@ do grep -v "#" $i | wc -l
 done
 ```
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035
 
@@ -1591,7 +1576,7 @@ tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035
 
@@ -1635,7 +1620,7 @@ cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 
 *Output vcfs were transferred to Wintermute*
 
-##### Compared with hap.py + RTG tools
+##### Compared with hap.py
 
 - NIST7035
 
@@ -2029,10 +2014,6 @@ cd happy_quality_bench1.4_re-run_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIS
 --threads 16
 ```
 
-## Results of quality_benchmarking
-
-See [here](https://github.com/leahkemp/documentation/blob/master/benchmarking_pipelines_quality/benchmarking_pipelines_quality_results.md)
-
 ### quality_bench1.6
 
 Extract snps and indels based on filter tranche levels in vcf pipeline output (stored in the 'FILTER' column) so they can be compared separately (see [here](https://gatkforums.broadinstitute.org/gatk/discussion/1255/using-jexl-to-apply-hard-filters-or-select-variants-based-on-annotation-values) and [here](https://gatkforums.broadinstitute.org/gatk/discussion/12406/selectvariants-from-filter-column-gatk4) for info on passing selection conditions to gatk SelectVariants)
@@ -2113,7 +2094,7 @@ gatk SelectVariants \
 -O NIST7035_NIST_filtered_less_than_90.00.vcf
 ```
 
-# NIST7086
+#### NIST7086
 
 ```bash
 # less than 99.0
