@@ -1,11 +1,11 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/11 10:49:54
+Last modified: 2020/06/11 10:58:10
 
 - **Aim:** Undertake best practice benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
-- **OS:** Ubuntu 16.04 (Wintermute - research server)
+- **OS:** Ubuntu 16.04 (Wintermute - research server) for human_genomics_pipeline + vcf_annotation_pipeline runs and CentOS-7 (ORAC) for parabricks germline pipeline runs
 
 The idea is to run these pipelines against the Genome In A Bottle (GIAB) sample [NA12878](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) and compare the quality of the variant calls to the truth vcf. Benchmarking will follow the best practices described in [this paper](https://www.nature.com/articles/s41587-019-0054-x).
 

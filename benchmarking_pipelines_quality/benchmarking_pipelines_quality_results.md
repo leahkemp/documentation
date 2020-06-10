@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality - results
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/11 10:52:36
+Last modified: 2020/06/11 10:58:11
 
 This document aims to describe a few key run parameters and record the results of each quality benchmarking run. The full parameters for each benchmarking run can be found [here](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_benchmarking), [here](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_benchmarking) and [here](https://github.com/ESR-NZ/ESR-Parabricks/quality_benchmarking).
 
