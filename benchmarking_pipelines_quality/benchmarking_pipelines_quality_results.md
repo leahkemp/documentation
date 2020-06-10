@@ -64,7 +64,6 @@
     - [Run parameters/settings](#run-parameterssettings-8)
     - [Results](#results-8)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-6)
-        - [Compared with hap.py + RTG tools](#compared-with-happy--rtg-tools-9)
 
 ## Known vcf
 
@@ -952,7 +951,7 @@ Findings:
 
 ![fn call chr1 17365 NIST7035](./images/fn_call_chr1_17365_NIST7035.PNG)
 
-- Some false negatives are located in regions where there is no coverage (chr1 91141-915810)
+- Some false negatives are located in regions where there is very low coverage (chr1 91141-915810)
 
 ![fn call chr1 91141 to 91581 NIST7035](./images/fn_call_chr1_91141_to_91581_NIST7035.PNG)
 
@@ -960,10 +959,61 @@ Findings:
 
 ![fn call chr1 136244 NIST7035](./images/fn_call_chr1_136244_NIST7035.PNG)
 
-- Some false negatives are located in regions where 
+- Some false negatives are located in regions where ?? (chr1 136768)
 
+![fn call chr1 136768 NIST7035](./images/fn_call_chr1_136768_NIST7035.PNG)
 
+- Some false negatives are located in regions where ?? (chr1 136962)
 
-##### Compared with hap.py + RTG tools
+![fn call chr1 136962 NIST7035](./images/fn_call_chr1_136962_NIST7035.PNG)
 
-- NIST7035
+- Some false negatives are located in regions where there is low coverage and only forward reads are mapped (chr1 136244)
+
+![fn call chr1 137032 NIST7035](./images/fn_call_chr1_137032_NIST7035.PNG)
+
+Location of a few false positive calls:
+
+```bash
+chr1    12783   .               G       A       48.32   CNN_2D_SNP_Tranche_94.00_95.00  AC=2;AF=1.00;AN=2;CNN_2D=-3.123;DP=2;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=25.08;QD=24.16;SOR=2.303     GT:AD:DP:GQ:PL  1/1:0,2:2:6:60,6,0
+chr1    13116   rs201725126     T       G       585.74  CNN_2D_SNP_Tranche_95.00_96.00  AC=2;AF=1.00;AN=2;BaseQRankSum=1.862;CNN_2D=-4.815;DB;DP=16;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=27.22;MQRankSum=-0.696;QD=31.98;ReadPosRankSum=-1.523;SOR=4.174       GT:AD:DP:GQ:PL  1/1:1,15:16:7:598,7,0
+chr1    13118   rs200579949     A       G       585.74  CNN_2D_SNP_Tranche_96.00_97.00  AC=2;AF=1.00;AN=2;BaseQRankSum=1.535;CNN_2D=-5.584;DB;DP=16;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=27.22;MQRankSum=-0.696;QD=27.51;ReadPosRankSum=-1.476;SOR=4.174       GT:AD:DP:GQ:PL  1/1:1,15:16:7:598,7,0
+chr1    13302   rs180734498     C       T       176.02  CNN_2D_SNP_Tranche_95.00_96.00  AC=2;AF=1.00;AN=2;CNN_2D=-5.040;DB;DP=10;ExcessHet=3.0103;FS=0.000;MLEAC=2;MLEAF=1.00;MQ=22.61;QD=25.15;SOR=4.174  GT:AD:DP:GQ:PL  1/1:0,7:7:21:190,21,0
+chr1    13656   .               CAG     C       325.61  CNN_2D_INDEL_Tranche_97.00_98.00        AC=1;AF=0.500;AN=2;BaseQRankSum=0.000;CNN_2D=-4.357;DP=11;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=22.10;MQRankSum=0.140;QD=29.11;ReadPosRankSum=-0.282;SOR=0.446  GT:AD:DP:GQ:PL  0/1:1,8:9:18:333,0,18
+chr1    13896   rs201696125     C       A       274.64  CNN_2D_SNP_Tranche_96.00_97.00  AC=1;AF=0.500;AN=2;BaseQRankSum=-4.158;CNN_2D=-6.159;DB;DP=23;ExcessHet=3.0103;FS=8.966;MLEAC=1;MLEAF=0.500;MQ=23.33;MQRankSum=-1.029;QD=11.94;ReadPosRankSum=1.587;SOR=3.116      GT:AD:DP:GQ:PL  0/1:10,13:23:99:282,0,216
+chr1    14397   rs370886505     CTGT    C       343.60  CNN_2D_INDEL_Tranche_96.00_97.00        AC=1;AF=0.500;AN=2;BaseQRankSum=-1.641;CNN_2D=-3.504;DB;DP=33;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=23.50;MQRankSum=0.889;QD=10.41;ReadPosRankSum=2.313;SOR=0.191       GT:AD:DP:GQ:PL  0/1:23,10:33:99:351,0,936
+chr1    14522   .               G       A       63.32   CNN_2D_SNP_Tranche_94.00_95.00  AC=2;AF=1.00;AN=2;CNN_2D=-3.662;DP=3;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=24.34;QD=31.66;SOR=2.303     GT:AD:DP:GQ:PL  1/1:0,2:2:6:75,6,0
+chr1    14542   .               A       G       49.64   CNN_2D_SNP_Tranche_96.00_97.00  AC=1;AF=0.500;AN=2;BaseQRankSum=1.834;CNN_2D=-6.557;DP=6;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=24.01;MQRankSum=1.111;QD=8.27;ReadPosRankSum=1.282;SOR=0.307     GT:AD:DP:GQ:PL  0/1:4,2:6:57:57,0,96
+chr1    14590   .               G       A       45.64   CNN_2D_SNP_Tranche_97.00_98.00  AC=1;AF=0.500;AN=2;BaseQRankSum=2.742;CNN_2D=-9.088;DP=22;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=27.27;MQRankSum=-2.271;QD=2.07;ReadPosRankSum=-0.725;SOR=0.039  GT:AD:DP:GQ:PL  0/1:19,3:22:53:53,0,789
+chr1    15274   rs201931625     A       T       858.06  CNN_2D_SNP_Tranche_95.00_96.00  AC=2;AF=1.00;AN=2;CNN_2D=-4.846;DB;DP=42;ExcessHet=3.0103;FS=0.000;MLEAC=2;MLEAF=1.00;MQ=25.32;QD=28.60;SOR=6.869  GT:AD:DP:GQ:PL  1/1:0,30:30:90:872,90,0
+chr1    16014   .               C       T       58.64   CNN_2D_SNP_Tranche_96.00_97.00  AC=1;AF=0.500;AN=2;BaseQRankSum=1.645;CNN_2D=-6.466;DP=5;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=22.21;MQRankSum=0.674;QD=11.73;ReadPosRankSum=1.036;SOR=1.179    GT:AD:DP:GQ:PL  0/1:2,3:5:34:66,0,34
+chr1    16068   rs372319358     T       C       38.65   CNN_2D_SNP_Tranche_95.00_96.00  AC=1;AF=0.500;AN=2;BaseQRankSum=-0.967;CNN_2D=-4.709;DB;DP=3;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=22.67;MQRankSum=0.967;QD=12.88;ReadPosRankSum=0.000;SOR=1.179        GT:AD:DP:GQ:PL  0/1:1,2:3:18:46,0,18
+chr1    16229   .               C       A       32.64   CNN_2D_SNP_Tranche_97.00_98.00  AC=1;AF=0.500;AN=2;BaseQRankSum=-1.383;CNN_2D=-7.690;DP=4;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=21.25;MQRankSum=0.674;QD=8.16;ReadPosRankSum=-0.674;SOR=2.303   GT:AD:DP:GQ:PL  0/1:2,2:4:39:40,0,39
+chr1    16495   rs141130360     G       C       2199.64 CNN_2D_SNP_Tranche_99.00_100.00 AC=1;AF=0.500;AN=2;BaseQRankSum=-6.536;CNN_2D=-16.116;DB;DP=230;ExcessHet=3.0103;FS=7.259;MLEAC=1;MLEAF=0.500;MQ=21.51;MQRankSum=1.311;QD=9.73;ReadPosRankSum=-0.549;SOR=0.343     GT:AD:DP:GQ:PL  0/1:114,112:226:99:2207,0,2466
+chr1    16534   rs201459529     C       T       1522.64 CNN_2D_SNP_Tranche_98.00_99.00  AC=1;AF=0.500;AN=2;BaseQRankSum=-5.981;CNN_2D=-13.877;DB;DP=153;ExcessHet=3.0103;FS=3.066;MLEAC=1;MLEAF=0.500;MQ=21.39;MQRankSum=0.270;QD=9.95;ReadPosRankSum=-2.357;SOR=0.462     GT:AD:DP:GQ:PL  0/1:76,77:153:99:1530,0,1505
+chr1    16571   rs199676946     G       A       1544.64 CNN_2D_SNP_Tranche_98.00_99.00  AC=1;AF=0.500;AN=2;BaseQRankSum=-9.691;CNN_2D=-12.688;DB;DP=133;ExcessHet=3.0103;FS=6.072;MLEAC=1;MLEAF=0.500;MQ=21.54;MQRankSum=-0.154;QD=11.70;ReadPosRankSum=1.637;SOR=0.070    GT:AD:DP:GQ:PL  0/1:62,70:132:99:1552,0,1217
+chr1    16688   .               G       A       84.64   CNN_2D_SNP_Tranche_99.00_100.00 AC=1;AF=0.500;AN=2;BaseQRankSum=-4.251;CNN_2D=-16.083;DP=82;ExcessHet=3.0103;FS=37.437;MLEAC=1;MLEAF=0.500;MQ=22.17;MQRankSum=-3.661;QD=1.14;ReadPosRankSum=-0.970;SOR=5.133       GT:AD:DP:GQ:PL  0/1:62,12:74:92:92,0,1448
+chr1    16957   rs200658479     G       T       252.64  CNN_2D_SNP_Tranche_95.00_96.00  AC=1;AF=0.500;AN=2;BaseQRankSum=-3.678;CNN_2D=-5.193;DB;DP=19;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=23.95;MQRankSum=1.443;QD=13.30;ReadPosRankSum=-0.372;SOR=1.022      GT:AD:DP:GQ:PL  0/1:8,11:19:99:260,0,171
+chr1    17020   rs199740902     G       A       76.64   CNN_2D_SNP_Tranche_96.00_97.00  AC=1;AF=0.500;AN=2;BaseQRankSum=-2.655;CNN_2D=-5.439;DB;DP=9;ExcessHet=3.0103;FS=0.000;MLEAC=1;MLEAF=0.500;MQ=23.69;MQRankSum=-1.559;QD=8.52;ReadPosRankSum=0.140;SOR=0.495        GT:AD:DP:GQ:PL  0/1:5,4:9:84:84,0,118
+```
+
+Findings:
+
+- Some false positive are called in regions where there is very low coverage (chr1 12783, 12783, 13302, 13656)
+
+![fp call chr1 12783 NIST7035](./images/fp_call_chr1_12783_NIST7035.PNG)
+
+![fp call chr1 13116 and 13118 NIST7035](./images/fp_call_chr1_13116_and_13118_NIST7035.PNG)
+
+![fp call chr1 13302 NIST7035](./images/fp_call_chr1_13302_NIST7035.PNG)
+
+![fp call chr1 13656 NIST7035](./images/fp_call_chr1_13656_NIST7035.PNG)
+
+- Some false positive are called in regions where there is low coverage and only reverse reads (chr1, 14590)
+
+![fp call chr1 14590 NIST7035](./images/fp_call_chr1_14590_NIST7035.PNG)
+
+- Some false positive are called in regions where there is low coverage and only forward reads (chr1, 15274)
+
+![fp call chr1 15274 NIST7035](./images/fp_call_chr1_15274_NIST7035.PNG)
+
+*Note: there is a typo in the above images. For example: fp_project.NIST.hc.snps.indels.NIST7035_v_NIST7086_NIST_filtered.vcf.gz is in fact fp_project.NIST.hc.snps.indels.NIST7086_v_NIST7086_NIST_filtered.vcf.gz*
