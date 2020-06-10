@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality - results
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/11 10:38:37
+Last modified: 2020/06/11 10:52:36
 
 This document aims to describe a few key run parameters and record the results of each quality benchmarking run. The full parameters for each benchmarking run can be found [here](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_benchmarking), [here](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_benchmarking) and [here](https://github.com/ESR-NZ/ESR-Parabricks/quality_benchmarking).
 
@@ -15,42 +15,28 @@ The code used to generate these results can be found [here](https://github.com/l
   - [intra_truth_comparison](#intra_truth_comparison)
     - [Run parameters/settings](#run-parameterssettings)
     - [Results](#results)
-        - [Compared with bedtools intersect](#compared-with-bedtools-intersect)
-        - [Compared with hap.py](#compared-with-happy)
   - [quality_bench1.0](#quality_bench10)
     - [Run parameters/settings](#run-parameterssettings-1)
     - [Results](#results-1)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline)
-        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-1)
-        - [Compared with hap.py](#compared-with-happy-1)
       - [parabricks germline pipeline](#parabricks-germline-pipeline)
-        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-2)
-        - [Compared with hap.py](#compared-with-happy-2)
   - [quality_bench1.1](#quality_bench11)
     - [Run parameters/settings](#run-parameterssettings-2)
     - [Results](#results-2)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-1)
-        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-3)
-        - [Compared with hap.py](#compared-with-happy-3)
   - [quality_bench1.2](#quality_bench12)
     - [Run parameters/settings](#run-parameterssettings-3)
     - [Results](#results-3)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-2)
-        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-4)
-        - [Compared with hap.py](#compared-with-happy-4)
   - [quality_bench1.3](#quality_bench13)
     - [Run parameters/settings](#run-parameterssettings-4)
     - [Results](#results-4)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-3)
-        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-5)
-        - [Compared with hap.py](#compared-with-happy-5)
   - [quality_bench1.4](#quality_bench14)
     - [Run parameters/settings](#run-parameterssettings-5)
     - [Results](#results-5)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-4)
-        - [Compared with hap.py](#compared-with-happy-6)
       - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
-        - [Compared with hap.py](#compared-with-happy-7)
   - [quality_bench1.5](#quality_bench15)
     - [Run parameters/settings](#run-parameterssettings-6)
     - [Results](#results-6)
@@ -66,7 +52,6 @@ The code used to generate these results can be found [here](https://github.com/l
     - [Run parameters/settings](#run-parameterssettings-7)
     - [Results](#results-7)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-5)
-        - [Compared with hap.py](#compared-with-happy-8)
   - [quality_bench1.7](#quality_bench17)
     - [Run parameters/settings](#run-parameterssettings-8)
     - [Results](#results-8)
@@ -89,16 +74,6 @@ Parameters used to create the Genome In A Bottle (GIAB) sample [NA12878](https:/
 ### Results
 
 Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/intra_truth_comparison/ (wintermute)
-
-##### Compared with bedtools intersect
-
-| file                                                                                   | count   | type                                               |
-|----------------------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086.vcf | 237,338 | Common                                             |
-| unique_project.NIST.hc.snps.indels.NIST7035.vcf                                        | 99,141  | Unique to project.NIST.hc.snps.indels.NIST7035.vcf |
-| unique_project.NIST.hc.snps.indels.NIST7086.vcf                                        | 80,661  | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
-
-##### Compared with hap.py
 
 - NIST7035 ('baseline') compared to NIST7086 ('truth')
 
@@ -159,26 +134,6 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with bedtools intersect
-
-- NIST7035
-
-| file                                                                     | count   | type                                               |
-|--------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf | 188,127 | Common                                             |
-| unique_NIST7035_NIST_filtered.vcf                                        | 280,797 | Unique to h_g_p + v_a_p output                     |
-| unique_project.NIST.hc.snps.indels.NIST7035.vcf                          | 148,216 | Unique to known vcf                                |
-
-- NIST7086
-
-| file                                                                     | count   | type                                               |
-|--------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf | 190,599 | Common                                             |
-| unique_NIST7086_NIST_filtered.vcf                                        | 311,418 | Unique to h_g_p + v_a_p output                     |
-| unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,323 | Unique to known vcf                                |
-
-##### Compared with hap.py
-
 *Note: 'PASS' indicates a snp in a tranche below 99.95 and an indel in a tranche below 99.40*
 
 - NIST7035
@@ -200,26 +155,6 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 | SNP   | PASS   | 207264      | 163448   | 43816    | 437144      | 1872     | 271792    | 1151  | 327   | 0.788598      | 0.988679         | 0.621745       | 0.877376        | 2.101558993            | 1.418276144            | 0.720450017               | 0.354108053               |
 
 #### parabricks germline pipeline
-
-##### Compared with bedtools intersect
-
-- NIST7035
-
-| file                                                                     | count   | type                                               |
-|--------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035.vcf          | 188,161 | Common                                             |
-| unique_NIST7035_NIST.vcf                                                 | 280,446 | Unique to parabricks output                        |
-| unique_project.NIST.hc.snps.indels.NIST7035.vcf                          | 148,197 | Unique to known vcf                                |
-
-- NIST7086
-
-| file                                                                     | count   | type                                               |
-|--------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086.vcf          | 190,707 | Common                                             |
-| unique_NIST7086_NIST.vcf                                                 | 311,598 | Unique to parabricks output                        |
-| unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,260 | Unique to known vcf                                |
-
-##### Compared with hap.py
 
 - NIST7035
 
@@ -274,26 +209,6 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quality_bench1.1/ (wintermute)
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
-
-##### Compared with bedtools intersect
-
-- NIST7035
-
-| file                                                                     | count   | type                                               |
-|--------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf | 188,127 | Common                                             |
-| unique_NIST7035_NIST_filtered.vcf                                        | 280,797 | Unique to NIST7035_NIST_filtered                   |
-| unique_project.NIST.hc.snps.indels.NIST7035.vcf                          | 148,216 | Unique to project.NIST.hc.snps.indels.NIST7035.vcf |
-
-- NIST7086
-
-| file                                                                     | count   | type                                               |
-|--------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf | 190,599 | Common                                             |
-| unique_NIST7086_NIST_filtered.vcf                                        | 311,418 | Unique to NIST7086_NIST_filtered                   |
-| unique_project.NIST.hc.snps.indels.NIST7086.vcf                          | 127,323 | Unique to project.NIST.hc.snps.indels.NIST7086.vcf |
-
-##### Compared with hap.py
 
 *Note: 'PASS' indicates a snp in a tranche below 99.95 and an indel in a tranche below 99.40*
 
@@ -353,28 +268,6 @@ Variants from tranche 82.00 or less were extracted for the following comparisons
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with bedtools intersect
-
-*Note: these comparisons are made with variants that fall within a tranche less than 82.00*
-
-- NIST7035
-
-| file                                                                                     | count   | type                                               |
-|------------------------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035.vcf | 139,328 | Common                                             |
-| unique_NIST7035_NIST_filtered_less_than_82.00.vcf                                        | 172,013 | Unique to h_g_p + v_a_p output                     |
-| unique_project.NIST.hc.snps.indels.NIST7035.vcf                                          | 196,693 | Unique to known vcf                                |
-
-- NIST7086
-
-| file                                                                                     | count   | type                                               |
-|------------------------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086.vcf | 140,929 | Common                                             |
-| unique_NIST7086_NIST_filtered_less_than_82.00.vcf                                        | 192,300 | Unique to h_g_p + v_a_p output                     |
-| unique_project.NIST.hc.snps.indels.NIST7086.vcf                                          | 176,602 | Unique to known vcf                                |
-
-##### Compared with hap.py
-
 *Note: 'PASS' indicates a variant in a tranche below 80.00 and 'ALL' indicate a variant in a tranche below 82.00*
 
 - NIST7035
@@ -432,28 +325,6 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 Variants from tranche 82.00 or less, and 70.00 or less were extracted for the following comparisons
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
-
-##### Compared with bedtools intersect
-
-*Note: these comparisons are made with variants that fall within a tranche less than 70.00*
-
-- NIST7035
-
-| file                                                                                     | count   | type                                               |
-|------------------------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7035_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7035.vcf | 127,584 | Common                                             |
-| unique_NIST7035_NIST_filtered_less_than_70.00.vcf                                        | 124,942 | Unique to h_g_p + v_a_p output                     |
-| unique_project.NIST.hc.snps.indels.NIST7035.vcf                                          | 208,425 | Unique to known vcf                                |
-
-- NIST7086
-
-| file                                                                                     | count   | type                                               |
-|------------------------------------------------------------------------------------------|---------|----------------------------------------------------|
-| common_NIST7086_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7086.vcf | 129,870 | Common                                             |
-| unique_NIST7086_NIST_filtered_less_than_70.00.vcf                                        | 141,363 | Unique to h_g_p + v_a_p output                     |
-| unique_project.NIST.hc.snps.indels.NIST7086.vcf                                          | 187,658 | Unique to known vcf                                |
-
-##### Compared with hap.py
 
 - NIST7035
 
@@ -571,8 +442,6 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with hap.py
-
 - NIST7035
 
 *Note: 'PASS' indicates a variant in a tranche below 90.00 and 'ALL' indicate a variant in a tranche below 99.00*
@@ -596,8 +465,6 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 | SNP   | PASS   | 207264      | 144837   | 62427    | 388446      | 838      | 242741    | 558   | 119   | 0.698804      | 0.994249         | 0.624903       | 0.820748        | 2.101558993            | 1.454573024            | 0.720450017               | 0.283950332               |
 
 #### parabricks germline pipeline
-
-##### Compared with hap.py
 
 - NIST7035
 
@@ -808,8 +675,6 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quality_bench1.4/ (Wintermute) and /home/lkemp/benchmarking_quality/ (Methead)
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
-
-##### Compared with hap.py
 
 - NIST7035
 

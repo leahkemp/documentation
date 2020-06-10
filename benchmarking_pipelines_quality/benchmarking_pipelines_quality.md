@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/11 10:37:09
+Last modified: 2020/06/11 10:49:54
 
 - **Aim:** Undertake best practice benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -24,38 +24,18 @@ This document aims to document the code used in each quality benchmarking run, w
       - [sdf files for hap.py](#sdf-files-for-happy)
   - [Benchmarking](#benchmarking)
     - [intra_truth_comparison](#intra_truth_comparison)
-      - [Compared with bedtools intersect](#compared-with-bedtools-intersect)
-        - [Compared with hap.py](#compared-with-happy)
-        - [NIST7035 ('baseline') compared to NIST7086 ('truth')](#nist7035-baseline-compared-to-nist7086-truth)
-        - [NIST7086 ('baseline') compared to NIST7035 ('truth')](#nist7086-baseline-compared-to-nist7035-truth)
     - [quality_bench1.0](#quality_bench10)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline)
-        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-1)
-        - [Compared with hap.py](#compared-with-happy-1)
       - [parabricks germline pipeline](#parabricks-germline-pipeline)
-        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-2)
-        - [Compared with hap.py](#compared-with-happy-2)
     - [quality_bench1.1](#quality_bench11)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-1)
-        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-3)
-        - [Compared with hap.py](#compared-with-happy-3)
     - [quality_bench1.2](#quality_bench12)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-2)
-        - [NIST7035](#nist7035)
-        - [NIST7086](#nist7086)
-        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-4)
-        - [Compared with hap.py](#compared-with-happy-4)
     - [quality_bench1.3](#quality_bench13)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-3)
-        - [NIST7035](#nist7035-1)
-        - [NIST7086](#nist7086-1)
-        - [Compared with bedtools intersect](#compared-with-bedtools-intersect-5)
-        - [Compared with hap.py](#compared-with-happy-5)
     - [quality_bench1.4](#quality_bench14)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-4)
-        - [Compared with hap.py](#compared-with-happy-6)
       - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
-        - [Compared with hap.py](#compared-with-happy-7)
     - [quality_bench1.5](#quality_bench15)
       - [no pipeline (intra_truth_comparison re-run)](#no-pipeline-intra_truth_comparison-re-run)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.0 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench10-re-run)
@@ -66,8 +46,9 @@ This document aims to document the code used in each quality benchmarking run, w
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.4 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench14-re-run)
       - [parabricks germline pipeline (quality_bench1.4 re-run)](#parabricks-germline-pipeline-quality_bench14-re-run)
     - [quality_bench1.6](#quality_bench16)
-      - [NIST7086](#nist7086-2)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-5)
     - [quality_bench1.7](#quality_bench17)
+      - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-6)
 
 ## Setup
 
@@ -215,45 +196,7 @@ bgzip < project.NIST.hc.snps.indels.NIST7086.vcf > project.NIST.hc.snps.indels.N
 tabix project.NIST.hc.snps.indels.NIST7086.vcf.gz
 ```
 
-#### Compared with bedtools intersect
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/intra_truth_comparison/
-mkdir intersect_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086
-cd intersect_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086
-```
-
-```bash
-# Common
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
-> common_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086.vcf
-
-# Unique NIST7035
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--v \
-> unique_project.NIST.hc.snps.indels.NIST7035.vcf
-
-# Unique NIST7086
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--v \
-> unique_project.NIST.hc.snps.indels.NIST7086.vcf
-```
-
-```bash
-for i in 'common_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST7086.vcf' 'unique_project.NIST.hc.snps.indels.NIST7035.vcf' 'unique_project.NIST.hc.snps.indels.NIST7086.vcf'
-do grep -v "#" $i | wc -l
-done
-```
-
-##### Compared with hap.py
-
-##### NIST7035 ('baseline') compared to NIST7086 ('truth')
+NIST7035 ('baseline') compared to NIST7086 ('truth')
 
 ```bash
 cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/intra_truth_comparison/
@@ -272,7 +215,7 @@ cd happy_project.NIST.hc.snps.indels.NIST7035_v_project.NIST.hc.snps.indels.NIST
 --engine-vcfeval-template /store/lkemp/exome_project/quality_benchmarking/hap.py-install/libexec/rtg-tools-install/ucsc.hg19.fasta.sdf
 ```
 
-##### NIST7086 ('baseline') compared to NIST7035 ('truth')
+NIST7086 ('baseline') compared to NIST7035 ('truth')
 
 ```bash
 cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/intra_truth_comparison/
@@ -294,82 +237,6 @@ cd happy_project.NIST.hc.snps.indels.NIST7086_v_project.NIST.hc.snps.indels.NIST
 ### quality_bench1.0
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
-
-##### Compared with bedtools intersect
-
-- NIST7035
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
-mkdir intersect_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
-cd intersect_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
-```
-
-```bash
-# Common
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
-> common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf
-
-# Unique truth
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--v \
-> unique_NIST7035_NIST_filtered.vcf
-
-# Unique query
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--b ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
--v \
-> unique_project.NIST.hc.snps.indels.NIST7035.vcf
-```
-
-```bash
-for i in 'common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf' 'unique_NIST7035_NIST_filtered.vcf' 'unique_project.NIST.hc.snps.indels.NIST7035.vcf'
-do grep -v "#" $i | wc -l
-done
-```
-
-- NIST7086
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
-mkdir intersect_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
-cd intersect_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
-```
-
-```bash
-# Common
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
-> common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf
-
-# Unique truth
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--v \
-> unique_NIST7086_NIST_filtered.vcf
-
-# Unique query
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--b ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
--v \
-> unique_project.NIST.hc.snps.indels.NIST7086.vcf
-```
-
-```bash
-for i in 'common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf' 'unique_NIST7086_NIST_filtered.vcf' 'unique_project.NIST.hc.snps.indels.NIST7086.vcf'
-do grep -v "#" $i | wc -l
-done
-```
-
-##### Compared with hap.py
 
 - NIST7035
 
@@ -413,80 +280,6 @@ cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 
 *Output vcfs were transferred to Wintermute*
 
-##### Compared with bedtools intersect
-
-- NIST7035
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
-mkdir intersect_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
-cd intersect_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035
-```
-
-```bash
-# Common
-bedtools intersect \
--a ../parabricks/NIST7035_NIST.vcf \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
-> common_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035.vcf
-
-# Unique truth
-bedtools intersect \
--a ../parabricks/NIST7035_NIST.vcf \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--v \
-> unique_NIST7035_NIST.vcf
-
-# Unique query
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--b ../parabricks/NIST7035_NIST.vcf \
--v \
-> unique_project.NIST.hc.snps.indels.NIST7035.vcf
-```
-
-```bash
-for i in 'common_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035.vcf' 'unique_NIST7035_NIST.vcf' 'unique_project.NIST.hc.snps.indels.NIST7035.vcf'
-do grep -v "#" $i | wc -l
-done
-```
-
-- NIST7086
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.0/
-mkdir intersect_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
-cd intersect_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086
-```
-
-```bash
-# Common
-bedtools intersect \
--a ../parabricks/NIST7086_NIST.vcf \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
-> common_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086.vcf
-
-# Unique truth
-bedtools intersect \
--a ../parabricks/NIST7086_NIST.vcf \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--v \
-> unique_NIST7086_NIST.vcf
-
-# Unique query
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--b ../parabricks/NIST7086_NIST.vcf \
--v \
-> unique_project.NIST.hc.snps.indels.NIST7086.vcf
-```
-
-```bash
-for i in 'common_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086.vcf' 'unique_NIST7086_NIST.vcf' 'unique_project.NIST.hc.snps.indels.NIST7086.vcf'
-do grep -v "#" $i | wc -l
-done
-```
-
 bgzip and index vcfs for comparison
 
 ```bash
@@ -497,8 +290,6 @@ tabix ./vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz
 bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf > ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
 tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
 ```
-
-##### Compared with hap.py
 
 - NIST7035
 
@@ -554,82 +345,6 @@ tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with bedtools intersect
-
-- NIST7035
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.1/
-mkdir intersect_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
-cd intersect_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035
-```
-
-```bash
-# Common
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
-> common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf
-
-# Unique truth
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--v \
-> unique_NIST7035_NIST_filtered.vcf
-
-# Unique query
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--b ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered.vcf.gz \
--v \
-> unique_project.NIST.hc.snps.indels.NIST7035.vcf
-```
-
-```bash
-for i in 'common_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7035.vcf' 'unique_NIST7035_NIST_filtered.vcf' 'unique_project.NIST.hc.snps.indels.NIST7035.vcf'
-do grep -v "#" $i | wc -l
-done
-```
-
-- NIST7086
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.1/
-mkdir intersect_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
-cd intersect_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
-```
-
-```bash
-# Common
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
-> common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf
-
-# Unique truth
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--v \
-> unique_NIST7086_NIST_filtered.vcf
-
-# Unique query
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--b ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz \
--v \
-> unique_project.NIST.hc.snps.indels.NIST7086.vcf
-```
-
-```bash
-for i in 'common_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086.vcf' 'unique_NIST7086_NIST_filtered.vcf' 'unique_project.NIST.hc.snps.indels.NIST7086.vcf'
-do grep -v "#" $i | wc -l
-done
-```
-
-##### Compared with hap.py
-
 - NIST7035
 
 ```bash
@@ -674,7 +389,7 @@ cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 
 Extract snps and indels based on filter tranche levels in vcf pipeline output (stored in the 'FILTER' column) so they can be compared separately (see [here](https://gatkforums.broadinstitute.org/gatk/discussion/1255/using-jexl-to-apply-hard-filters-or-select-variants-based-on-annotation-values) and [here](https://gatkforums.broadinstitute.org/gatk/discussion/12406/selectvariants-from-filter-column-gatk4) for info on passing selection conditions to gatk SelectVariants)
 
-##### NIST7035
+NIST7035
 
 - SNPS
 
@@ -756,7 +471,7 @@ do cat $i | grep -v '##' | wc -l
 done
 ```
 
-##### NIST7086
+NIST7086
 
 - SNPS
 
@@ -874,82 +589,6 @@ bgzip < ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.0
 tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00.vcf.gz
 ```
 
-##### Compared with bedtools intersect
-
-- NIST7035
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.2/
-mkdir intersect_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
-cd intersect_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035
-```
-
-```bash
-# Common
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
-> common_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035.vcf
-
-# Unique truth
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--v \
-> unique_NIST7035_NIST_filtered_less_than_82.00.vcf
-
-# Unique query
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--b ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_82.00.vcf.gz \
--v \
-> unique_project.NIST.hc.snps.indels.NIST7035.vcf
-```
-
-```bash
-for i in 'common_NIST7035_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7035.vcf' 'unique_NIST7035_NIST_filtered_less_than_82.00.vcf' 'unique_project.NIST.hc.snps.indels.NIST7035.vcf'
-do grep -v "#" $i | wc -l
-done
-```
-
-- NIST7086
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.2/
-mkdir intersect_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
-cd intersect_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086
-```
-
-```bash
-# Common
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
-> common_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086.vcf
-
-# Unique truth
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--v \
-> unique_NIST7086_NIST_filtered_less_than_82.00.vcf
-
-# Unique query
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--b ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_82.00.vcf.gz \
--v \
-> unique_project.NIST.hc.snps.indels.NIST7086.vcf
-```
-
-```bash
-for i in 'common_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NIST7086.vcf' 'unique_NIST7086_NIST_filtered_less_than_82.00.vcf' 'unique_project.NIST.hc.snps.indels.NIST7086.vcf'
-do grep -v "#" $i | wc -l
-done
-```
-
-##### Compared with hap.py
-
 - NIST7035
 
 ```bash
@@ -994,7 +633,7 @@ cd happy_NIST7086_NIST_filtered_less_than_82.00_v_project.NIST.hc.snps.indels.NI
 
 Extract snps and indels based on filter tranche levels in vcf pipeline output (stored in the 'FILTER' column) so they can be compared separately (see [here](https://gatkforums.broadinstitute.org/gatk/discussion/1255/using-jexl-to-apply-hard-filters-or-select-variants-based-on-annotation-values) and [here](https://gatkforums.broadinstitute.org/gatk/discussion/12406/selectvariants-from-filter-column-gatk4) for info on passing selection conditions to gatk SelectVariants)
 
-##### NIST7035
+NIST7035
 
 - SNPS
 
@@ -1076,7 +715,7 @@ do cat $i | grep -v '##' | wc -l
 done
 ```
 
-##### NIST7086
+NIST7086
 
 - SNPS
 
@@ -1287,82 +926,6 @@ for i in 'NIST7035_NIST_filtered_less_than_72.00.vcf.gz' 'NIST7035_NIST_filtered
 do tabix $i
 done
 ```
-
-##### Compared with bedtools intersect
-
-- NIST7035
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.3/
-mkdir intersect_NIST7035_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7035
-cd intersect_NIST7035_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7035
-```
-
-```bash
-# Common
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_70.00.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
-> common_NIST7035_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7035.vcf
-
-# Unique truth
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_70.00.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--v \
-> unique_NIST7035_NIST_filtered_less_than_70.00.vcf
-
-# Unique query
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7035.vcf.gz \
--b ../vcf_annotation_pipeline/filtered/NIST7035_NIST_filtered_less_than_70.00.vcf.gz \
--v \
-> unique_project.NIST.hc.snps.indels.NIST7035.vcf
-```
-
-```bash
-for i in 'common_NIST7035_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7035.vcf' 'unique_NIST7035_NIST_filtered_less_than_70.00.vcf' 'unique_project.NIST.hc.snps.indels.NIST7035.vcf'
-do grep -v "#" $i | wc -l
-done
-```
-
-- NIST7086
-
-```bash
-cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.3/
-mkdir intersect_NIST7086_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7086
-cd intersect_NIST7086_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7086
-```
-
-```bash
-# Common
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_70.00.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
-> common_NIST7086_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7086.vcf
-
-# Unique truth
-bedtools intersect \
--a ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_70.00.vcf.gz \
--b /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--v \
-> unique_NIST7086_NIST_filtered_less_than_70.00.vcf
-
-# Unique query
-bedtools intersect \
--a /store/lkemp/publicData/exomes/NA12878_exome/project.NIST.hc.snps.indels.NIST7086.vcf.gz \
--b ../vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered_less_than_70.00.vcf.gz \
--v \
-> unique_project.NIST.hc.snps.indels.NIST7086.vcf
-```
-
-```bash
-for i in 'common_NIST7086_NIST_filtered_less_than_70.00_v_project.NIST.hc.snps.indels.NIST7086.vcf' 'unique_NIST7086_NIST_filtered_less_than_70.00.vcf' 'unique_project.NIST.hc.snps.indels.NIST7086.vcf'
-do grep -v "#" $i | wc -l
-done
-```
-
-##### Compared with hap.py
 
 - NIST7035
 
@@ -1576,8 +1139,6 @@ tabix ./vcf_annotation_pipeline/filtered/NIST7086_NIST_filtered.vcf.gz
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
-##### Compared with hap.py
-
 - NIST7035
 
 ```bash
@@ -1619,8 +1180,6 @@ cd happy_NIST7086_NIST_filtered_v_project.NIST.hc.snps.indels.NIST7086
 #### parabricks germline pipeline
 
 *Output vcfs were transferred to Wintermute*
-
-##### Compared with hap.py
 
 - NIST7035
 
@@ -2018,6 +1577,8 @@ cd happy_quality_bench1.4_re-run_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIS
 
 Extract snps and indels based on filter tranche levels in vcf pipeline output (stored in the 'FILTER' column) so they can be compared separately (see [here](https://gatkforums.broadinstitute.org/gatk/discussion/1255/using-jexl-to-apply-hard-filters-or-select-variants-based-on-annotation-values) and [here](https://gatkforums.broadinstitute.org/gatk/discussion/12406/selectvariants-from-filter-column-gatk4) for info on passing selection conditions to gatk SelectVariants)
 
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline
+
 - NIST7035
 
 ```bash
@@ -2094,7 +1655,7 @@ gatk SelectVariants \
 -O NIST7035_NIST_filtered_less_than_90.00.vcf
 ```
 
-#### NIST7086
+- NIST7086
 
 ```bash
 # less than 99.0
@@ -2182,8 +1743,6 @@ for i in 'NIST7035_NIST_filtered_less_than_99.00.vcf.gz' 'NIST7035_NIST_filtered
 do tabix $i
 done
 ```
-
-Comparison with hap.py
 
 - NIST7035
 
@@ -2355,9 +1914,10 @@ cd happy_quality_bench1.4_re-run_NIST7035_NIST_filtered_less_than_91.00_v_projec
 
 Create vcf files of false negatives (fn), false positives (fp) so they can be viewed in IGV to try an understand why they might be incorrectly called
 
+#### human_genomics_pipeline + minimal vcf_annotation_pipeline
+
 ```bash
 cd /store/lkemp/exome_project/quality_benchmarking/NA12878_exome/quality_bench1.4/vcf_annotation_pipeline/filtered/
-
 
 # False negatives
 bedtools intersect \
