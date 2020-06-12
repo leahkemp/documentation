@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - resources
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/11 15:45:43
+Last modified: 2020/06/12 13:57:01
 
 - **Aim:** Undertake benchmarking of genomics pipelines to optimise their resource use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [samtools 1.9](http://www.htslib.org/), [bedtools 2.25](https://bedtools.readthedocs.io/en/latest/), [bgzip 1.2.1](http://www.htslib.org/doc/bgzip.html)
@@ -225,6 +225,8 @@ mkdir times
 
 #### Run benchmarking on Wintermute
 
+Workflow:
+
 - Create a resource_benchmarking branch for the pipeline
 
 - Set the number of threads in each rule to the maximum number that we will test (32), therefore we can control the number of threads used for each test with the `j` flag passed to snakemake on the command line (if the number of threads for a given rule are larger that the threads passed to this flag, they will be scaled down)
@@ -270,7 +272,9 @@ bash run_32_thread.sh
 
 ## resource_bench2.*
 
-The test dataset used in resource_bench1.* turned out to be too small for the benchmarking and there were some rules that were running too fast. Using more data will ore optimal for benchmarking since it will provide a better estimate for how it will scale with more threads on the full data set will be. Therefore we will increase the test dataset (whole exome data) and re-run the benchmarking. In this new test, a different time command will be used (the time command used in resource_bench1.* was not the command intended to be used). I'll also automate extracting the times from the output files into an excel spreadsheet for plotting. In addition, one of the snakemake rules didn't appear to write out a times file, I'll attempt to fix this.
+The test dataset used in resource_bench1.* turned out to be too small for the benchmarking and there were some rules that were running too fast. Using more data will ore optimal for benchmarking since it will provide a better estimate for how it will scale with more threads on the full data set will be. Therefore we will increase the test dataset (whole exome data) and re-run the benchmarking. In this new test, a different time command will be used (the time command used in resource_bench1.* was not the command intended to be used). I'll also automate extracting the times from the output files into an excel spreadsheet for plotting. In addition, one of the snakemake rules (sambamba_index) didn't appear to write out a times file, I'll attempt to fix this.
+
+*Note. it turned out there was a bug with the sambamba_index rule that needed to be fixed before I could get this rule to output a times file. I also ended up updating the resource_bench2 test with other fixes to the master branch of human_genomics_pipeline. Namely, extra databases were passed to BaseRecalibrator*
 
 ### Create a test dataset
 
@@ -420,15 +424,17 @@ mkdir times
 
 #### Run benchmarking on Wintermute
 
-- Create a resource_benchmarking branch for the pipeline
+Workflow:
+
+- Update the resource_benchmarking branch for the pipeline
 
 - Set the number of threads in each rule to the maximum number that we will test (32), therefore we can control the number of threads used for each test with the `j` flag passed to snakemake on the command line (if the number of threads for a given rule are larger that the threads passed to this flag, they will be scaled down)
 
 - Create a 'times' dir
 
-- Wrap each rule script with ( time rule_script 2> rule.stderr ) 2> times/rule_time.txt
+- Wrap each rule script with ( /usr/bin/time rule_script ) 2> times/rule.stderr (slightly different for fastqc rule)
 
-- This will write the output of the time command to a file (within times/) for each rule (and extract the output messages to the .stderr files)
+- This will write the log file and the output of the time command to a file (within times/) for each rule
 
 - Create shell scripts that will prompt the pipeline to run
 
