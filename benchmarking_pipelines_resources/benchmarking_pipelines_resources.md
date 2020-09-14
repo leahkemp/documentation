@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - resources
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/06/12 13:57:01
+Last modified: 2020/09/15 11:22:53
 
 - **Aim:** Undertake benchmarking of genomics pipelines to optimise their resource use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [samtools 1.9](http://www.htslib.org/), [bedtools 2.25](https://bedtools.readthedocs.io/en/latest/), [bgzip 1.2.1](http://www.htslib.org/doc/bgzip.html)
@@ -467,4 +467,4 @@ bash run_32_thread.sh
 #### Results
 
 - Full run settings for each threading level can be found at [resource_bench2.0](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.0), [resource_bench2.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.1), [resource_bench2.2](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.2), [resource_bench2.3](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.3), [resource_bench2.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.4), [resource_bench2.5](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.5)
-- Plotting/report can be found at /home/lkemp/benchmarking_pipelines/resource_benchmarking/resource_bench2 on Methead)
+- Plotting/report for resource_bench1 can be found [here](resource_bench1/resource_bench2.md) and resource_bench2 can be found [here](resource_bench2/resource_bench2.md)

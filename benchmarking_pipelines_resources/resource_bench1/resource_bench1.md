@@ -1,0 +1,310 @@
+Resource benchmarking 1
+================
+Leah Kemp
+01/06/2020
+
+## Context
+
+This document aims to plot and analyse the results of [resource
+benchmarking tests for
+human\_genomics\_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_benchmarking).
+This document adresses the test resource\_bench1.
+
+See related docs
+    here:
+
+  - [benchmarking\_pipelines\_resources](https://github.com/leahkemp/documentation/blob/master/benchmarking_pipelines_resources/benchmarking_pipelines_resources.md)
+
+## Setup
+
+``` r
+library(vcfR)
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+library(openxlsx)
+```
+
+Read in data
+
+``` r
+data <- read.xlsx("resource_bench1_results.xlsx")
+```
+
+Extract by rule
+
+``` r
+fastqc_data <- data %>%
+  dplyr::filter(rule == "fastqc")
+
+multiqc_pre_trim_data <- data %>%
+  dplyr::filter(rule == "multiqc_pre_trim")
+
+trim_galore_pe_data <- data %>%
+  dplyr::filter(rule == "trim_galore_pe")
+
+multiqc_post_trim_data <- data %>%
+  dplyr::filter(rule == "multiqc_post_trim")
+
+bwa_map_data <- data %>%
+  dplyr::filter(rule == "bwa_map")
+
+sambamba_sort_data <- data %>%
+  dplyr::filter(rule == "sambamba_sort")
+
+sambamba_mkdups_data <- data %>%
+  dplyr::filter(rule == "sambamba_mkdups")
+
+gatk_add_replace_read_groups_data <- data %>%
+  dplyr::filter(rule == "gatk_add_replace_read_groups")
+
+sambamba_index_rgadd_data <- data %>%
+  dplyr::filter(rule == "sambamba_index_rgadd")
+
+gatk_base_recalibrator_data <- data %>%
+  dplyr::filter(rule == "gatk_base_recalibrator")
+
+gatk_apply_bqsr_data <- data %>%
+  dplyr::filter(rule == "gatk_apply_bqsr")
+```
+
+## Find optimal threads for each rule
+
+``` r
+xlab = "Threads"
+ylab = "Time (seconds)"
+
+fastqc_plot <- ggplot2::ggplot(data = fastqc_data) +
+  geom_line(aes(x = threads, y = real_time)) +
+  geom_line(aes(x = threads, y = user_time), color="steelblue") +
+  geom_line(aes(x = threads, y = sys_time), color="darkred") +
+  labs(title = "fastqc", x = xlab, y = ylab) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  geom_vline(xintercept = 2, linetype = "dashed")
+
+multiqc_pre_trim_plot <- ggplot2::ggplot(data = multiqc_pre_trim_data) +
+  geom_line(aes(x = threads, y = real_time)) +
+  geom_line(aes(x = threads, y = user_time), color="steelblue") +
+  geom_line(aes(x = threads, y = sys_time), color="darkred") +
+  labs(title = "multiqc_pre_trim", x = xlab, y = ylab) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  geom_vline(xintercept = 2, linetype = "dashed")
+
+trim_galore_pe_plot <- ggplot2::ggplot(data = trim_galore_pe_data) +
+  geom_line(aes(x = threads, y = real_time)) +
+  geom_line(aes(x = threads, y = user_time), color="steelblue") +
+  geom_line(aes(x = threads, y = sys_time), color="darkred") +
+  labs(title = "trim_galore_pe", x = xlab, y = ylab) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  geom_vline(xintercept = 4, linetype = "dashed")
+
+multiqc_post_trim_plot <- ggplot2::ggplot(data = multiqc_post_trim_data) +
+  geom_line(aes(x = threads, y = real_time)) +
+  geom_line(aes(x = threads, y = user_time), color="steelblue") +
+  geom_line(aes(x = threads, y = sys_time), color="darkred") +
+  labs(title = "multiqc_post_trim", x = xlab, y = ylab) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  geom_vline(xintercept = 2, linetype = "dashed")
+
+bwa_map_plot <- ggplot2::ggplot(data = bwa_map_data) +
+  geom_line(aes(x = threads, y = real_time)) +
+  geom_line(aes(x = threads, y = user_time), color="steelblue") +
+  geom_line(aes(x = threads, y = sys_time), color="darkred") +
+  labs(title = "bwa_map", x = xlab, y = ylab) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  geom_vline(xintercept = 8, linetype = "dashed")
+
+sambamba_sort_plot <- ggplot2::ggplot(data = sambamba_sort_data) +
+  geom_line(aes(x = threads, y = real_time)) +
+  geom_line(aes(x = threads, y = user_time), color="steelblue") +
+  geom_line(aes(x = threads, y = sys_time), color="darkred") +
+  labs(title = "sambamba_sort", x = xlab, y = ylab) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  geom_vline(xintercept = 4, linetype = "dashed")
+
+sambamba_mkdups_plot <- ggplot2::ggplot(data = sambamba_mkdups_data) +
+  geom_line(aes(x = threads, y = real_time)) +
+  geom_line(aes(x = threads, y = user_time), color="steelblue") +
+  geom_line(aes(x = threads, y = sys_time), color="darkred") +
+  labs(title = "sambamba_mkdups", x = xlab, y = ylab) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  geom_vline(xintercept = 4, linetype = "dashed")
+
+gatk_add_replace_read_groups_plot <- ggplot2::ggplot(data = gatk_add_replace_read_groups_data) +
+  geom_line(aes(x = threads, y = real_time)) +
+  geom_line(aes(x = threads, y = user_time), color="steelblue") +
+  geom_line(aes(x = threads, y = sys_time), color="darkred") +
+  labs(title = "gatk_add_replace_read_groups", x = xlab, y = ylab) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+sambamba_index_rgadd_plot <- ggplot2::ggplot(data = sambamba_index_rgadd_data) +
+  geom_line(aes(x = threads, y = real_time)) +
+  geom_line(aes(x = threads, y = user_time), color="steelblue") +
+  geom_line(aes(x = threads, y = sys_time), color="darkred") +
+  labs(title = "sambamba_index_rgadd", x = xlab, y = ylab) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  geom_vline(xintercept = 2, linetype = "dashed")
+
+gatk_base_recalibrator_plot <- ggplot2::ggplot(data = gatk_base_recalibrator_data) +
+  geom_line(aes(x = threads, y = real_time)) +
+  geom_line(aes(x = threads, y = user_time), color="steelblue") +
+  geom_line(aes(x = threads, y = sys_time), color="darkred") +
+  labs(title = "gatk_base_recalibrator", x = xlab, y = ylab) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_apply_bqsr_plot <- ggplot2::ggplot(data = gatk_apply_bqsr_data) +
+  geom_line(aes(x = threads, y = real_time)) +
+  geom_line(aes(x = threads, y = user_time), color="steelblue") +
+  geom_line(aes(x = threads, y = sys_time), color="darkred") +
+  labs(title = "gatk_apply_bqsr", x = xlab, y = ylab) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+grid.arrange(fastqc_plot, 
+             multiqc_pre_trim_plot, 
+             trim_galore_pe_plot, 
+             multiqc_post_trim_plot, 
+             bwa_map_plot, 
+             sambamba_sort_plot,
+             ncol = 3, nrow = 2)
+```
+
+![](resource_bench1_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+``` r
+grid.arrange(sambamba_mkdups_plot, 
+             gatk_add_replace_read_groups_plot, 
+             sambamba_index_rgadd_plot, 
+             gatk_base_recalibrator_plot, 
+             gatk_apply_bqsr_plot,
+             ncol = 3, nrow = 2)
+```
+
+![](resource_bench1_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+
+## Estimate run time
+
+Get times to run each step based on the number of threads that starts to
+show dimishing returns
+
+``` r
+fastqc_optimal <- data %>%
+  dplyr::filter(threads == "2" & rule == "fastqc")
+multiqc_pre_trim_optimal <- data %>%
+  dplyr::filter(threads == "2" & rule == "multiqc_pre_trim")
+trim_galore_pe_optimal <- data %>%
+  dplyr::filter(threads == "4" & rule == "trim_galore_pe")
+multiqc_post_trim_optimal <- data %>%
+  dplyr::filter(threads == "2" & rule == "multiqc_post_trim")
+bwa_map_optimal <- data %>%
+  dplyr::filter(threads == "8" & rule == "bwa_map")
+sambamba_sort_optimal <- data %>%
+  dplyr::filter(threads == "4" & rule == "sambamba_sort")
+sambamba_mkdups_optimal <- data %>%
+  dplyr::filter(threads == "4" & rule == "sambamba_mkdups")
+gatk_add_replace_read_groups_optimal <- data %>%
+  dplyr::filter(threads == "1" & rule == "gatk_add_replace_read_groups")
+sambamba_index_rgadd_optimal <- data %>%
+  dplyr::filter(threads == "2" & rule == "sambamba_index_rgadd")
+gatk_base_recalibrator_optimal <- data %>%
+  dplyr::filter(threads == "1" & rule == "gatk_base_recalibrator")
+gatk_apply_bqsr_optimal <- data %>%
+  dplyr::filter(threads == "1" & rule == "gatk_apply_bqsr")
+```
+
+Create a single dataframe for these values in order to do further
+calculations
+
+``` r
+resources <- dplyr::bind_rows(fastqc_optimal, multiqc_pre_trim_optimal, trim_galore_pe_optimal, multiqc_post_trim_optimal, bwa_map_optimal, sambamba_sort_optimal, sambamba_mkdups_optimal, gatk_add_replace_read_groups_optimal, sambamba_index_rgadd_optimal, gatk_base_recalibrator_optimal, gatk_apply_bqsr_optimal)
+```
+
+Change name of threads column
+
+``` r
+resources <- resources %>%
+  dplyr::rename(optimal_threads = threads)
+```
+
+We ran these benchmarking tests against a reduced dataset (only
+chromosome one), these are the rough number of base pairs in the human
+chr1, exome, genome and exon regions in chr1
+
+``` r
+chr1 <- 248956422
+exome <- 30000000
+genome <- 3088286401
+exome_chr1 <- 384789367
+
+exome_chr1/exome
+```
+
+    ## [1] 12.82631
+
+``` r
+chr1/genome
+```
+
+    ## [1] 0.08061313
+
+I calculated the percentage of base pairs of the reference human genome
+that my reduced dataset (chr1 mapping reads of exome sequence data)
+mapped to in the resource benchmarking tests with the following bash
+script (based on [this
+tutorial](https://www.biostars.org/p/273051/))
+
+``` bash
+cd /store/lkemp/exome_project/resource_benchmarking/resource_bench1.0/human_genomics_pipeline/mapped/
+
+#Determine number of bases at 0 read depth
+zero=$(bedtools genomecov -ibam NIST7035_NIST_chr1_bwa_recal.bam -g /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta -bga | awk '$4==0 {bpCountZero+=($3-$2)} {print bpCountZero}' | tail -1)
+
+#Determine number of bases at >0 read depth, i.e., non-zero bases
+nonzero=$(bedtools genomecov -ibam NIST7035_NIST_chr1_bwa_recal.bam -g /store/lkemp/publicData/referenceGenome/gatkBundle/GRCh37/ucsc.hg19.fasta -bga | awk '$4>0 {bpCountNonZero+=($3-$2)} {print bpCountNonZero}' | tail -1)
+
+#Calculate the percent of the reference genome coverd by >0 read depth bases
+#Round up to 6 decimal places
+percent=$(bc <<< "scale=6; ($nonzero / ($zero + $nonzero))*100")
+
+echo $percent
+```
+
+This calculated that 1.9963% of the reference human genome was covered
+by my reduced dataset
+
+calculate the proportion of base pairs represented in this dataset
+compared to an exome and genome
+
+Multiply this by the size of one full exome.
+
+``` r
+resources <- resources %>%
+  dplyr::mutate(real_time_exome = real_time*exome_multiplier)
+```
+
+Multiply this by the size of one full genome. The reduced dataset is …
+percent of the number of base pairs of a full exome
+
+``` r
+resources <- resources %>%
+  dplyr::mutate(real_time_genome = real_time*genome_multiplier)
+```
+
+Convert these values to minutes
+
+``` r
+resources <- resources %>%
+  dplyr::mutate(real_time_exome_mins = real_time_exome/60)
+resources <- resources %>%
+  dplyr::mutate(real_time_genome_mins = real_time_genome/60)
+```
+
+Get rough total time to run an exome and genome through the whole
+human\_genomics\_pipeline
+
+``` r
+sum(resources$real_time_exome_mins)
+sum(resources$real_time_genome_mins)
+```
