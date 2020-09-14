@@ -1,49 +1,30 @@
 # Benchmarking genomic pipelines - resources
 
-Created: 2020-04-22 13:37:04
-Last modified: 2020/09/15 11:22:53
+Created: 2020-09-11 13:37:04
+Last modified: 2020/09/15 11:37:46
 
-- **Aim:** Undertake benchmarking of genomics pipelines to optimise their resource use.
-- **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [samtools 1.9](http://www.htslib.org/), [bedtools 2.25](https://bedtools.readthedocs.io/en/latest/), [bgzip 1.2.1](http://www.htslib.org/doc/bgzip.html)
-- **OS:** Ubuntu 16.04 (Wintermute - research server) (*add info about production OS*)
+- **Aim:** Undertake benchmarking of genomics pipelines to optimise the threading of each rule in the pipelines.
+- **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [wget](https://www.gnu.org/software/wget/)
+- **OS:** Ubuntu 16.04 (Wintermute - research server)
 
-The idea is to run these pipelines ([human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)) against a reduced Genome In A Bottle (GIAB) sample [NIST7035](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) dataset and evaluate the real time and user time for each step in the pipelines. Once the resources are optimised for running these pipelines on Wintermute (research server), resource benchmarking will be run again on production to fine tune the optimal resource use for these pipelines running on this machine.
+The idea is to run these pipelines ([human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)) against a the Genome In A Bottle (GIAB) sample [NIST7035](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) exome and evaluate the clock time for each step in the pipelines with increased threading to evaluate the point of diminishing return. This will also provide overall pipeline run time.
 
 ## Table of contents
 
 - [Benchmarking genomic pipelines - resources](#benchmarking-genomic-pipelines---resources)
   - [Table of contents](#table-of-contents)
-  - [resource_bench1.*](#resource_bench1)
-    - [Create a test dataset](#create-a-test-dataset)
-      - [Download and prepare the test WES data (NIST7035)](#download-and-prepare-the-test-wes-data-nist7035)
-      - [Reduce the test dataset size for benchmarking](#reduce-the-test-dataset-size-for-benchmarking)
-        - [Map NIST7035 to the reference genome (ORAC)](#map-nist7035-to-the-reference-genome-orac)
-      - [Extract chr1 from the mapped bam files (retain paired reads) (wintermute)](#extract-chr1-from-the-mapped-bam-files-retain-paired-reads-wintermute)
-      - [Extract the paired fastq reads (R1 and R2) from the raw fastq reads that map to chr1 (wintermute)](#extract-the-paired-fastq-reads-r1-and-r2-from-the-raw-fastq-reads-that-map-to-chr1-wintermute)
-    - [Testing](#testing)
-      - [Setup](#setup)
-      - [Run benchmarking on Wintermute](#run-benchmarking-on-wintermute)
-      - [Results](#results)
-  - [resource_bench2.*](#resource_bench2)
-    - [Create a test dataset](#create-a-test-dataset-1)
-      - [Reduce the test dataset size for benchmarking](#reduce-the-test-dataset-size-for-benchmarking-1)
-      - [Extract chr1-15 from the mapped bam files (retain paired reads) (wintermute)](#extract-chr1-15-from-the-mapped-bam-files-retain-paired-reads-wintermute)
-      - [Extract the paired fastq reads (R1 and R2) from the raw fastq reads that map to chr1-15 (wintermute)](#extract-the-paired-fastq-reads-r1-and-r2-from-the-raw-fastq-reads-that-map-to-chr1-15-wintermute)
-    - [Testing](#testing-1)
-      - [Setup](#setup-1)
-      - [Run benchmarking on Wintermute](#run-benchmarking-on-wintermute-1)
-      - [Results](#results-1)
+  - [Create a test dataset](#create-a-test-dataset)
+    - [Setup](#setup)
+    - [Benchmarking](#benchmarking)
+    - [Results](#results)
+  - [Previous resource benchmarking](#previous-resource-benchmarking)
 
-## resource_bench1.*
-
-### Create a test dataset
-
-#### Download and prepare the test WES data (NIST7035)
+## Create a test dataset
 
 Download
 
 ```bash
-cd /store/lkemp/publicData/exomes/NA12878_exome/
+cd /store/lkemp/publicData/NA12878_exome/
 wget https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/Garvan_NA12878_HG001_HiSeq_Exome.README
 wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz
 wget https://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz
@@ -64,407 +45,112 @@ done
 Collapse pooled runs
 
 ```bash
-cat NIST7035*_R1_001.fastq.gz > NIST7035_NIST_R1.fastq.gz
-cat NIST7035*_R2_001.fastq.gz > NIST7035_NIST_R2.fastq.gz
+cat NIST7035*_R1_001.fastq.gz > NIST7035_NIST_1.fastq.gz
+cat NIST7035*_R2_001.fastq.gz > NIST7035_NIST_2.fastq.gz
 ```
 
-#### Reduce the test dataset size for benchmarking
-
-I will extract the fastq reads that map to chr1 so as to reduce the size of the dataset (width) without reducing the depth of reads that could influence the performance of the downstream rules (which could skew the resource benchmarking results for these steps)
-
-##### Map NIST7035 to the reference genome (ORAC)
-
-To increase speed, I will use the bwa-mem step of parabricks on orac
+Create dummy vcf files for cohort runs
 
 ```bash
-pbrun fq2bam \
---ref /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GRCh37/ucsc.hg19.fasta \
---in-fq /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GIAB/NA12878_exome/NIST7035_NIST_R1.fastq.gz /NGS/scratch/KSCBIOM/HumanGenomics/publicData/human_refs/GIAB/NA12878_exome/NIST7035_NIST_R2.fastq.gz \
---out-bam /home/lkemp/resource_benchmarking/NIST7035_NIST.bam
+cp NIST7035_NIST_1.fastq.gz dummy1_NIST_1.fastq.gz
+cp NIST7035_NIST_2.fastq.gz dummy1_NIST_2.fastq.gz
+cp NIST7035_NIST_1.fastq.gz dummy2_NIST_1.fastq.gz
+cp NIST7035_NIST_2.fastq.gz dummy2_NIST_2.fastq.gz
+```
+Create a dummy pedigree file for cohort runs
+
+```txt
+NIST7035_NIST	dummy1	0	0	1	1
+NIST7035_NIST	dummy2	0	0	2	1
+NIST7035_NIST	NIST7035_NIST	dummy1	dummy2	1	2
+
 ```
 
-#### Extract chr1 from the mapped bam files (retain paired reads) (wintermute)
+### Setup
 
-Extract chromosome one
+Setup folders
 
 ```bash
-cd /store/lkemp/exome_project/resource_benchmarking/resource_bench1.0/
-samtools view NIST7035_NIST.bam chr1 -b > NIST7035_NIST_chr1.bam
+cd store/lkemp/
+mkdir resource_benchmarking
+cd resource_benchmarking
+mkdir resource_bench_01_thread
+mkdir resource_bench_02_thread
+mkdir resource_bench_04_thread
+mkdir resource_bench_08_thread
+mkdir resource_bench_16_thread
+mkdir resource_bench_32_thread
+cd resource_bench_01_thread
+mkdir single # repeat for all directories
+mkdir cohort # repeat for all directories
 ```
 
-Extract the reads for which both paired reads were mapped
-
-See [this documentation](https://gist.github.com/darencard/72ddd9e6c08aaff5ff64ca512a04a6dd))
+Copy the reduced dataset to where we will do the resource benchmarking
 
 ```bash
-samtools view -u -f 1 -F 12 NIST7035_NIST_chr1.bam > NIST7035_NIST_chr1_map_map.bam
-```
-
-#### Extract the paired fastq reads (R1 and R2) from the raw fastq reads that map to chr1 (wintermute)
-
-Extract:
-
-- reads that mapped properly as pairs
-- reads that didn’t map properly as pairs (both didn’t map, or one didn’t map)
-
-```bash
-# R1 unmapped, R2 mapped
-samtools view -u -f 4 -F 264 NIST7035_NIST_chr1.bam > NIST7035_NIST_chr1_unmap_map.bam
-# R1 mapped, R2 unmapped
-samtools view -u -f 8 -F 260 NIST7035_NIST_chr1.bam > NIST7035_NIST_chr1_map_unmap.bam
-# R1 & R2 unmapped
-samtools view -u -f 12 -F 256 NIST7035_NIST_chr1.bam > NIST7035_NIST_chr1_unmap_unmap.bam
-```
-
-Merge the three files that contain at least one unmapped pair
-
-```bash
-samtools merge -u NIST7035_NIST_chr1_unmapped.bam NIST7035_NIST_chr1_unmap_map.bam NIST7035_NIST_chr1_map_unmap.bam NIST7035_NIST_chr1_unmap_unmap.bam
-```
-
-Sort
-
-```bash
-samtools sort -n NIST7035_NIST_chr1_map_map.bam -o NIST7035_NIST_chr1_mapped.sort
-samtools sort -n NIST7035_NIST_chr1_unmapped.bam -o NIST7035_NIST_chr1_unmapped.sort
-```
-
-Check that the number of unmapped and mapped reads total the number of reads in the original bam file (for chr1)
-
-```bash
-# Original file
-samtools flagstat NIST7035_NIST_chr1.bam
-```
-
-My output:
-
-```bash
-8223836 + 0 in total (QC-passed reads + QC-failed reads)
-0 + 0 secondary
-2650 + 0 supplementary
-933687 + 0 duplicates
-8214293 + 0 mapped (99.88% : N/A)
-8221186 + 0 paired in sequencing
-4111231 + 0 read1
-4109955 + 0 read2
-8152956 + 0 properly paired (99.17% : N/A)
-8202100 + 0 with itself and mate mapped
-9543 + 0 singletons (0.12% : N/A)
-8456 + 0 with mate mapped to a different chr
-5219 + 0 with mate mapped to a different chr (mapQ>=5)
-```
-
-```bash
-# Mapped
-samtools view -c NIST7035_NIST_chr1_mapped.sort
-# Unmapped
-samtools view -c NIST7035_NIST_chr1_unmapped.sort
-```
-
-My output:
-
-```bash
-8204729
-19107
-```
-
-Extract the mapped FASTQ reads into two paired read files
-
-```bash
-bamToFastq -i NIST7035_NIST_chr1_mapped.sort -fq NIST7035_NIST_chr1_mapped.1.fastq -fq2 NIST7035_NIST_chr1_mapped.2.fastq
-bamToFastq -i NIST7035_NIST_chr1_unmapped.sort -fq NIST7035_NIST_chr1_unmapped.1.fastq -fq2 NIST7035_NIST_chr1_unmapped.2.fastq
-```
-
-Combine both the first and paired reads together from the mapped and unmapped files
-
-```bash
-cat NIST7035_NIST_chr1_mapped.1.fastq NIST7035_NIST_chr1_unmapped.1.fastq > NIST7035_NIST_chr1_R1.fastq
-cat NIST7035_NIST_chr1_mapped.2.fastq NIST7035_NIST_chr1_unmapped.2.fastq > NIST7035_NIST_chr1_R2.fastq
-```
-
-Bgzip
-
-```bash
-bgzip NIST7035_NIST_chr1_R1.fastq
-bgzip NIST7035_NIST_chr1_R2.fastq
-```
-
-### Testing
-
-Approach:
-
-- Run each rule separately
-- Run with doubling threads: 1, 2, 4, 8, 16 etc. (until runtime plateaus)
-- Compare real time vs. user time (minimise any divergence between them)
-- Re-run benchmarking on new machines (eg. production) to fine-tune resource allocation
-
-#### Setup
-
-Copy the reduced dataset (fastq files for chr1) to where we will do the resource benchmarking
-
-```bash
-cd /store/lkemp/exome_project/resource_benchmarking/
-mkdir resource_bench1.0
-cd resource_bench1.0
+cd /store/lkemp/resource_benchmarking/resource_bench_01_thread/single/
 mkdir fastq
-cd fastq/
-
-cp ../../NIST7035_NIST_chr1_R1.fastq.gz .
-cp ../../NIST7035_NIST_chr1_R2.fastq.gz .
+cd fastq/ # repeat for all directories
+cp /store/lkemp/publicData/NA12878_exome/NIST7035_NIST_1.fastq.gz . # repeat for all directories
+cp /store/lkemp/publicData/NA12878_exome/NIST7035_NIST_2.fastq.gz . # repeat for all directories
+cp /store/lkemp/publicData/NA12878_exome/dummy1_NIST_1.fastq.gz . # for cohort runs, repeat for all directories
+cp /store/lkemp/publicData/NA12878_exome/dummy1_NIST_2.fastq.gz . # for cohort runs, repeat for all directories
+cp /store/lkemp/publicData/NA12878_exome/dummy2_NIST_1.fastq.gz . # for cohort runs, repeat for all directories
+cp /store/lkemp/publicData/NA12878_exome/dummy2_NIST_2.fastq.gz . # for cohort runs, repeat for all directories
 ```
 
-Clone pipeline and checkout the branch for resource benchmarking on Wintermute
+Clone forked pipeline and create/checkout the branch for resource benchmarking
+
+```bash
+cd /store/lkemp/resource_benchmarking/resource_bench_01_thread/single/
+git clone git@github.com:leahkemp/human_genomics_pipeline.git
+cd human_genomics_pipeline
+git branch resource_benchmarking
+```
 
 ```bash
 cd /store/lkemp/exome_project/resource_benchmarking/
 git clone git@github.com:ESR-NZ/human_genomics_pipeline.git
 cd human_genomics_pipeline
 git checkout resource_benchmarking
-mkdir times
 ```
 
-#### Run benchmarking on Wintermute
+### Benchmarking
 
 Workflow:
 
 - Create a resource_benchmarking branch for the pipeline
 
-- Set the number of threads in each rule to the maximum number that we will test (32), therefore we can control the number of threads used for each test with the `j` flag passed to snakemake on the command line (if the number of threads for a given rule are larger that the threads passed to this flag, they will be scaled down)
+- Set the number of threads *within each rule* to the maximum number that we will test (32), therefore we can control the number of threads used for each test with the `-j` flag passed to Snakemake on the command line (if the number of threads for a given rule are larger that the threads passed to this flag, they will be scaled down)
 
-- Create a 'times' dir
+- Wrap each benchmarking file in each rule with `repeat("benchmarks/rule/{sample}.tsv, 3)` to get the rule to run 3 times to get a measure of the variability of measurements
 
-- Wrap each rule script with ( time rule_script 2> rule.stderr ) 2> times/rule_time.txt
-
-- This will write the output of the time command to a file (within times/) for each rule (and extract the output messages to the .stderr files)
-
-- Create shell scripts that will prompt the pipeline to run
-
-- For each run (shell script), double the number of threads used each run, as set by the `-j` parameter: 1, 2, 4, 8, 16, 32
+- Double the number of threads used each run (in run.sh script), as set by the `-j` parameter: 1, 2, 4, 8, 16, 32
 
 - Repeat for runs against single samples and cohort samples to benchmark all the rules in the pipelines
 
-Run through each pipeline run
+- Collate the benchmarking output with a python script (merge_resource_benchmarking.py)
 
-```bash
-# human_genomics_pipeline
-bash run_1_threads.sh
-bash run_2_threads.sh
-bash run_4_threads.sh
-bash run_8_threads.sh
-bash run_16_threads.sh
-bash run_32_threads.sh
+- Plot the times from the benchmarking files
 
-# vcf_annotation_pipeline
-bash run_1_thread.sh
-bash run_2_thread.sh
-bash run_4_thread.sh
-bash run_8_thread.sh
-bash run_16_thread.sh
-bash run_32_thread.sh
-```
+- Repeat for vcf_annotation_pipeline
+  
+### Results
 
-- Extract the times from the output times files and plot
-
-#### Results
-
-- Full run settings for each threading level can be found at [resource_bench1.0](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.0), [resource_bench1.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.1), [resource_bench1.2](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.2), [resource_bench1.3](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.3), [resource_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.4), [resource_bench1.5](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.5)
+- Full run settings for each threading level can be found at [resource_bench_1_thread_single_](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.0), [resource_bench1.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.1), [resource_bench1.2](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.2), [resource_bench1.3](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.3), [resource_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.4), [resource_bench1.5](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.5)
 - Plotting/report can be found at /home/lkemp/benchmarking_pipelines/resource_benchmarking/resource_bench1 on Methead)
 
-## resource_bench2.*
+## Previous resource benchmarking
 
-The test dataset used in resource_bench1.* turned out to be too small for the benchmarking and there were some rules that were running too fast. Using more data will ore optimal for benchmarking since it will provide a better estimate for how it will scale with more threads on the full data set will be. Therefore we will increase the test dataset (whole exome data) and re-run the benchmarking. In this new test, a different time command will be used (the time command used in resource_bench1.* was not the command intended to be used). I'll also automate extracting the times from the output files into an excel spreadsheet for plotting. In addition, one of the snakemake rules (sambamba_index) didn't appear to write out a times file, I'll attempt to fix this.
+Previous resource benchmarking on an older version of the pipeline
 
-*Note. it turned out there was a bug with the sambamba_index rule that needed to be fixed before I could get this rule to output a times file. I also ended up updating the resource_bench2 test with other fixes to the master branch of human_genomics_pipeline. Namely, extra databases were passed to BaseRecalibrator*
+Run settings and results: 
 
-### Create a test dataset
+- [resource_bench2.0](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.0)
+- [resource_bench2.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.1)
+- [resource_bench2.2](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.2)
+- [resource_bench2.3](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.3)
+- [resource_bench2.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.4)
+- [resource_bench2.5](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.5)
 
-#### Reduce the test dataset size for benchmarking
-
-I will extract the fastq reads that map to chr1 to chr15 so as to reduce the size of the dataset (width) without reducing the depth of reads that could influence the performance of the downstream rules (which could skew the resource benchmarking results for these steps)
-
-#### Extract chr1-15 from the mapped bam files (retain paired reads) (wintermute)
-
-Extract chr1 to chr15
-
-```bash
-cd /store/lkemp/exome_project/resource_benchmarking/
-samtools view NIST7035_NIST.bam chr{1..15} -b > NIST7035_NIST_chr1-15.bam
-```
-
-Extract the reads for which both paired reads were mapped
-
-See [this documentation](https://gist.github.com/darencard/72ddd9e6c08aaff5ff64ca512a04a6dd))
-
-```bash
-samtools view -u -f 1 -F 12 NIST7035_NIST_chr1-15.bam > NIST7035_NIST_chr1-15_map_map.bam
-```
-
-#### Extract the paired fastq reads (R1 and R2) from the raw fastq reads that map to chr1-15 (wintermute)
-
-Extract:
-
-- reads that mapped properly as pairs
-- reads that didn’t map properly as pairs (both didn’t map, or one didn’t map)
-
-```bash
-# R1 unmapped, R2 mapped
-samtools view -u -f 4 -F 264 NIST7035_NIST_chr1-15.bam > NIST7035_NIST_chr1-15_unmap_map.bam
-# R1 mapped, R2 unmapped
-samtools view -u -f 8 -F 260 NIST7035_NIST_chr1-15.bam > NIST7035_NIST_chr1-15_map_unmap.bam
-# R1 & R2 unmapped
-samtools view -u -f 12 -F 256 NIST7035_NIST_chr1-15.bam > NIST7035_NIST_chr1-15_unmap_unmap.bam
-```
-
-Merge the three files that contain at least one unmapped pair
-
-```bash
-samtools merge -u NIST7035_NIST_chr1-15_unmapped.bam NIST7035_NIST_chr1-15_unmap_map.bam NIST7035_NIST_chr1-15_map_unmap.bam NIST7035_NIST_chr1-15_unmap_unmap.bam
-```
-
-Sort
-
-```bash
-samtools sort -n NIST7035_NIST_chr1-15_map_map.bam -o NIST7035_NIST_chr1-15_mapped.sort
-samtools sort -n NIST7035_NIST_chr1-15_unmapped.bam -o NIST7035_NIST_chr1-15_unmapped.sort
-```
-
-Check that the number of unmapped and mapped reads total the number of reads in the original bam file (for chr1-15)
-
-```bash
-# Original file
-samtools flagstat NIST7035_NIST_chr1-15.bam
-```
-
-My output:
-
-```bash
-58900309 + 0 in total (QC-passed reads + QC-failed reads)
-0 + 0 secondary
-33803 + 0 supplementary
-6773633 + 0 duplicates
-58830522 + 0 mapped (99.88% : N/A)
-58866506 + 0 paired in sequencing
-29431532 + 0 read1
-29434974 + 0 read2
-58318532 + 0 properly paired (99.07% : N/A)
-58726932 + 0 with itself and mate mapped
-69787 + 0 singletons (0.12% : N/A)
-85184 + 0 with mate mapped to a different chr
-42953 + 0 with mate mapped to a different chr (mapQ>=5)
-```
-
-```bash
-# Mapped
-samtools view -c NIST7035_NIST_chr1-15_mapped.sort
-# Unmapped
-samtools view -c NIST7035_NIST_chr1-15_unmapped.sort
-```
-
-My output:
-
-```bash
-58760431
-139878
-```
-
-Extract the mapped FASTQ reads into two paired read files
-
-```bash
-bamToFastq -i NIST7035_NIST_chr1-15_mapped.sort -fq NIST7035_NIST_chr1-15_mapped.1.fastq -fq2 NIST7035_NIST_chr1-15_mapped.2.fastq
-bamToFastq -i NIST7035_NIST_chr1-15_unmapped.sort -fq NIST7035_NIST_chr1-15_unmapped.1.fastq -fq2 NIST7035_NIST_chr1-15_unmapped.2.fastq
-```
-
-Combine both the first and paired reads together from the mapped and unmapped files
-
-```bash
-cat NIST7035_NIST_chr1-15_mapped.1.fastq NIST7035_NIST_chr1-15_unmapped.1.fastq > NIST7035_NIST_chr1-15_R1.fastq
-cat NIST7035_NIST_chr1-15_mapped.2.fastq NIST7035_NIST_chr1-15_unmapped.2.fastq > NIST7035_NIST_chr1-15_R2.fastq
-```
-
-Bgzip
-
-```bash
-bgzip NIST7035_NIST_chr1-15_R1.fastq
-bgzip NIST7035_NIST_chr1-15_R2.fastq
-```
-
-### Testing
-
-Approach:
-
-- Run each rule separately
-- Run with doubling threads: 1, 2, 4, 8, 16 etc. (until runtime plateaus)
-- Compare real time vs. user time (minimise any divergence between them)
-- Re-run benchmarking on new machines (eg. production) to fine-tune resource allocation
-
-#### Setup
-
-Copy the reduced dataset (fastq files for chr1) to where we will do the resource benchmarking
-
-```bash
-cd /store/lkemp/exome_project/resource_benchmarking/
-mkdir resource_bench2.0
-cd resource_bench2.0
-mkdir fastq
-cd fastq/
-
-cp ../../NIST7035_NIST_chr1-15_R1.fastq.gz .
-cp ../../NIST7035_NIST_chr1-15_R2.fastq.gz .
-```
-
-Clone pipeline and checkout the branch for resource benchmarking on Wintermute
-
-```bash
-cd /store/lkemp/exome_project/resource_benchmarking/resource_bench2.0/
-git clone git@github.com:ESR-NZ/human_genomics_pipeline.git
-cd human_genomics_pipeline
-git checkout resource_benchmarking
-mkdir times
-```
-
-#### Run benchmarking on Wintermute
-
-Workflow:
-
-- Update the resource_benchmarking branch for the pipeline
-
-- Set the number of threads in each rule to the maximum number that we will test (32), therefore we can control the number of threads used for each test with the `j` flag passed to snakemake on the command line (if the number of threads for a given rule are larger that the threads passed to this flag, they will be scaled down)
-
-- Create a 'times' dir
-
-- Wrap each rule script with ( /usr/bin/time rule_script ) 2> times/rule.stderr (slightly different for fastqc rule)
-
-- This will write the log file and the output of the time command to a file (within times/) for each rule
-
-- Create shell scripts that will prompt the pipeline to run
-
-- For each run (shell script), double the number of threads used each run, as set by the `-j` parameter: 1, 2, 4, 8, 16, 32
-
-- Repeat for runs against single samples and cohort samples to benchmark all the rules in the pipelines
-
-Run through each pipeline run
-
-```bash
-# human_genomics_pipeline
-bash run_1_threads.sh
-bash run_2_threads.sh
-bash run_4_threads.sh
-bash run_8_threads.sh
-bash run_16_threads.sh
-bash run_32_threads.sh
-
-# vcf_annotation_pipeline
-bash run_1_thread.sh
-bash run_2_thread.sh
-bash run_4_thread.sh
-bash run_8_thread.sh
-bash run_16_thread.sh
-bash run_32_thread.sh
-```
-
-- Extract the times from the output times files and plot
-
-#### Results
-
-- Full run settings for each threading level can be found at [resource_bench2.0](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.0), [resource_bench2.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.1), [resource_bench2.2](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.2), [resource_bench2.3](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.3), [resource_bench2.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.4), [resource_bench2.5](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench2.5)
-- Plotting/report for resource_bench1 can be found [here](resource_bench1/resource_bench2.md) and resource_bench2 can be found [here](resource_bench2/resource_bench2.md)
+Extended data, methods and results: https://github.com/leahkemp/documentation/tree/resource_benchmarking/benchmarking_pipelines_resources
