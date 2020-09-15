@@ -1,0 +1,216 @@
+---
+title: "quality_bench2.1"
+author: "Leah Kemp"
+date: "7/3/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FALSE, verbose = FALSE)
+```
+
+```{r}
+# Setup
+library(happyR) # to install: devtools::install_github("Illumina/happyR")
+library(tidyverse, quietly = TRUE)
+library(ggplot2)
+library(magrittr)
+library(DT)
+library(rstan)
+library(HDInterval)
+library(vcfR)
+library(gridExtra)
+library(plotly)
+```
+
+```{r}
+# Load data
+
+# Directory to happy output files
+extdata_dir <- "/home/lkemp/benchmarking_pipelines/quality_benchmarking/quality_bench2.1/"
+
+# Create a sample sheet dataframe (for pooled vs not pooled)
+samplesheet_pooling <- tibble::tribble(
+  ~group_id,  ~replicate_id, ~happy_prefix,
+  "pooled", "HG001", paste(extdata_dir, "hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "unpooled", "NIST7035", paste(extdata_dir, "hg19_unpooled_NIST7035_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "unpooled", "NIST7086", paste(extdata_dir, "hg19_unpooled_NIST7086_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/")
+)
+
+# Create a samplesheet with all happy output loaded (for pooled vs not pooled)
+hap_samplesheet_pooling <- read_samplesheet_(samplesheet_pooling)
+
+## Create a sample sheet dataframe (for hg19 and GRCh37 ref genome)
+#samplesheet_refgenome <- tibble::tribble(
+#  ~group_id,  ~replicate_id, ~happy_prefix,
+#  "hg19", "HG001", paste(extdata_dir, "hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+#  "hg19", "NIST7035", paste(extdata_dir, "hg19_unpooled_NIST7035_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/")
+#  "hg19", "NIST7086", paste(extdata_dir, "hg19_unpooled_NIST7086_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/")
+#  "GRCh37", "HG001",  paste(extdata_dir, "GRCh37_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+#  "GRCh37", "NIST7035",  paste(extdata_dir, "GRCh37_unpooled_NIST7035_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+#  "GRCh37", "NIST7086",  paste(extdata_dir, "GRCh37_unpooled_NIST7086_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/")
+#)
+#
+## Create a samplesheet with all happy output loaded (for hg19 and GRCh37 ref genome)
+#hap_samplesheet_refgenome <- read_samplesheet_(samplesheet_refgenome)
+```
+
+## Summary
+
+Column variable descriptions:
+
+- METRIC.Recall =	Recall for truth variant representation = TRUTH.TP / (TRUTH.TP + TRUTH.FN)
+- METRIC.Precision = Precision of query variants = QUERY.TP / (QUERY.TP + QUERY.FP)
+- METRIC.Frac_NA = Fraction of non-assessed query calls = QUERY.UNK / QUERY.TOTAL
+- METRIC.F1_Score = Harmonic mean of precision and recall = 2METRIC.RecallMetric.Precision/(METRIC.Recall + METRIC.Precision)
+- TRUTH.TOTAL = Total number of truth variants
+- TRUTH.TP = Number of true-positive calls in truth representation (counted via the truth sample column)
+- TRUTH.FN = Number of false-negative calls = calls in truth without matching query call
+- QUERY.TOTAL = Total number of query calls
+- QUERY.TP = Number of true positive calls in query representation (counted via the query sample column)
+- QUERY.FP = Number of false-positive calls in the query file (mismatched query calls within the confident regions)
+- QUERY.UNK = Number of query calls outside the confident regions
+- FP.al = Number of allele mismatches (variants matched by position and not by haplotype)
+- FP.gt = Number of genotype mismatches (alleles match, but different zygosity)
+- Subset.Size = When using stratification regions, this gives the number of nucleotides contained in the current subset
+- Subset.IS_CONF.Size = This gives the number of confident bases (-f regions) in the current subset
+
+*Note. I didn't end up running the GRCh37 pipeline runs because the databases and reference genome used in the pipeline use different chromosome labelling (NCBI version) for which pre-formated versions of all the databases are readily available as they are in the gatk bundle and are not as straightforward to manually reformat like in the case where you simply add a 'chr' prefix. We could hack this to work to run this hg vs. GRCh37 test, but it might take some wrangling.*
+
+### Pooling NIST7035 & NIST7086 vs. not pooling
+
+```{r}
+extract_results(hap_samplesheet_pooling$results, table = "summary") %>%
+  filter(Filter == "ALL") %>%
+  inner_join(samplesheet_pooling, by = "happy_prefix") %>% 
+  dplyr::select(group_id, replicate_id, Type, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.F1_Score, METRIC.Frac_NA) %>%
+  datatable(filter = 'top', options = list(pageLength = 15))
+```
+
+Pooling both NIST7035 and NIST7086 improved the variant recall (reduced false negative calls) and the F1 score for both snps and indels. It improved precision (reduced false positives) for snps. It also improved precision for indels for NIST7035, but very slightly reduced precision for NIST7086.
+
+### Comparing the use of hg19 & GRCh37 reference genome
+
+```{r}
+#extract_results(hap_samplesheet_refgenome$results, table = "summary") %>%
+#  filter(Filter == "ALL") %>%
+#  inner_join(samplesheet_refgenome, by = "happy_prefix") %>% 
+#  dplyr::select(group_id, replicate_id, Type, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.F1_Score, METRIC.Frac_NA) %>%
+#  datatable(filter = 'top', options = list(pageLength = 15))
+```
+
+## Evaluate genome stratifications
+
+### Pooling NIST7035 & NIST7086 vs. not pooling
+
+**All data**
+
+```{r}
+extract_results(hap_samplesheet_pooling$results, table = "extended") %>%
+  filter(Filter == "ALL") %>%
+  inner_join(samplesheet_pooling, by = "happy_prefix") %>%
+  arrange(desc(METRIC.F1_Score)) %>%
+  dplyr::select(group_id, replicate_id, Type, Subtype, Subset, Subset.Size, METRIC.F1_Score, Subset.Size, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.Frac_NA) %>%
+  datatable(filter = 'top', options = list(pageLength = 15))
+```
+
+**Look at only the pooled sample, in the 'GRCh37_notinalldifficultregions.bed.gz' regions, viewed by variant subtype**
+
+```{r}
+# Create a sample sheet dataframe (for pooled vs not pooled)
+samplesheet_pooled <- tibble::tribble(
+  ~group_id,  ~replicate_id, ~happy_prefix,
+  "pooled", "HG001", paste(extdata_dir, "hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"))
+
+# Create a samplesheet with all happy output loaded (for pooled)
+hap_samplesheet_pooled <- read_samplesheet_(samplesheet_pooled)
+
+extract_results(hap_samplesheet_pooled$results, table = "extended") %>%
+  filter(Filter == "ALL", Subset == "GRCh37_notinalldifficultregions.bed.gz") %>%
+  inner_join(samplesheet_pooled, by = "happy_prefix") %>%
+  arrange(desc(METRIC.F1_Score)) %>%
+  dplyr::select(group_id, replicate_id, Type, Subtype, Subset, Subset.Size, METRIC.F1_Score, Subset.Size, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.Frac_NA) %>%
+  datatable(filter = 'top', options = list(pageLength = 15))
+```
+
+**Look at only the pooled sample, in the 'GRCh37_alldifficultregions.bed.gz' regions, viewed by variant subtype**
+
+```{r}
+extract_results(hap_samplesheet_pooled$results, table = "extended") %>%
+  filter(Filter == "ALL", Subset == "GRCh37_alldifficultregions.bed.gz") %>%
+  inner_join(samplesheet_pooled, by = "happy_prefix") %>%
+  arrange(desc(METRIC.F1_Score)) %>%
+  dplyr::select(group_id, replicate_id, Type, Subtype, Subset, Subset.Size, METRIC.F1_Score, Subset.Size, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.Frac_NA) %>%
+  datatable(filter = 'top', options = list(pageLength = 15))
+```
+
+### Comparing the use of hg19 & GRCh37 reference genome
+
+```{r}
+#extract_results(hap_samplesheet_refgenome$results, table = "extended") %>%
+#  filter(Filter == "ALL") %>%
+#  inner_join(samplesheet_refgenome, by = "happy_prefix") %>%
+#  arrange(desc(METRIC.F1_Score)) %>%
+#  dplyr::select(group_id, replicate_id, Type, Subtype, Subset, Subset.Size, METRIC.F1_Score, Subset.Size, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.Frac_NA) %>%
+#  datatable(filter = 'top', options = list(pageLength = 50))
+```
+
+## hap.py comparsion by chromosome
+
+```{r}
+# Load data
+
+# Directory to happy output files
+extdata_dir <- "/home/lkemp/benchmarking_pipelines/quality_benchmarking/quality_bench2.1/"
+
+# Create a sample sheet dataframe (for chromosome region)
+samplesheet_pooling_chrs <- tibble::tribble(
+  ~group_id,  ~replicate_id, ~happy_prefix,
+  "chr1", "HG001", paste(extdata_dir, "chr1_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr2", "HG001", paste(extdata_dir, "chr2_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr3", "HG001", paste(extdata_dir, "chr3_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr4", "HG001", paste(extdata_dir, "chr4_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr5", "HG001", paste(extdata_dir, "chr5_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr6", "HG001", paste(extdata_dir, "chr6_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr7", "HG001", paste(extdata_dir, "chr7_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr8", "HG001", paste(extdata_dir, "chr8_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr9", "HG001", paste(extdata_dir, "chr9_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr10", "HG001", paste(extdata_dir, "chr10_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr11", "HG001", paste(extdata_dir, "chr11_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr12", "HG001", paste(extdata_dir, "chr12_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr13", "HG001", paste(extdata_dir, "chr13_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr14", "HG001", paste(extdata_dir, "chr14_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr15", "HG001", paste(extdata_dir, "chr15_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr16", "HG001", paste(extdata_dir, "chr16_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr17", "HG001", paste(extdata_dir, "chr17_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr18", "HG001", paste(extdata_dir, "chr18_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr19", "HG001", paste(extdata_dir, "chr19_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr20", "HG001", paste(extdata_dir, "chr20_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr21", "HG001", paste(extdata_dir, "chr21_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chr22", "HG001", paste(extdata_dir, "chr22_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chrX", "HG001", paste(extdata_dir, "chrX_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "chrY", "HG001", paste(extdata_dir, "chrY_hg19_pooled_HG001_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/")
+)
+
+# Create a samplesheet with all happy output loaded (for pooled vs not pooled)
+hap_samplesheet_pooling_chrs <- read_samplesheet_(samplesheet_pooling_chrs)
+```
+
+```{r}
+extract_results(hap_samplesheet_pooling_chrs$results, table = "summary") %>%
+  filter(Filter == "ALL") %>%
+  inner_join(samplesheet_pooling_chrs, by = "happy_prefix") %>% 
+  dplyr::select(group_id, replicate_id, Type, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.F1_Score, METRIC.Frac_NA) %>%
+  datatable(filter = 'top', options = list(pageLength = 15))
+```
+
+
+- There are no variants called on chrM in the gpu pipeline (and no variants on chrM in the truth vcf) - so this won't be contributing to the false negatives
+- Variants are called on chrY in the gpu pipeline but there are no variants on chrY in the truth vcf - however, these are accounted for by hap.py, by putting them in the UNK column
+- The false negatives and false positives are found in all chromosomal regions
+
+
+
+
+
+
