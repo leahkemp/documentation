@@ -1,0 +1,117 @@
+---
+title: "quality_bench1.9"
+author: "Leah Kemp"
+date: "6/23/2020"
+output: html_document
+---
+
+The aim of this document is to evaluate [hap.py](https://github.com/Illumina/hap.py) outputs. This is a part of a wider effort to benchmark the quality of three of our genomic pipelines against a known vcf.
+
+See related docs [benchmarking pipeline quality](../../benchmarking_pipelines_quality.md) and [benchmarking pipeline quality results](../../benchmarking_pipelines_quality_results.md). This analysis fits within quality_bench1.9.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FALSE)
+```
+
+```{r}
+# Setup
+library(happyR) # to install: devtools::install_github("Illumina/happyR")
+library(tidyverse, quietly = TRUE)
+library(ggplot2)
+library(magrittr)
+library(DT)
+library(rstan)
+library(HDInterval)
+```
+
+```{r}
+# Load data
+
+# Directory to happy output files
+extdata_dir <- "/home/lkemp/benchmarking_pipelines/quality_benchmarking/quality_bench1.9/"
+
+# Create a sample sheet dataframe
+samplesheet_pipeline_capture <- tibble::tribble(
+  ~group_id,  ~replicate_id, ~happy_prefix,
+  "pipeline_run_without_exome_capture_regions_and_not_intersected_in_happy_with_exome_capture regions", "NIST7035", paste(extdata_dir, "happy_without_exome_capture_NIST7035_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_exome_capture_with_chr", sep = "/"),
+  "pipeline_run_without_exome_capture_regions_and_not_intersected_in_happy_with_exome_capture regions", "NIST7086", paste(extdata_dir, "happy_without_exome_capture_NIST7086_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_exome_capture_with_chr", sep = "/"),
+  "pipeline_run_with_exome_capture_regions_and_not_intersected_in_happy_with_exome_capture regions", "NIST7035",  paste(extdata_dir, "happy_with_exome_capture_NIST7035_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_with_chr", sep = "/"),
+  "pipeline_run_with_exome_capture_regions_and_not_intersected_in_happy_with_exome_capture regions", "NIST7086",  paste(extdata_dir, "happy_with_exome_capture_NIST7086_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_exome_capture_with_chr", sep = "/")
+)
+
+# Create a samplesheet with all happy output loaded
+hap_samplesheet_pipeline_capture <- read_samplesheet_(samplesheet_pipeline_capture)
+```
+
+```{r}
+# Load data
+
+# Directory to happy output files
+extdata_dir <- "/home/lkemp/benchmarking_pipelines/quality_benchmarking/quality_bench1.9/"
+
+# Create a sample sheet dataframe
+samplesheet_happy_capture <- tibble::tribble(
+  ~group_id,  ~replicate_id, ~happy_prefix,
+  "pipeline_run_without_exome_capture_regions_and_intersected_in_happy_with_exome_capture regions", "NIST7035", paste(extdata_dir, "happy_without_exome_capture_but_intersected_NIST7035_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_exome_capture_with_chr", sep = "/"),
+  "pipeline_run_without_exome_capture_regions_and_intersected_in_happy_with_exome_capture regions", "NIST7086", paste(extdata_dir, "happy_without_exome_capture_but_intersected_NIST7086_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_exome_capture_with_chr", sep = "/"),
+  "pipeline_run_with_exome_capture_regions_and_intersected_in_happy_with_exome_capture regions", "NIST7035",  paste(extdata_dir, "happy_with_exome_capture_and_intersected_NIST7035_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_exome_capture_with_chr", sep = "/"),
+  "pipeline_run_with_exome_capture_regions_and_intersected_in_happy_with_exome_capture regions", "NIST7086",  paste(extdata_dir, "happy_with_exome_capture_and_intersected_NIST7086_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_exome_capture_with_chr", sep = "/")
+)
+
+# Create a samplesheet with all happy output loaded
+hap_samplesheet_happy_capture <- read_samplesheet_(samplesheet_happy_capture)
+```
+
+- METRIC.Recall =	Recall for truth variant representation = TRUTH.TP / (TRUTH.TP + TRUTH.FN)
+- METRIC.Precision = Precision of query variants = QUERY.TP / (QUERY.TP + QUERY.FP)
+- METRIC.Frac_NA = Fraction of non-assessed query calls = QUERY.UNK / QUERY.TOTAL
+- METRIC.F1_Score = Harmonic mean of precision and recall = 2METRIC.RecallMetric.Precision/(METRIC.Recall + METRIC.Precision)
+- TRUTH.TOTAL = Total number of truth variants
+- TRUTH.TP = Number of true-positive calls in truth representation (counted via the truth sample column)
+- TRUTH.FN = Number of false-negative calls = calls in truth without matching query call
+- QUERY.TOTAL = Total number of query calls
+- QUERY.TP = Number of true positive calls in query representation (counted via the query sample column)
+- QUERY.FP = Number of false-positive calls in the query file (mismatched query calls within the confident regions)
+- QUERY.UNK = Number of query calls outside the confident regions
+- FP.al = Number of allele mismatches (variants matched by position and not by haplotype)
+- FP.gt = Number of genotype mismatches (alleles match, but different zygosity)
+- Subset.Size = When using stratification regions, this gives the number of nucleotides contained in the current subset
+- Subset.IS_CONF.Size = This gives the number of confident bases (-f regions) in the current subset
+
+## Summary
+
+### With/without exome capture used in pipeline
+
+```{r}
+extract_results(hap_samplesheet_pipeline_capture$results, table = "summary") %>%
+  filter(Filter == "ALL") %>% 
+  inner_join(samplesheet_pipeline_capture, by = "happy_prefix") %>% 
+  dplyr::select(group_id, replicate_id, Type, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.F1_Score, METRIC.Frac_NA) %>%
+  datatable(filter = 'top', options = list(pageLength = 15))
+```
+
+### With/without exome capture used in hap.py comparison
+
+```{r}
+extract_results(hap_samplesheet_happy_capture$results, table = "summary") %>%
+  filter(Filter == "ALL") %>% 
+  inner_join(samplesheet_happy_capture, by = "happy_prefix") %>% 
+  dplyr::select(group_id, replicate_id, Type, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.F1_Score, METRIC.Frac_NA) %>%
+  datatable(filter = 'top', options = list(pageLength = 15))
+```
+
+## Evaluate genome stratifications
+
+### With exome capture used in pipeline and hap.py comparison
+
+```{r}
+extract_results(hap_samplesheet_happy_capture$results, table = "extended") %>%
+  filter(Filter == "ALL") %>%
+  inner_join(samplesheet_happy_capture, by = "happy_prefix") %>%
+  filter(group_id == "pipeline_run_with_exome_capture_regions_and_intersected_in_happy_with_exome_capture regions") %>%
+  arrange(desc(METRIC.F1_Score)) %>%
+  dplyr::select(group_id, replicate_id, Type, Subtype, Subset, Subset.Size, METRIC.F1_Score, Subset.Size, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.Frac_NA) %>%
+  datatable(filter = 'top', options = list(pageLength = 50))
+```
+
+
