@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/09/15 13:12:28
+Last modified: 2020/09/15 13:30:25
 
 - **Aim:** Undertake best practice benchmarking of genomics pipelines to test their quality for clinical use.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [tabix](http://www.htslib.org/doc/tabix.html)
@@ -797,7 +797,7 @@ do cat $i | grep -v '##' | wc -l
 done
 ```
 
-This data was then explored in R - see the output on Methead at this directory: /home/lkemp/quality_benchmarking/
+This data was then explored in R - see [here](evaluation_of_tranch_filtering/evaluation_of_tranch_filtering.md)
 
 From these results, I wanted to filter the data from a tranche of around 82.00. I'll extract variants (snps and indels) that are in a tranche lower than 82.00 or are a pass to compare against the truth vcf. I'll also I'll extract variants (snps and indels) that are in a tranche lower than 70.00 or are a pass.
 

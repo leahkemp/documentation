@@ -1,0 +1,164 @@
+---
+title: "quality_bench1.8"
+output: github_document
+always_allow_html: yes
+---
+
+The aim of this document is to evaluate [hap.py](https://github.com/Illumina/hap.py) outputs. This is a part of a wider effort to benchmark the quality of three of our genomic pipelines against a known vcf.
+
+See related docs [benchmarking pipeline quality](../../benchmarking_pipelines_quality.md) and [benchmarking pipeline quality results](../../benchmarking_pipelines_quality_results.md). This analysis fits within quality_bench1.8.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FALSE)
+```
+
+```{r}
+# Setup
+library(happyR) # to install: devtools::install_github("Illumina/happyR")
+library(tidyverse, quietly = TRUE)
+library(ggplot2)
+library(magrittr)
+library(DT)
+library(rstan)
+library(HDInterval)
+```
+
+```{r}
+# Load data
+
+# Directory to happy output files
+extdata_dir <- "/home/lkemp/benchmarking_pipelines/quality_benchmarking/quality_bench1.8/"
+
+# Create a sample sheet dataframe
+samplesheet <- tibble::tribble(
+  ~group_id,  ~replicate_id, ~happy_prefix,
+  "cpu_pipeline", "NIST7035", paste(extdata_dir, "happy_NIST7035_NIST_raw_snps_indels_AS_g_v_project.NIST.hc.snps.indels.NIST7035", sep = "/"),
+  "cpu_pipeline", "NIST7086", paste(extdata_dir, "happy_NIST7086_NIST_raw_snps_indels_AS_g_v_project.NIST.hc.snps.indels.NIST7086", sep = "/"),
+  "gpu_pipeline", "NIST7035",  paste(extdata_dir, "happy_NIST7035_NIST_v_project.NIST.hc.snps.indels.NIST7035", sep = "/"),
+  "gpu_pipeline", "NIST7086",  paste(extdata_dir, "happy_NIST7086_NIST_v_project.NIST.hc.snps.indels.NIST7086", sep = "/")
+)
+
+# Create a samplesheet with all happy output loaded
+hap_samplesheet <- read_samplesheet_(samplesheet)
+```
+
+## Summary
+
+- METRIC.Recall =	Recall for truth variant representation = TRUTH.TP / (TRUTH.TP + TRUTH.FN)
+- METRIC.Precision = Precision of query variants = QUERY.TP / (QUERY.TP + QUERY.FP)
+- METRIC.Frac_NA = Fraction of non-assessed query calls = QUERY.UNK / QUERY.TOTAL
+- METRIC.F1_Score = Harmonic mean of precision and recall = 2METRIC.RecallMetric.Precision/(METRIC.Recall + METRIC.Precision)
+- TRUTH.TOTAL = Total number of truth variants
+- TRUTH.TP = Number of true-positive calls in truth representation (counted via the truth sample column)
+- TRUTH.FN = Number of false-negative calls = calls in truth without matching query call
+- QUERY.TOTAL = Total number of query calls
+- QUERY.TP = Number of true positive calls in query representation (counted via the query sample column)
+- QUERY.FP = Number of false-positive calls in the query file (mismatched query calls within the confident regions)
+- QUERY.UNK = Number of query calls outside the confident regions
+- FP.al = Number of allele mismatches (variants matched by position and not by haplotype)
+- FP.gt = Number of genotype mismatches (alleles match, but different zygosity)
+- Subset.Size = When using stratification regions, this gives the number of nucleotides contained in the current subset
+- Subset.IS_CONF.Size = This gives the number of confident bases (-f regions) in the current subset
+
+```{r}
+extract_results(hap_samplesheet$results, table = "summary") %>%
+  filter(Filter == "ALL") %>% 
+  inner_join(samplesheet, by = "happy_prefix") %>% 
+  dplyr::select(group_id, replicate_id, Type, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.F1_Score, METRIC.Frac_NA) %>%
+  datatable(filter = 'top', options = list(pageLength = 15))
+```
+
+```{r}
+# Extract summary ALL performance for each replicate (NIST7035 and NIST7086)
+summary <- extract_results(hap_samplesheet$results, table = "summary") %>% 
+  inner_join(samplesheet, by = "happy_prefix") %>% 
+  filter(Filter == "ALL")
+
+# Plot summary ROC curve
+ggplot(data = summary, aes(x = METRIC.Recall, y = METRIC.Precision, color = group_id, shape = Type)) +
+  geom_point() + theme_minimal() + 
+  xlim(NA, 1) + ylim(NA, 1) +
+  scale_color_brewer(palette = "Set2") +
+  labs(x = "Recall", y = "Precision", color = "Pipeline", shape = "Variant type") +
+  ggtitle("Quality of variant calling for cpu and gpu pipelines (NIST7035 and NIST7086)",
+          "gpu pipeline has greater precision when calling indels")  
+```
+
+## Evaluate genome stratifications
+
+We want to identify genome strata which contain high quality variants - variants with high F1 scores (a metric which balances precision and recall). We also want to maximise the size of these genome strata in order to maximise the amount of exome data that is analysed for variants? (or do we want to maximise the number of variants called - might not be the same as a large genome strata)
+
+### See if genome strata size increases snp and indel counts
+
+- CPU pipeline - NIST7035
+
+```{r}
+stratified_counts_cpu_NIST7035 <- extract_results(hap_samplesheet$results, table = "extended") %>% 
+  inner_join(hap_samplesheet$samplesheet) %>%
+  # extract NIST7035
+  filter(group_id == "cpu_pipeline", replicate_id == "NIST7035") %>%
+  # focus on PASS calls in level 0 subsets
+  filter(Subtype == "*", Filter == "PASS", Subset.Level == 0, !grepl(pattern = "TS*", Subset)) %>%
+  mutate(.type_group = paste(Type, group_id))%>%
+  select(Subset, Type, Subset.Size, TRUTH.TOTAL) %>%
+  unique() %>%
+  spread(key = Type, value = TRUTH.TOTAL) %>%
+  rename(TRUTH.TOTAL.INDEL = INDEL) %>%
+  rename(TRUTH.TOTAL.SNP = SNP) %>%
+  arrange(desc(Subset.Size))
+
+ggplot() +
+  geom_point(data = stratified_counts_cpu_NIST7035, aes(x = Subset.Size, y = TRUTH.TOTAL.INDEL), color = "red") +
+  geom_point(data = stratified_counts_cpu_NIST7035, aes(x = Subset.Size, y = TRUTH.TOTAL.SNP), color = "blue") +
+  theme_minimal() + 
+  scale_color_brewer(palette = "Set2") +
+  labs(x = "Genome strata size", y = "Count") +
+  ggtitle("snp and indel counts by genome strata size (cpu_pipeline - NIST7035)",
+          "indels = red, snps = blue")
+```
+
+Generally, more snps are included in genome strata that are larger. However, a larger genome strata does not guaruntee a greater number of snps are captured.
+
+### Plot genome strata by subset size for each pipeline
+
+```{r}
+extract_results(hap_samplesheet$results, table = "extended") %>%
+  filter(Filter == "ALL") %>%
+  inner_join(samplesheet, by = "happy_prefix") %>%
+  arrange(desc(METRIC.F1_Score)) %>%
+  dplyr::select(group_id, replicate_id, Type, Subtype, Subset, Subset.Size, METRIC.F1_Score, Subset.Size, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.Frac_NA) %>%
+  datatable(filter = 'top', options = list(pageLength = 50))
+```
+
+- CPU pipeline
+
+```{r}
+# Extract extended PASS and * performance for cpu_pipeline
+extended_cpu <- extract_results(hap_samplesheet$results, table = "extended") %>% 
+  inner_join(samplesheet, by = "happy_prefix") %>%
+  filter(Filter == "ALL", Subtype == "*", group_id == "cpu_pipeline")
+
+ggplot(data = extended_cpu, aes(x = METRIC.Recall, y = METRIC.Precision, color = Type, shape = replicate_id, size = Subset.Size)) +
+  geom_point() + theme_minimal() + 
+  xlim(NA, 1) + ylim(NA, 1) +
+  scale_color_brewer(palette = "Set2") +
+  labs(x = "Recall", y = "Precision", color = "Variant type", shape = "Replicate", size = "Genome strata size") +
+  ggtitle("Quality of variant calling over various genome strata (cpu pipeline)")  
+```
+
+- GPU pipeline
+
+```{r}
+# Extract extended PASS and * performance for gpu_pipeline
+extended_gpu <- extract_results(hap_samplesheet$results, table = "extended") %>% 
+  inner_join(samplesheet, by = "happy_prefix") %>%
+  filter(Filter == "ALL", Subtype == "*", group_id == "gpu_pipeline")
+
+# Plot ROC curve for INDELS
+ggplot(data = extended_gpu, aes(x = METRIC.Recall, y = METRIC.Precision, color = Type, shape = replicate_id, size = Subset.Size)) +
+  geom_point() + theme_minimal() + 
+  xlim(NA, 1) + ylim(NA, 1) +
+  scale_color_brewer(palette = "Set2") +
+  labs(x = "Recall", y = "Precision", color = "Variant type", shape = "Replicate", size = "Genome strata size") +
+  ggtitle("Quality of variant calling over various genome strata (gpu pipeline)")  
+```
