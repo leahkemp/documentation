@@ -1,0 +1,1050 @@
+---
+title: "quality_bench2.0"
+author: "Leah Kemp"
+date: "6/24/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FALSE, verbose = FALSE)
+```
+
+```{r}
+# Setup
+library(happyR) # to install: devtools::install_github("Illumina/happyR")
+library(tidyverse, quietly = TRUE)
+library(ggplot2)
+library(magrittr)
+library(DT)
+library(rstan)
+library(HDInterval)
+library(vcfR)
+library(gridExtra)
+library(plotly)
+```
+
+```{r}
+# Load data
+
+# Directory to happy output files
+extdata_dir <- "/home/lkemp/benchmarking_pipelines/quality_benchmarking/quality_bench2.0/"
+
+# Create a sample sheet dataframe
+samplesheet <- tibble::tribble(
+  ~group_id,  ~replicate_id, ~happy_prefix,
+  "HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", 
+  "NIST7035",  
+  paste(extdata_dir, "NIST7035_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", 
+  "NIST7086",  
+  paste(extdata_dir, "NIST7086_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr", sep = "/"),
+  "HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_with_chr", 
+  "NIST7035",  
+  paste(extdata_dir, "NIST7035_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_with_chr", sep = "/"),
+  "HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_with_chr", 
+  "NIST7086",  
+  paste(extdata_dir, "NIST7086_NIST_v_HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_with_chr", sep = "/")
+)
+
+# Create a samplesheet with all happy output loaded
+hap_samplesheet <- read_samplesheet_(samplesheet)
+```
+
+## Summary
+
+Column variable descriptions:
+
+- METRIC.Recall =	Recall for truth variant representation = TRUTH.TP / (TRUTH.TP + TRUTH.FN)
+- METRIC.Precision = Precision of query variants = QUERY.TP / (QUERY.TP + QUERY.FP)
+- METRIC.Frac_NA = Fraction of non-assessed query calls = QUERY.UNK / QUERY.TOTAL
+- METRIC.F1_Score = Harmonic mean of precision and recall = 2METRIC.RecallMetric.Precision/(METRIC.Recall + METRIC.Precision)
+- TRUTH.TOTAL = Total number of truth variants
+- TRUTH.TP = Number of true-positive calls in truth representation (counted via the truth sample column)
+- TRUTH.FN = Number of false-negative calls = calls in truth without matching query call
+- QUERY.TOTAL = Total number of query calls
+- QUERY.TP = Number of true positive calls in query representation (counted via the query sample column)
+- QUERY.FP = Number of false-positive calls in the query file (mismatched query calls within the confident regions)
+- QUERY.UNK = Number of query calls outside the confident regions
+- FP.al = Number of allele mismatches (variants matched by position and not by haplotype)
+- FP.gt = Number of genotype mismatches (alleles match, but different zygosity)
+- Subset.Size = When using stratification regions, this gives the number of nucleotides contained in the current subset
+- Subset.IS_CONF.Size = This gives the number of confident bases (-f regions) in the current subset
+
+```{r}
+extract_results(hap_samplesheet$results, table = "summary") %>%
+  filter(Filter == "ALL") %>%
+  inner_join(samplesheet, by = "happy_prefix") %>% 
+  dplyr::select(group_id, replicate_id, Type, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.F1_Score, METRIC.Frac_NA) %>%
+  datatable(filter = 'top', options = list(pageLength = 15))
+```
+
+The two truth files...
+
+- HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer_with_chr
+- HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_with_chr
+
+...produce the same summary results in hap.py. I will use HG001_GRCh37_GIAB_highconf_CG-IllFB-IllGATKHC-Ion-10X-SOLID_CHROM1-X_v.3.3.2_highconf_PGandRTGphasetransfer since it is recommended to use this file for quality benchmarking (in README in ftp directory of these files at ftp://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/release/NA12878_HG001/latest/README_NISTv3.3.2.txt).
+
+## Evaluate genome stratifications
+
+```{r}
+extract_results(hap_samplesheet$results, table = "extended") %>%
+  filter(Filter == "ALL") %>%
+  inner_join(samplesheet, by = "happy_prefix") %>%
+  arrange(desc(METRIC.F1_Score)) %>%
+  dplyr::select(group_id, replicate_id, Type, Subtype, Subset, Subset.Size, METRIC.F1_Score, Subset.Size, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TOTAL, QUERY.FP, FP.gt, FP.al, QUERY.UNK, METRIC.Recall, METRIC.Precision, METRIC.Frac_NA) %>%
+  datatable(filter = 'top', options = list(pageLength = 50))
+```
+
+## Investigate false positives and false negatives
+
+```{r}
+# Read merged and filtered vcfs (hybrid of output of happy and the pipeline output vcf, then filtered by FP, FN and TP)
+vcf_NIST7035_FP <- read.vcfR("./NIST7035_NIST_merged_FP.vcf", verbose = FALSE)
+vcf_NIST7035_FN <- read.vcfR("./NIST7035_NIST_merged_FN.vcf", verbose = FALSE)
+vcf_NIST7035_TP <- read.vcfR("./NIST7035_NIST_merged_TP.vcf", verbose = FALSE)
+vcf_NIST7086_FP <- read.vcfR("./NIST7086_NIST_merged_FP.vcf", verbose = FALSE)
+vcf_NIST7086_FN <- read.vcfR("./NIST7086_NIST_merged_FN.vcf", verbose = FALSE)
+vcf_NIST7086_TP <- read.vcfR("./NIST7086_NIST_merged_TP.vcf", verbose = FALSE)
+```
+
+```{r}
+# Create chromR objects
+chrom_NIST7035_FP <- create.chromR(seq = NULL, vcf = vcf_NIST7035_FP)
+chrom_NIST7035_FN <- create.chromR(seq = NULL, vcf = vcf_NIST7035_FN)
+chrom_NIST7035_TP <- create.chromR(seq = NULL, vcf = vcf_NIST7035_TP)
+chrom_NIST7086_FP <- create.chromR(seq = NULL, vcf = vcf_NIST7086_FP)
+chrom_NIST7086_FN <- create.chromR(seq = NULL, vcf = vcf_NIST7086_FN)
+chrom_NIST7086_TP <- create.chromR(seq = NULL, vcf = vcf_NIST7086_TP)
+```
+
+### True positives
+
+NIST7035
+
+```{r}
+chrom_NIST7035_TP <- proc.chromR(chrom_NIST7035_TP, verbose = FALSE)
+plot(chrom_NIST7035_TP)
+```
+
+NIST7086
+
+```{r}
+chrom_NIST7086_TP <- proc.chromR(chrom_NIST7086_TP, verbose = FALSE)
+plot(chrom_NIST7086_TP)
+```
+
+NIST7035
+
+```{r}
+chromoqc(chrom_NIST7035_TP, dp.alpha = 22)
+```
+
+NIST7086
+
+```{r}
+chromoqc(chrom_NIST7086_TP, dp.alpha = 22)
+```
+
+### False negatives
+
+NIST7035
+
+```{r}
+chrom_NIST7035_FN <- proc.chromR(chrom_NIST7035_FN, verbose = FALSE)
+plot(chrom_NIST7035_FN)
+```
+
+NIST7086
+
+```{r}
+chrom_NIST7086_FN <- proc.chromR(chrom_NIST7086_FN, verbose = FALSE)
+plot(chrom_NIST7086_FN)
+```
+
+NIST7035
+
+```{r}
+chromoqc(chrom_NIST7035_FN, dp.alpha = 22)
+```
+
+NIST7086
+
+```{r}
+chromoqc(chrom_NIST7086_FN, dp.alpha = 22)
+```
+
+### False positives
+
+NIST7035
+
+```{r}
+chrom_NIST7035_FP <- proc.chromR(chrom_NIST7035_FP, verbose = FALSE)
+plot(chrom_NIST7035_FP)
+```
+
+NIST7086
+
+```{r}
+chrom_NIST7086_FP <- proc.chromR(chrom_NIST7086_FP, verbose = FALSE)
+plot(chrom_NIST7086_FP)
+```
+
+NIST7035
+
+```{r}
+chromoqc(chrom_NIST7035_FP, dp.alpha = 22)
+```
+
+NIST7086
+
+```{r}
+chromoqc(chrom_NIST7086_FP, dp.alpha = 22)
+```
+
+## Other plots/metrics
+
+The available annotations that we can look into
+
+```{r}
+queryMETA(vcf_NIST7035_FP)
+```
+
+### Conditional genotype quality (GQ)
+
+```{r, results = "hide"}
+gq_35_FP <- extract.gt(chrom_NIST7035_FP, element="GQ", as.numeric=TRUE) %>% as.data.frame()
+gq_35_FN <- extract.gt(chrom_NIST7035_FN, element="GQ", as.numeric=TRUE) %>% as.data.frame()
+gq_35_TP <- extract.gt(chrom_NIST7035_TP, element="GQ", as.numeric=TRUE) %>% as.data.frame()
+
+gq_86_FP <- extract.gt(chrom_NIST7086_FP, element="GQ", as.numeric=TRUE) %>% as.data.frame()
+gq_86_FN <- extract.gt(chrom_NIST7086_FN, element="GQ", as.numeric=TRUE) %>% as.data.frame()
+gq_86_TP <- extract.gt(chrom_NIST7086_TP, element="GQ", as.numeric=TRUE) %>% as.data.frame()
+```
+
+True positives (NIST7035)
+
+```{r}
+summary(gq_35_TP$sample)
+```
+
+False negatives (NIST7035)
+
+```{r}
+summary(gq_35_FN$sample)
+```
+
+False positives (NIST7035)
+
+```{r}
+summary(gq_35_FP$sample)
+```
+
+True positives (NIST7086)
+
+```{r}
+summary(gq_86_TP$sample)
+```
+
+False negatives (NIST7086)
+
+```{r}
+summary(gq_86_FN$sample)
+```
+
+False positives (NIST7086)
+
+```{r}
+summary(gq_86_FP$sample)
+```
+
+```{r}
+scale_x = scale_x_continuous(limits = c(-0.5, 100))
+scale_y = scale_y_continuous(limits = c(0, 0.9))
+ylab = "Proportion"
+
+p_35_FP <- ggplot2::ggplot(gq_35_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins=200) +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_FN <- ggplot2::ggplot(gq_35_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins=200) +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_TP <- ggplot2::ggplot(gq_35_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins=200) +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FP <- ggplot2::ggplot(gq_86_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins=200) +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FN <- ggplot2::ggplot(gq_86_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins=200) +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_TP <- ggplot2::ggplot(gq_86_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins=200) +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+
+fig1 <- ggplotly(p_35_FP)
+fig2 <- ggplotly(p_35_FN)
+fig3 <- ggplotly(p_35_TP)
+fig4 <- ggplotly(p_86_FP)
+fig5 <- ggplotly(p_86_FN)
+fig6 <- ggplotly(p_86_TP)
+
+a <- list(
+  text = "Gentoype quality (GQ) for variants calls on NIST7035 (top) and NIST7086 (bottom)",
+  xref = "paper",
+  yref = "paper",
+  yanchor = "bottom",
+  xanchor = "center",
+  align = "center",
+  x = 0.5,
+  y = 1,
+  showarrow = FALSE
+)
+
+fig <- subplot(fig1, fig2, fig3, fig4, fig5, fig6, nrows = 2, shareX = TRUE, shareY = TRUE) %>%
+  layout(annotations = a)
+
+fig
+```
+
+### Normalized Phred-scaled likelihoods for genotypes as defined in the VCF specification (PL)
+
+```{r, results = "hide"}
+pl_35_FP <- extract.gt(chrom_NIST7035_FP, element="PL", as.numeric=TRUE) %>% as.data.frame()
+pl_35_FN <- extract.gt(chrom_NIST7035_FN, element="PL", as.numeric=TRUE) %>% as.data.frame()
+pl_35_TP <- extract.gt(chrom_NIST7035_TP, element="PL", as.numeric=TRUE) %>% as.data.frame()
+
+pl_86_FP <- extract.gt(chrom_NIST7086_FP, element="PL", as.numeric=TRUE) %>% as.data.frame()
+pl_86_FN <- extract.gt(chrom_NIST7086_FN, element="PL", as.numeric=TRUE) %>% as.data.frame()
+pl_86_TP <- extract.gt(chrom_NIST7086_TP, element="PL", as.numeric=TRUE) %>% as.data.frame()
+```
+
+True positives (NIST7035)
+
+```{r}
+summary(pl_35_TP$sample)
+```
+
+False negatives (NIST7035)
+
+```{r}
+summary(pl_35_FN$sample)
+```
+
+False positives (NIST7035)
+
+```{r}
+summary(pl_35_FP$sample)
+```
+
+True positives (NIST7086)
+
+```{r}
+summary(pl_86_TP$sample)
+```
+
+False negatives (NIST7086)
+
+```{r}
+summary(pl_86_FN$sample)
+```
+
+False positives (NIST7086)
+
+```{r}
+summary(pl_86_FP$sample)
+```
+
+```{r}
+scale_x = scale_x_continuous(limits = c(-0.5, 2900))
+scale_y = scale_y_continuous(limits = c(0, 0.3))
+ylab = "Proportion"
+
+p_35_FP <- ggplot2::ggplot(pl_35_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins=200) +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_FN <- ggplot2::ggplot(pl_35_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins=200) +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_TP <- ggplot2::ggplot(pl_35_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins=200) +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FP <- ggplot2::ggplot(pl_86_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins=200) +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FN <- ggplot2::ggplot(pl_86_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins=200) +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_TP <- ggplot2::ggplot(pl_86_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins=200) +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+
+fig1 <- ggplotly(p_35_FP)
+fig2 <- ggplotly(p_35_FN)
+fig3 <- ggplotly(p_35_TP)
+fig4 <- ggplotly(p_86_FP)
+fig5 <- ggplotly(p_86_FN)
+fig6 <- ggplotly(p_86_TP)
+
+a <- list(
+  text = "Normalized Phred-scaled likelihood (PL) for variants calls on NIST7035 (top) and NIST7086 (bottom)",
+  xref = "paper",
+  yref = "paper",
+  yanchor = "bottom",
+  xanchor = "center",
+  align = "center",
+  x = 0.5,
+  y = 1,
+  showarrow = FALSE
+)
+
+fig <- subplot(fig1, fig2, fig3, fig4, fig5, fig6, nrows = 2, shareX = TRUE, shareY = TRUE) %>%
+  layout(annotations = a)
+
+fig
+```
+
+### Allelic depths for the ref and alt alleles in the order listed (AD)
+
+```{r, results = "hide"}
+ad_35_FP <- extract.gt(chrom_NIST7035_FP, element="AD", as.numeric=TRUE) %>% as.data.frame()
+ad_35_FN <- extract.gt(chrom_NIST7035_FN, element="AD", as.numeric=TRUE) %>% as.data.frame()
+ad_35_TP <- extract.gt(chrom_NIST7035_TP, element="AD", as.numeric=TRUE) %>% as.data.frame()
+
+ad_86_FP <- extract.gt(chrom_NIST7086_FP, element="AD", as.numeric=TRUE) %>% as.data.frame()
+ad_86_FN <- extract.gt(chrom_NIST7086_FN, element="AD", as.numeric=TRUE) %>% as.data.frame()
+ad_86_TP <- extract.gt(chrom_NIST7086_TP, element="AD", as.numeric=TRUE) %>% as.data.frame()
+```
+
+True positives (NIST7035)
+
+```{r}
+summary(ad_35_TP$sample)
+```
+
+False negatives (NIST7035)
+
+```{r}
+summary(ad_35_FN$sample)
+```
+
+False positives (NIST7035)
+
+```{r}
+summary(ad_35_FP$sample)
+```
+
+True positives (NIST7086)
+
+```{r}
+summary(ad_86_TP$sample)
+```
+
+False negatives (NIST7086)
+
+```{r}
+summary(ad_86_FN$sample)
+```
+
+False positives (NIST7086)
+
+```{r}
+summary(ad_86_FP$sample)
+```
+
+```{r}
+scale_x = scale_x_continuous(limits = c(-0.5, 220))
+scale_y = scale_y_continuous(limits = c(0, 0.15))
+ylab = "Proportion"
+
+p_35_FP <- ggplot2::ggplot(ad_35_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_FN <- ggplot2::ggplot(ad_35_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_TP <- ggplot2::ggplot(ad_35_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FP <- ggplot2::ggplot(ad_86_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FN <- ggplot2::ggplot(ad_86_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_TP <- ggplot2::ggplot(ad_86_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+
+fig1 <- ggplotly(p_35_FP)
+fig2 <- ggplotly(p_35_FN)
+fig3 <- ggplotly(p_35_TP)
+fig4 <- ggplotly(p_86_FP)
+fig5 <- ggplotly(p_86_FN)
+fig6 <- ggplotly(p_86_TP)
+
+a <- list(
+  text = "Allelic depths (AD) for variants calls on NIST7035 (top) and NIST7086 (bottom)",
+  xref = "paper",
+  yref = "paper",
+  yanchor = "bottom",
+  xanchor = "center",
+  align = "center",
+  x = 0.5,
+  y = 1,
+  showarrow = FALSE
+)
+
+fig <- subplot(fig1, fig2, fig3, fig4, fig5, fig6, nrows = 2, shareX = TRUE, shareY = TRUE) %>%
+  layout(annotations = a)
+
+fig
+```
+
+### Genotype (GT)
+
+```{r, results = "hide"}
+gt_35_FP <- extract.gt(chrom_NIST7035_FP, element="GT", as.numeric=TRUE) %>% as.data.frame()
+gt_35_FN <- extract.gt(chrom_NIST7035_FN, element="GT", as.numeric=TRUE) %>% as.data.frame()
+gt_35_TP <- extract.gt(chrom_NIST7035_TP, element="GT", as.numeric=TRUE) %>% as.data.frame()
+
+gt_86_FP <- extract.gt(chrom_NIST7086_FP, element="GT", as.numeric=TRUE) %>% as.data.frame()
+gt_86_FN <- extract.gt(chrom_NIST7086_FN, element="GT", as.numeric=TRUE) %>% as.data.frame()
+gt_86_TP <- extract.gt(chrom_NIST7086_TP, element="GT", as.numeric=TRUE) %>% as.data.frame()
+```
+
+True positives (NIST7035)
+
+```{r}
+summary(gt_35_TP$sample)
+```
+
+False negatives (NIST7035)
+
+```{r}
+summary(gt_35_FN$sample)
+```
+
+False positives (NIST7035)
+
+```{r}
+summary(gt_35_FP$sample)
+```
+
+True positives (NIST7086)
+
+```{r}
+summary(gt_86_TP$sample)
+```
+
+False negatives (NIST7086)
+
+```{r}
+summary(gt_86_FN$sample)
+```
+
+False positives (NIST7086)
+
+```{r}
+summary(gt_86_FP$sample)
+```
+
+```{r}
+scale_x = scale_x_continuous(limits = c(-0.5, 4))
+scale_y = scale_y_continuous(limits = c(0, 1))
+ylab = "Proportion"
+
+p_35_FP <- ggplot2::ggplot(gt_35_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(stat = "bin") +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_FN <- ggplot2::ggplot(gt_35_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(stat = "bin") +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_TP <- ggplot2::ggplot(gt_35_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(stat = "bin") +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FP <- ggplot2::ggplot(gt_86_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(stat = "bin") +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FN <- ggplot2::ggplot(gt_86_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(stat = "bin") +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_TP <- ggplot2::ggplot(gt_86_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(stat = "bin") +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+
+fig1 <- ggplotly(p_35_FP)
+fig2 <- ggplotly(p_35_FN)
+fig3 <- ggplotly(p_35_TP)
+fig4 <- ggplotly(p_86_FP)
+fig5 <- ggplotly(p_86_FN)
+fig6 <- ggplotly(p_86_TP)
+
+a <- list(
+  text = "Genotype (GT) for variants calls on NIST7035 (top) and NIST7086 (bottom)",
+  xref = "paper",
+  yref = "paper",
+  yanchor = "bottom",
+  xanchor = "center",
+  align = "center",
+  x = 0.5,
+  y = 1,
+  showarrow = FALSE
+)
+
+fig <- subplot(fig1, fig2, fig3, fig4, fig5, fig6, nrows = 2, shareX = TRUE, shareY = TRUE) %>%
+  layout(annotations = a)
+
+fig
+```
+
+### Approximate read depth (DP)
+
+```{r, results = "hide"}
+dp_35_FP <- extract.gt(chrom_NIST7035_FP, element="DP", as.numeric=TRUE) %>% as.data.frame()
+dp_35_FN <- extract.gt(chrom_NIST7035_FN, element="DP", as.numeric=TRUE) %>% as.data.frame()
+dp_35_TP <- extract.gt(chrom_NIST7035_TP, element="DP", as.numeric=TRUE) %>% as.data.frame()
+
+dp_86_FP <- extract.gt(chrom_NIST7086_FP, element="DP", as.numeric=TRUE) %>% as.data.frame()
+dp_86_FN <- extract.gt(chrom_NIST7086_FN, element="DP", as.numeric=TRUE) %>% as.data.frame()
+dp_86_TP <- extract.gt(chrom_NIST7086_TP, element="DP", as.numeric=TRUE) %>% as.data.frame()
+```
+
+True positives (NIST7035)
+
+```{r}
+summary(dp_35_TP$sample)
+```
+
+False negatives (NIST7035)
+
+```{r}
+summary(dp_35_FN$sample)
+```
+
+False positives (NIST7035)
+
+```{r}
+summary(dp_35_FP$sample)
+```
+
+True positives (NIST7086)
+
+```{r}
+summary(dp_86_TP$sample)
+```
+
+False negatives (NIST7086)
+
+```{r}
+summary(dp_86_FN$sample)
+```
+
+False positives (NIST7086)
+
+```{r}
+summary(dp_86_FP$sample)
+```
+
+```{r}
+scale_x = scale_x_continuous(limits = c(-0.5, 350))
+scale_y = scale_y_continuous(limits = c(0, 0.4))
+ylab = "Proportion"
+
+p_35_FP <- ggplot2::ggplot(dp_35_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_FN <- ggplot2::ggplot(dp_35_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_TP <- ggplot2::ggplot(dp_35_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FP <- ggplot2::ggplot(dp_86_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FN <- ggplot2::ggplot(dp_86_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(title = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_TP <- ggplot2::ggplot(dp_86_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+
+fig1 <- ggplotly(p_35_FP)
+fig2 <- ggplotly(p_35_FN)
+fig3 <- ggplotly(p_35_TP)
+fig4 <- ggplotly(p_86_FP)
+fig5 <- ggplotly(p_86_FN)
+fig6 <- ggplotly(p_86_TP)
+
+a <- list(
+  text = "Approximate read depth (DP) for variants calls on NIST7035 (top) and NIST7086 (bottom)",
+  xref = "paper",
+  yref = "paper",
+  yanchor = "bottom",
+  xanchor = "center",
+  align = "center",
+  x = 0.5,
+  y = 1,
+  showarrow = FALSE
+)
+
+fig <- subplot(fig1, fig2, fig3, fig4, fig5, fig6, nrows = 2, shareX = TRUE, shareY = TRUE) %>%
+  layout(annotations = a)
+
+fig
+```
+
+### Physical Physical phasing haplotype information, describing how the alternate alleles are phased in relation to one another (PGT)
+
+```{r, results = "hide"}
+pgt_35_FP <- extract.gt(chrom_NIST7035_FP, element="PGT", as.numeric=TRUE) %>% as.data.frame()
+pgt_35_FN <- extract.gt(chrom_NIST7035_FN, element="PGT", as.numeric=TRUE) %>% as.data.frame()
+pgt_35_TP <- extract.gt(chrom_NIST7035_TP, element="PGT", as.numeric=TRUE) %>% as.data.frame()
+
+pgt_86_FP <- extract.gt(chrom_NIST7086_FP, element="PGT", as.numeric=TRUE) %>% as.data.frame()
+pgt_86_FN <- extract.gt(chrom_NIST7086_FN, element="PGT", as.numeric=TRUE) %>% as.data.frame()
+pgt_86_TP <- extract.gt(chrom_NIST7086_TP, element="PGT", as.numeric=TRUE) %>% as.data.frame()
+```
+
+True positives (NIST7035)
+
+```{r}
+summary(pgt_35_TP$sample)
+```
+
+False negatives (NIST7035)
+
+```{r}
+summary(pgt_35_FN$sample)
+```
+
+False positives (NIST7035)
+
+```{r}
+summary(pgt_35_FP$sample)
+```
+
+True positives (NIST7086)
+
+```{r}
+summary(pgt_86_TP$sample)
+```
+
+False negatives (NIST7086)
+
+```{r}
+summary(pgt_86_FN$sample)
+```
+
+False positives (NIST7086)
+
+```{r}
+summary(pgt_86_FP$sample)
+```
+
+```{r}
+scale_x = scale_x_continuous(limits = c(-0.1, 1.5))
+scale_y = scale_y_continuous(limits = c(0, 1))
+ylab = "Proportion"
+
+p_35_FP <- ggplot2::ggplot(pgt_35_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(stat = "bin") +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_FN <- ggplot2::ggplot(pgt_35_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(stat = "bin") +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_TP <- ggplot2::ggplot(pgt_35_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(stat = "bin") +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FP <- ggplot2::ggplot(pgt_86_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(stat = "bin") +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FN <- ggplot2::ggplot(pgt_86_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(stat = "bin") +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_TP <- ggplot2::ggplot(pgt_86_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(stat = "bin") +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+
+fig1 <- ggplotly(p_35_FP)
+fig2 <- ggplotly(p_35_FN)
+fig3 <- ggplotly(p_35_TP)
+fig4 <- ggplotly(p_86_FP)
+fig5 <- ggplotly(p_86_FN)
+fig6 <- ggplotly(p_86_TP)
+
+a <- list(
+  text = "Phasing haplotype information (PGT) for variants calls on NIST7035 (top) and NIST7086 (bottom)",
+  xref = "paper",
+  yref = "paper",
+  yanchor = "bottom",
+  xanchor = "center",
+  align = "center",
+  x = 0.5,
+  y = 1,
+  showarrow = FALSE
+)
+
+fig <- subplot(fig1, fig2, fig3, fig4, fig5, fig6, nrows = 2, shareX = TRUE, shareY = TRUE) %>%
+  layout(annotations = a)
+
+fig
+```
+
+### Per-sample component statistics which comprise the Fisher's Exact Test to detect strand bias (SB)
+
+```{r, results = "hide"}
+sb_35_FP <- extract.gt(chrom_NIST7035_FP, element="SB", as.numeric=TRUE) %>% as.data.frame()
+sb_35_FN <- extract.gt(chrom_NIST7035_FN, element="SB", as.numeric=TRUE) %>% as.data.frame()
+sb_35_TP <- extract.gt(chrom_NIST7035_TP, element="SB", as.numeric=TRUE) %>% as.data.frame()
+
+sb_86_FP <- extract.gt(chrom_NIST7086_FP, element="SB", as.numeric=TRUE) %>% as.data.frame()
+sb_86_FN <- extract.gt(chrom_NIST7086_FN, element="SB", as.numeric=TRUE) %>% as.data.frame()
+sb_86_TP <- extract.gt(chrom_NIST7086_TP, element="SB", as.numeric=TRUE) %>% as.data.frame()
+```
+
+True positives (NIST7035)
+
+```{r}
+summary(sb_35_TP$sample)
+```
+
+False negatives (NIST7035)
+
+```{r}
+summary(sb_35_FN$sample)
+```
+
+False positives (NIST7035)
+
+```{r}
+summary(sb_35_FP$sample)
+```
+
+True positives (NIST7086)
+
+```{r}
+summary(sb_86_TP$sample)
+```
+
+False negatives (NIST7086)
+
+```{r}
+summary(sb_86_FN$sample)
+```
+
+False positives (NIST7086)
+
+```{r}
+summary(sb_86_FP$sample)
+```
+
+```{r}
+scale_x = scale_x_continuous(limits = c(-0.5, 130))
+scale_y = scale_y_continuous(limits = c(0, 0.2))
+ylab = "Proportion"
+
+p_35_FP <- ggplot2::ggplot(sb_35_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_FN <- ggplot2::ggplot(sb_35_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_35_TP <- ggplot2::ggplot(sb_35_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FP <- ggplot2::ggplot(sb_86_FP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "False positives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_FN <- ggplot2::ggplot(sb_86_FN, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "False negatives", y = ylab) +
+  scale_x +
+  scale_y
+p_86_TP <- ggplot2::ggplot(sb_86_TP, mapping = aes(x = sample, y = (..count..)/sum(..count..))) + 
+  geom_histogram(bins = 200) +
+  labs(x = "True positives", y = ylab) +
+  scale_x +
+  scale_y
+
+fig1 <- ggplotly(p_35_FP)
+fig2 <- ggplotly(p_35_FN)
+fig3 <- ggplotly(p_35_TP)
+fig4 <- ggplotly(p_86_FP)
+fig5 <- ggplotly(p_86_FN)
+fig6 <- ggplotly(p_86_TP)
+
+a <- list(
+  text = "Strand bias (SB) for variants calls on NIST7035 (top) and NIST7086 (bottom)",
+  xref = "paper",
+  yref = "paper",
+  yanchor = "bottom",
+  xanchor = "center",
+  align = "center",
+  x = 0.5,
+  y = 1,
+  showarrow = FALSE
+)
+
+fig <- subplot(fig1, fig2, fig3, fig4, fig5, fig6, nrows = 2, shareX = TRUE, shareY = TRUE) %>%
+  layout(annotations = a)
+
+fig
+```
+
+
+No values for these fields:
+
+- BaseQRankSum
+- DS
+- InbreedingCoeff
+- MQ
+- ReadPosRankSum
+- LowQual
+- BI
+- BVT
+- MIN_DP
+- ClippingRankSum
+- END
+- MLEAC
+- MQRankSum
+- BS
+- QQ
+- BLT
+- ExcessHet
+- MLEAF
+- RAW_MQ
+
+
+Parabricks output has: BaseQRankSum=-1.;MLEAF=0.500,0.00;MQRankSum=0.000;RAW_MQ=46800.00;ReadPosRankSum=-0.108 
+
+There are also values in th QUAL field
+
+I should be able to access these values in my merged vcf - but they aren't accessable by vcfR
+
+I can't access them directly from the raw parabricks vcf, so there might be an issue with the vcfR command I'm using rather than the vcf merging I did
+
+## Apply masks
+
+NIST7035
+
+```{r}
+# Read in full vcf (not seperated into tp, fp, fn)
+vcf_NIST7035_merged <- read.vcfR("./NIST7035_NIST_merged.vcf", verbose = FALSE)
+vcf_NIST7086_merged <- read.vcfR("./NIST7086_NIST_merged.vcf", verbose = FALSE)
+chrom_NIST7035_merged <- create.chromR(seq = NULL, vcf = vcf_NIST7035_merged)
+chrom_NIST7086_merged <- create.chromR(seq = NULL, vcf = vcf_NIST7086_merged)
+
+# Apply mask
+chrom_NIST7035_merged <- masker(chrom_NIST7035_merged, min_QUAL = 1, min_DP = 300, max_DP = 700, min_MQ = 59.9,  max_MQ = 60.1)
+chrom_NIST7086_merged <- masker(chrom_NIST7086_merged, min_QUAL = 1, min_DP = 300, max_DP = 700, min_MQ = 59.9,  max_MQ = 60.1)
+```
+
+NIST7035
+
+```{r}
+plot(chrom_NIST7035_merged)
+```
+
+NIST7086
+
+```{r}
+plot(chrom_NIST7086_merged)
+```
+
+NIST7035
+
+```{r}
+chromoqc(chrom_NIST7035_merged, dp.alpha = 22)
+```
+
+NIST7086
+
+```{r}
+chromoqc(chrom_NIST7086_merged, dp.alpha = 22)
+````
+
+
+
+
