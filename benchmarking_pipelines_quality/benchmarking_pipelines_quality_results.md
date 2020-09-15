@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - quality - results
 
 Created: 2020-04-22 13:37:04
-Last modified: 2020/09/15 13:00:35
+Last modified: 2020/09/15 13:16:51
 
 This document aims to describe a few key run parameters and record the results of each quality benchmarking run. The full parameters for each benchmarking run can be found [here](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_benchmarking), [here](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_benchmarking) and [here](https://github.com/ESR-NZ/ESR-Parabricks/quality_benchmarking).
 
@@ -17,29 +17,27 @@ The code used to generate these results can be found [here](https://github.com/l
     - [Results](#results)
   - [quality_bench1.0](#quality_bench10)
     - [Run parameters/settings](#run-parameterssettings-1)
-    - [Results](#results-1)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline)
       - [parabricks germline pipeline](#parabricks-germline-pipeline)
   - [quality_bench1.1](#quality_bench11)
     - [Run parameters/settings](#run-parameterssettings-2)
-    - [Results](#results-2)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-1)
   - [quality_bench1.2](#quality_bench12)
     - [Run parameters/settings](#run-parameterssettings-3)
-    - [Results](#results-3)
+    - [Results](#results-1)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-2)
   - [quality_bench1.3](#quality_bench13)
     - [Run parameters/settings](#run-parameterssettings-4)
-    - [Results](#results-4)
+    - [Results](#results-2)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-3)
   - [quality_bench1.4](#quality_bench14)
     - [Run parameters/settings](#run-parameterssettings-5)
-    - [Results](#results-5)
+    - [Results](#results-3)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-4)
       - [parabricks germline pipeline](#parabricks-germline-pipeline-1)
   - [quality_bench1.5](#quality_bench15)
     - [Run parameters/settings](#run-parameterssettings-6)
-    - [Results](#results-6)
+    - [Results](#results-4)
       - [no pipeline (intra_truth_comparison re-run)](#no-pipeline-intra_truth_comparison-re-run)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline (quality_bench1.0 re-run)](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-quality_bench10-re-run)
       - [parabricks germline pipeline (quality_bench1.0 re-run)](#parabricks-germline-pipeline-quality_bench10-re-run)
@@ -50,11 +48,11 @@ The code used to generate these results can be found [here](https://github.com/l
       - [parabricks germline pipeline (quality_bench1.4 re-run)](#parabricks-germline-pipeline-quality_bench14-re-run)
   - [quality_bench1.6](#quality_bench16)
     - [Run parameters/settings](#run-parameterssettings-7)
-    - [Results](#results-7)
+    - [Results](#results-5)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-5)
   - [quality_bench1.7](#quality_bench17)
     - [Run parameters/settings](#run-parameterssettings-8)
-    - [Results](#results-8)
+    - [Results](#results-6)
       - [human_genomics_pipeline + minimal vcf_annotation_pipeline](#human_genomics_pipeline--minimal-vcf_annotation_pipeline-6)
 
 ## Known vcf
@@ -128,9 +126,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/intra
 
 (see run settings/output for [human_genomics_pipeline - quality_bench1.0](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.0), [vcf_annotation_pipeline - quality_bench1.0](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.0) and [parabricks - quality_bench1.0](https://github.com/ESR-NZ/ESR-Parabricks/tree/quality_bench1.0) for more detail)
 
-### Results
-
-Results can be found [here](quality_bench1.0/evaluation_of_bcftools_isec_results.md)
+Further analyses and results can be found [here](quality_bench1.0/)
 
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
@@ -204,10 +200,6 @@ Results can be found [here](quality_bench1.0/evaluation_of_bcftools_isec_results
 
 (see run settings/output for [human_genomics_pipeline - quality_bench1.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/quality_bench1.1) and [vcf_annotation_pipeline - quality_bench1.1](https://github.com/ESR-NZ/vcf_annotation_pipeline/tree/quality_bench1.1) for more detail)
 
-### Results
-
-Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quality_bench1.1/ (wintermute)
-
 #### human_genomics_pipeline + minimal vcf_annotation_pipeline
 
 *Note: 'PASS' indicates a snp in a tranche below 99.95 and an indel in a tranche below 99.40*
@@ -262,7 +254,7 @@ Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quali
 
 ### Results
 
-Results dir: /store/lkemp/exome_project/benchmarking_quality/NA12878_exome/quality_bench1.2/ (Wintermute) and /home/lkemp/benchmarking_quality/ (Methead)
+Further analyses and results can be found [here](evaluation_of_tranch_filtering/)
 
 Variants from tranche 82.00 or less were extracted for the following comparisons
 
