@@ -1,0 +1,217 @@
+---
+title: "Comparing the quality of the tp, fp, and fn variants"
+author: "Leah Kemp"
+date: "20/05/2020"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = FALSE, message = FALSE)
+```
+
+Compare the quality of the variants contained in the 'true-positive', 'false-positive' and 'false-negative' vcf files produced by evaluation of pipeline benchmarking runs (using bcftools isec). See the docs for [benchmarking pipeline quality](../../benchmarking_pipelines_quality.md) and [benchmarking pipeline quality results](../../benchmarking_pipelines_quality_results.md)   
+
+## Setup
+
+Load packages
+
+```{r, results = "hide"}
+library(vcfR)
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+```
+
+Read in data
+
+```{r, results = "hide"}
+vcfFP <- read.vcfR("./NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.chrom.adjusted/0000.vcf")
+vcfFN <- read.vcfR("./NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.chrom.adjusted/0001.vcf")
+vcfTP <- read.vcfR("./NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.chrom.adjusted/0002.vcf")
+vcfTP2 <- read.vcfR("./NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.chrom.adjusted/0003.vcf")
+```
+
+Return the available annotations to look into
+
+```{r}
+queryMETA(vcfFP)
+```
+
+```{r, results = "hide"}
+strwrap(vcfFP@meta[1:40])
+```
+
+Create chromR objects
+
+```{r, results = "hide"}
+chromFP <- create.chromR(seq = NULL, vcf = vcfFP, name = "False-positives")
+chromFN <- create.chromR(seq = NULL, vcf = vcfFN, name = "False-negatives")
+chromTP <- create.chromR(seq = NULL, vcf = vcfTP, name = "True-positives")
+chromTP2 <- create.chromR(seq = NULL, vcf = vcfTP2, name = "True-positives")
+```
+
+## General plots
+
+Plot chromR objects
+
+```{r}
+plot(chromFP)
+plot(chromFN)
+plot(chromTP)
+plot(chromTP2)
+```
+
+Visualise data
+
+```{r, results = "hide"}
+plotchromFP <- proc.chromR(chromFP)
+plotchromFN <- proc.chromR(chromFN)
+plotchromTP <- proc.chromR(chromTP)
+plotchromTP2 <- proc.chromR(chromTP2)
+```
+
+```{r}
+chromoqc(plotchromFP, dp.alpha=20)
+chromoqc(plotchromFN, dp.alpha=20)
+chromoqc(plotchromTP, dp.alpha=20)
+chromoqc(plotchromTP2, dp.alpha=20)
+```
+
+## Other plots/metrics
+
+### Conditional genotype quality (GQ)
+
+```{r, results = "hide"}
+gqFP <- extract.gt(chromFP, element="GQ", as.numeric=TRUE) %>% as.data.frame()
+gqFN <- extract.gt(chromFN, element="GQ", as.numeric=TRUE) %>% as.data.frame()
+gqTP <- extract.gt(chromTP, element="GQ", as.numeric=TRUE) %>% as.data.frame()
+gqTP2 <- extract.gt(chromTP2, element="GQ", as.numeric=TRUE) %>% as.data.frame()
+```
+
+```{r}
+summary(gqFP)
+summary(gqFN)
+summary(gqTP)
+summary(gqTP2)
+```
+
+```{r}
+scale = scale_y_continuous(limits = c(0, 15000))
+xlab = "Gentoype quality (GQ)"
+ylab = "Frequency"
+
+pFP <- ggplot2::ggplot(gqFP, mapping = aes(x = NIST7035_NIST)) + 
+  geom_histogram(stat = "bin") +
+  labs(title = "False positives", x = xlab, y = ylab) +
+  scale
+pFN <- ggplot2::ggplot(gqFN, mapping = aes(x = NIST7035)) + 
+  geom_histogram(stat = "bin") +
+  labs(title = "False negatives", x = xlab, y = ylab) +
+  scale
+pTP <- ggplot2::ggplot(gqTP, mapping = aes(x = NIST7035_NIST)) + 
+  geom_histogram(stat = "bin") +
+  labs(title = "True positives", x = xlab, y = ylab) +
+  scale
+pTP2 <- ggplot2::ggplot(gqTP2, mapping = aes(x = NIST7035)) + 
+  geom_histogram(stat = "bin") +
+  labs(title = "True positives", x = xlab, y = ylab) +
+  scale
+
+grid.arrange(pFP, pFN, pTP, pTP2, ncol = 2, nrow = 2)
+```
+
+### Normalized Phred-scaled likelihoods for genotypes as defined in the VCF specification (PL)
+
+```{r, results = "hide"}
+plFP <- extract.gt(chromFP, element="PL", as.numeric=TRUE) %>% as.data.frame()
+plFN <- extract.gt(chromFN, element="PL", as.numeric=TRUE) %>% as.data.frame()
+plTP <- extract.gt(chromTP, element="PL", as.numeric=TRUE) %>% as.data.frame()
+plTP2 <- extract.gt(chromTP2, element="PL", as.numeric=TRUE) %>% as.data.frame()
+```
+
+```{r}
+summary(plFP)
+summary(plFN)
+summary(plTP)
+summary(plTP2)
+```
+
+```{r}
+scale = scale_y_continuous(limits = c(0, 15000))
+xlab = "Normalized Phred-scaled likelihood (PL)"
+ylab = "Frequency"
+
+par(mfrow = c(2, 2))
+pFP <- ggplot2::ggplot(gqFP, mapping = aes(x = NIST7035_NIST)) + 
+  geom_histogram(stat = "bin") +
+  labs(title = "False positives", x = xlab, y = ylab) +
+  scale
+pFN <- ggplot2::ggplot(gqFN, mapping = aes(x = NIST7035)) + 
+  geom_histogram(stat = "bin") +
+  labs(title = "False negatives", x = xlab, y = ylab) +
+  scale
+pTP <- ggplot2::ggplot(gqTP, mapping = aes(x = NIST7035_NIST)) + 
+  geom_histogram(stat = "bin") +
+  labs(title = "True positives", x = xlab, y = ylab) +
+  scale
+pTP2 <- ggplot2::ggplot(gqTP2, mapping = aes(x = NIST7035)) + 
+  geom_histogram(stat = "bin") +
+  labs(title = "True positives", x = xlab, y = ylab) +
+  scale
+
+grid.arrange(pFP, pFN, pTP, pTP2, ncol = 2, nrow = 2)
+```
+
+### Allelic depths for the ref and alt alleles in the order listed (AD)
+
+```{r, results = "hide"}
+adFP <- extract.gt(chromFP, element="AD", as.numeric=TRUE) %>% as.data.frame()
+adFN <- extract.gt(chromFN, element="AD", as.numeric=TRUE) %>% as.data.frame()
+adTP <- extract.gt(chromTP, element="AD", as.numeric=TRUE) %>% as.data.frame()
+adTP2 <- extract.gt(chromTP2, element="AD", as.numeric=TRUE) %>% as.data.frame()
+```
+
+```{r}
+summary(adFP)
+summary(adFN)
+summary(adTP)
+summary(adTP2)
+```
+
+```{r}
+scale = scale_y_continuous(limits = c(0, 15000))
+xlab = "Allelic depths (AD)"
+ylab = "Frequency"
+
+par(mfrow = c(2, 2))
+pFP <- ggplot2::ggplot(adFP, mapping = aes(x = NIST7035_NIST)) + 
+  geom_histogram(stat = "bin") +
+  labs(title = "False positives", x = xlab, y = ylab) +
+  scale
+pFN <- ggplot2::ggplot(adFN, mapping = aes(x = NIST7035)) + 
+  geom_histogram(stat = "bin") +
+  labs(title = "False negatives", x = xlab, y = ylab) +
+  scale
+pTP <- ggplot2::ggplot(adTP, mapping = aes(x = NIST7035_NIST)) + 
+  geom_histogram(stat = "bin") +
+  labs(title = "True positives", x = xlab, y = ylab) +
+  scale
+pTP2 <- ggplot2::ggplot(adTP2, mapping = aes(x = NIST7035)) + 
+  geom_histogram(stat = "bin") +
+  labs(title = "True positives", x = xlab, y = ylab) +
+  scale
+
+grid.arrange(pFP, pFN, pTP, pTP2, ncol = 2, nrow = 2)
+```
+
+### No data (all NA's) avaliable for...
+
+- INDEL truth resource sensitivity between 99.40 and 100.00 for info key CNN_2D (CNN_2D_INDEL_Tranche_99.40_100.00)
+- SNP truth resource sensitivity between 99.95 and 100.00 for info key CNN_2D (CNN_2D_SNP_Tranche_99.95_100.00) 
+- RMS mapping quality (MQ)
+- Low quality (LowQual)
+- Variant Confidence/Quality by Depth (QD)
+
+
+
+
