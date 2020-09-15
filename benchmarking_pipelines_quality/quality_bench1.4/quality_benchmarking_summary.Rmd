@@ -1,0 +1,87 @@
+---
+title: "quality_benchmarking_summary"
+author: "Leah Kemp"
+date: "08/06/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = FALSE, message = FALSE)
+```
+
+## Objective
+
+The aim of this document is to summarise the results of this quality benchmarking and present the results in a manner similar to how other present such results like in the [precisionFDA truth challenge](https://precision.fda.gov/challenges/truth/results). This is a part of a wider effort to benchmark the quality of three of our genomic pipelines against a known vcf.
+
+See related docs [here](https://github.com/leahkemp/documentation/blob/master/benchmarking_pipelines_quality/benchmarking_pipelines.md) and [here](https://github.com/leahkemp/documentation/blob/master/benchmarking_pipelines_quality/benchmarking_pipeline_results.md). This document is based on the results of quality_bench1.4.
+
+## Setup
+
+```{r, results = "hide"}
+library(openxlsx)
+library(DT)
+```
+
+Read in data
+
+```{r, results = "hide"}
+data <- read.xlsx("quality_benchmarking_summary.xlsx")
+```
+
+Seperate data by pipeline
+
+```{r}
+hgp.vap <- dplyr::filter(data, pipeline == "hgp.vap")
+parabricks <- dplyr::filter(data, pipeline == "parabricks")
+```
+
+
+## Tables - summarise results
+
+The description of the metrics used in these tables can be found [here](https://github.com/Illumina/hap.py/blob/master/doc/happy.md#full-list-of-output-columns). To summarise:
+
+* F1 score = Harmonic mean of precision and recall = 2METRIC.RecallMetric.Precision/(METRIC.Recall + METRIC.Precision)
+* Recall = Recall for truth variant representation = TRUTH.TP / (TRUTH.TP + TRUTH.FN)
+* Precision = Precision of query variants = QUERY.TP / (QUERY.TP + QUERY.FP)
+
+### human_genomics_pipeline + minimal vcf_annotation_pipeline
+
+```{r, echo = FALSE}
+hgp.vap %>%
+  dplyr::select(sample, filter.level, snp.METRIC.F1_Score, snp.METRIC.Recall, snp.METRIC.Precision, indel.METRIC.F1_Score, indel.METRIC.Recall, indel.METRIC.Precision) %>%
+  datatable(colnames = c('Truth dataset' = 2, 'Filter level' = 3, 'F1 score - snps' = 4, 'Recall - snps' = 5, 'Precision - snps' = 6, 'F1 score - indels' = 7, 'Recall - indels' = 8, 'Precision - indels' = 9),
+            filter = 'top')
+```
+
+```{r, echo = FALSE}
+hgp.vap %>%
+  dplyr::select(sample, filter.level, snp.TRUTH.TP, snp.TRUTH.FN, snp.QUERY.FP, indel.TRUTH.TP, indel.TRUTH.FN, indel.QUERY.FP) %>%
+  datatable(colnames = c('Truth dataset' = 2, 'Filter level' = 3, 'TP - snps' = 4, 'FN - snps' = 5, 'FP - snps' = 6, 'TP - indels' = 7, 'FN - indels' = 8, 'FP - indels' = 9),
+            filter = 'top')
+```
+
+
+### Parabricks germline pipeline
+
+```{r, echo = FALSE, eval = FALSE}
+parabricks%>%
+  dplyr::select(sample, filter.level, snp.METRIC.F1_Score, snp.METRIC.Recall, snp.METRIC.Precision, indel.METRIC.F1_Score, indel.METRIC.Recall, indel.METRIC.Precision) %>%
+  datatable(colnames = c('Truth dataset' = 2, 'Filter level' = 3, 'F1 score - snps' = 4, 'Recall - snps' = 5, 'Precision - snps' = 6, 'F1 score - indels' = 7, 'Recall - indels' = 8, 'Precision - indels' = 9),
+            filter = 'top')
+```
+
+## Tables - extended results
+
+Stratified data
+
+```{r, results = "hide"}
+data_extended <- read.csv("happy_quality_bench1.4_NIST7035_NIST_filtered_v_project.NIST.hc.snps.indels.extended.csv")
+```
+
+### human_genomics_pipeline + minimal vcf_annotation_pipeline
+
+```{r, echo = FALSE}
+data_extended  %>%
+  dplyr::select(Type, Subtype, Subset, Filter, METRIC.Recall, METRIC.Precision, METRIC.F1_Score, Subset.Size, TRUTH.TOTAL, TRUTH.TP, TRUTH.FN, QUERY.TP) %>%
+  datatable(filter = 'top', options = list(pageLength = 50))
+```
