@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - resources
 
 Created: 2020-09-11 13:37:04
-Last modified: 2020/09/15 11:37:46
+Last modified: 2020/09/15 17:01:04
 
 - **Aim:** Undertake benchmarking of genomics pipelines to optimise the threading of each rule in the pipelines.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [wget](https://www.gnu.org/software/wget/)
@@ -137,8 +137,23 @@ Workflow:
   
 ### Results
 
-- Full run settings for each threading level can be found at [resource_bench_1_thread_single_](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.0), [resource_bench1.1](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.1), [resource_bench1.2](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.2), [resource_bench1.3](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.3), [resource_bench1.4](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.4), [resource_bench1.5](https://github.com/ESR-NZ/human_genomics_pipeline/tree/resource_bench1.5)
-- Plotting/report can be found at /home/lkemp/benchmarking_pipelines/resource_benchmarking/resource_bench1 on Methead)
+Full run settings and outputs for each threading level for can be found at:
+
+- [resource_bench_1_thread](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_1_thread)
+- [resource_bench_2_thread](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_2_threads)
+- [resource_bench_4_thread](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_4_threads)
+- [resource_bench_8_thread](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_8_threads)
+- [resource_bench_16_thread](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_16_threads)
+- [resource_bench_32_thread](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_32_threads)
+
+- [resource_bench_1_thread_cohort](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_1_thread_cohort)
+- [resource_bench_2_thread_cohort](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_2_threads_cohort)
+- [resource_bench_4_thread_cohort](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_4_threads_cohort)
+- [resource_bench_8_thread_cohort](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_8_threads_cohort)
+- [resource_bench_16_thread_cohort](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_16_threads_cohort)
+- [resource_bench_32_thread_cohort](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_32_threads_cohort)
+  
+Plotting/report can be found [here](results/)
 
 ## Previous resource benchmarking
 
