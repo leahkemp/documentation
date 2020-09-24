@@ -1,13 +1,13 @@
 # Benchmarking genomic pipelines - resources
 
 Created: 2020-09-11 13:37:04
-Last modified: 2020/09/15 17:01:04
+Last modified: 2020/09/18 15:44:31
 
 - **Aim:** Undertake benchmarking of genomics pipelines to optimise the threading of each rule in the pipelines.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [wget](https://www.gnu.org/software/wget/)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
 
-The idea is to run these pipelines ([human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)) against a the Genome In A Bottle (GIAB) sample [NIST7035](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) exome and evaluate the clock time for each step in the pipelines with increased threading to evaluate the point of diminishing return. This will also provide overall pipeline run time.
+The idea is to run these pipelines ([human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)) against the Genome In A Bottle (GIAB) sample [NIST7035](https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/) exome and evaluate the clock time for each step in the pipelines with increased threading to evaluate the point of diminishing return. This will also provide overall pipeline run times. These tests will be undertaken on Wintermute.
 
 ## Table of contents
 
@@ -60,9 +60,9 @@ cp NIST7035_NIST_2.fastq.gz dummy2_NIST_2.fastq.gz
 Create a dummy pedigree file for cohort runs
 
 ```txt
-NIST7035_NIST	dummy1	0	0	1	1
-NIST7035_NIST	dummy2	0	0	2	1
-NIST7035_NIST	NIST7035_NIST	dummy1	dummy2	1	2
+NIST7035_NIST	dummy1_NIST	0	0	1	1
+NIST7035_NIST	dummy2_NIST	0	0	2	1
+NIST7035_NIST	NIST7035_NIST	dummy1_NIST	dummy2_NIST	1	2
 
 ```
 
