@@ -1,7 +1,7 @@
-# Benchmarking genomic pipelines - resources - production
+# Benchmarking genomic pipelines - resources - production - per rule runtime
 
 Created: 2020-09-11 13:37:04
-Last modified: 2020/09/25 16:28:15
+Last modified: 2020/09/25 17:51:08
 
 - **Aim:** Undertake benchmarking of genomics pipelines to optimise the threading of each rule in the pipelines.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [wget](https://www.gnu.org/software/wget/)
@@ -11,7 +11,7 @@ The idea is to run these pipelines ([human_genomics_pipeline](https://github.com
 
 ## Table of contents
 
-- [Benchmarking genomic pipelines - resources - production](#benchmarking-genomic-pipelines---resources---production)
+- [Benchmarking genomic pipelines - resources - production - per rule runtime](#benchmarking-genomic-pipelines---resources---production---per-rule-runtime)
   - [Table of contents](#table-of-contents)
     - [Setup](#setup)
     - [Results](#results)
@@ -21,10 +21,10 @@ The idea is to run these pipelines ([human_genomics_pipeline](https://github.com
 
 Variables tested:
 
-- cpu/gpu runs
+- cpu runs
 - 1/8 samples/families
-- single/cohort runs
-- 1-32 threads
+- single/cohort runs (to get runtimes for all rules)
+- 1-32 threads per rule
 
 *Note. one 'sample' for a cohort run will mean one family (and one sample is comprised of three individuals/exomes)
 
@@ -34,7 +34,7 @@ Create folder structure
 cd /NGS/scratch/KSCBIOM/HumanGenomics/resource_benchmarking/
 
 # Create initial folder structure
-mkdir -p exome/{cpu_run/{01_sample/{single_run,cohort_run},02_sample/{single_run,cohort_run},04_sample/{single_run,cohort_run},08_sample/{single_run,cohort_run},16_sample/{single_run,cohort_run}},gpu_run/{01_sample/{single_run,cohort_run},02_sample/{single_run,cohort_run},04_sample/{single_run,cohort_run},08_sample/{single_run,cohort_run}}}
+mkdir -p exome/cpu_run/{01_sample/{single_run,cohort_run},02_sample/{single_run,cohort_run},04_sample/{single_run,cohort_run},08_sample/{single_run,cohort_run},16_sample/{single_run,cohort_run}}
 
 # Create threading directories for cpu_runs dirs
 for i in exome/*/*/*; do
