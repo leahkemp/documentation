@@ -1,7 +1,7 @@
 # Benchmarking genomic pipelines - resources
 
 Created: 2020-09-11 13:37:04
-Last modified: 2020/09/24 15:17:21
+Last modified: 2020/09/25 12:11:18
 
 - **Aim:** Undertake benchmarking of genomics pipelines to optimise the threading of each rule in the pipelines and evaluate overall pipeline runtimes.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [wget](https://www.gnu.org/software/wget/)
@@ -87,11 +87,20 @@ bash populate_fastq_pedigree_dirs.sh
 Clone forked pipeline and create/checkout the branch for resource benchmarking which includes modifications for resource benchmarking (each rule wrapped with `repeat("benchmarks/rule/{sample}.tsv, 3)`)
 
 ```bash
+# human_genomics_pipeline
 for filedir in /NGS/scratch/KSCBIOM/HumanGenomics/resource_benchmarking/exome/*/*/*/*; do
   cd $filedir
   git clone https://github.com/leahkemp/human_genomics_pipeline.git
   cd human_genomics_pipeline
   git checkout bc2f1ae711a58267708b2e0f6c5b9c9453ef3b77
+  done
+
+# vcf_annotation_pipeline
+for filedir in /NGS/scratch/KSCBIOM/HumanGenomics/resource_benchmarking/exome/*/*/*/*; do
+  cd $filedir
+  git clone https://github.com/leahkemp/vcf_annotation_pipeline.git
+  cd vcf_annotation_pipeline
+  git checkout 2747b87237a08a3ab70765bca94a9a6c7386b1db
   done
 ```
 
@@ -100,33 +109,53 @@ Setup directories that contain all the variations of rule files, config files, r
 ```bash
 cd /NGS/scratch/KSCBIOM/HumanGenomics/resource_benchmarking
 
-# Set the threads in all rule files from 1-32
-mkdir rules_01_thread
-mkdir rules_02_thread
-mkdir rules_04_thread
-mkdir rules_08_thread
-mkdir rules_16_thread
-mkdir rules_32_thread
+# Set the threads in all rule files from 1-32 - for human_genomics_pipeline (hgp) and vcf_annotation_pipeline (vap)
+mkdir rules_01_thread_hgp
+mkdir rules_02_thread_hgp
+mkdir rules_04_thread_hgp
+mkdir rules_08_thread_hgp
+mkdir rules_16_thread_hgp
+mkdir rules_32_thread_hgp
 
-# Set the 'DATA', 'GPU_ACCELERATED' and 'RECALIBRATION RESOURCES' parameters
-mkdir config_cohort_cpu
-mkdir config_single_cpu
-mkdir config_cohort_gpu
-mkdir config_single_gpu
+mkdir rules_01_thread_vap
+mkdir rules_02_thread_vap
+mkdir rules_04_thread_vap
+mkdir rules_08_thread_vap
+mkdir rules_16_thread_vap
+mkdir rules_32_thread_vap
 
-# Set the overall threading to 32 (-j 32)
-mkdir runscript
+# Set the 'DATA', 'GPU_ACCELERATED' and 'RECALIBRATION RESOURCES' parameters - for human_genomics_pipeline (hgp) and vcf_annotation_pipeline (vap)
+mkdir config_cohort_cpu_hgp
+mkdir config_single_cpu_hgp
+mkdir config_cohort_gpu_hgp
+mkdir config_single_gpu_hgp
+
+mkdir config_cohort_cpu_vap
+mkdir config_single_cpu_vap
+mkdir config_cohort_gpu_vap
+mkdir config_single_gpu_vap
+
+# Set the overall threading to 32 (-j 32) and set any other parameters - for human_genomics_pipeline (hgp) and vcf_annotation_pipeline (vap)
+mkdir runscript_hgp
+
+mkdir runscript_vap
 
 mkdir cluster_config
 ```
 
-Copy the config files, run scripts and cluster configs to where we will do the resource benchmarking (first set the working directory in `populate_configs.sh`)
+Copy the config files, run scripts and cluster configs to where we will do the resource benchmarking (first set the working directory in `populate_configs_hgp.sh`)
 
 ```bash
 bash populate_configs.sh
 ```
 
-Run the pipelines
+Run all human_genomics_pipeline runs. Before running vcf_annotation_pipeline runs, move the outputs of human_genomics_pipeline to the directories needed by vcf_annotation_pipeline
+
+```bash
+bash move_input_files_for_vap.sh
+```
+
+Run all vcf_annotation_pipeline runs
 
 Once the all pipeline runs have been carried out, merge the outputs of all benchmarking output files into one csv file
 
