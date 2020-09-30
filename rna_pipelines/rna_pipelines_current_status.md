@@ -1,7 +1,7 @@
 # RNA pipelines - current status
 
 Created: 2020/09/24 15:19:42
-Last modified: 2020/09/28 15:59:19
+Last modified: 2020/09/29 10:55:04
 
 - **Aim:** Evaluate the current pipelines available for processing RNA-seq data. This will help us decide if there is a pipeline currently available for our use, one we could adapt, or if we will need to create an RNA-seq pipeline from scratch
 
@@ -28,17 +28,29 @@ Last modified: 2020/09/28 15:59:19
     - [GeneTEFlow](#geneteflow)
     - [Parabricks](#parabricks)
     - [DiMSum](#dimsum)
-  - [scTyper](#sctyper)
-  - [RiboMiner](#ribominer)
-  - [SLFinder](#slfinder)
+    - [scTyper](#sctyper)
+    - [RiboMiner](#ribominer)
+    - [SLFinder](#slfinder)
+    - [Cell Ranger pipeline (10×Genomics)](#cell-ranger-pipeline-10genomics)
+    - [Seurat](#seurat)
   - [Other](#other)
+  - [Small non-coding RNA-Seq pipelines currently available](#small-non-coding-rna-seq-pipelines-currently-available)
+    - [smrnaseq](#smrnaseq)
+    - [sports1.1](#sports11)
+    - [umitools](#umitools)
+    - [smallseq](#smallseq)
+    - [RNA-seq](#rna-seq)
+    - [snakemake_RNA-seq](#snakemake_rna-seq)
+    - [snakemake_fastqc](#snakemake_fastqc)
+    - [snakemake_deeptools](#snakemake_deeptools)
+  - [Other](#other-1)
 
 ## Overview
 
 
 A summary of some of the RNA-seq data analysis tools by [Ruairi J MacKenzie, 2018](https://www.technologynetworks.com/genomics/articles/rna-seq-basics-applications-and-protocol-299461):
 
-"Tools like Sailfish, RSEM and BitSeq12 will help you quantify your expression levels, whilst tools like MISO, which quantifies alternatively spliced genes, are available for more specialized analysis13. There is a library of these tools out there, and reading reviews and roundups are your best way to find the right tool for your research."
+"Tools like Sailfish, RSEM and BitSeq12 will help you quantify your expression levels, whilst tools like MISO, which quantifies alternatively spliced genes, are available for more specialized analysis. There is a library of these tools out there, and reading reviews and roundups are your best way to find the right tool for your research."
 
 Note that there also exists an R framework for comparing pipelines (see [here](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://genomebiology.biomedcentral.com/track/pdf/10.1186/s13059-020-02136-7))
 
@@ -124,8 +136,7 @@ A [recent paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www
 - Open source
 - Workflow language - snakemake
 - Package management with Conda
-- Differential expression analysis with [Kallisto](https://pachterlab.github.io/kallisto/) and [Sleuth](https://pachterlab.github.io/sleuth/).
-
+- Differential expression analysis with [Kallisto](https://pachterlab.github.io/kallisto/) and [Sleuth](https://pachterlab.github.io/sleuth/)
 
 ### single-cell-rna-seq
 
@@ -210,13 +221,13 @@ A [recent paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www
 - Open source
 - Written in R (not in a workflow language)
 
-## scTyper
+### scTyper
 
 - github [here](https://github.com/omicsCore/scTyper), paper [here](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03700-5)
 - Cell typing analysis of single-cell RNA-seq data
 - Written in R (not in a workflow language)
 
-## RiboMiner
+### RiboMiner
 
 - github [here](https://github.com/xryanglab/RiboMiner), paper [here](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03670-8)
 - Open source
@@ -224,7 +235,7 @@ A [recent paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www
 - Four function parts: Quality Control, Metagene Analysis, Feature Analysis, Enrichment Analysis:
 - Written in python (not a pipeline, not in a workflow language)
 
-## SLFinder
+### SLFinder
 
 - github [here](https://github.com/LBC-Iriarte/SLFinder), paper [here](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03610-6)
 - Open source
@@ -232,8 +243,90 @@ A [recent paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www
 - Actively maintained (last commit 3 months ago)
 - Written in bash (not in a workflow language)
 
+### Cell Ranger pipeline (10×Genomics)
+- website [here](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger)
+- Looks like it's open source
+- A set of analysis pipelines that process Chromium single-cell RNA-seq output to align reads, generate feature-barcode matrices and perform clustering and gene expression analysis
+- t-SNE is implemented (according to [this paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www.nature.com/articles/s12276-018-0071-8.pdf))
+
+### Seurat
+- website [here](https://satijalab.org/seurat/)
+- QC, analysis, and exploration of single-cell RNA-seq data
+- Written in R (not in a workflow language)
+- t-SNE is implemented (according to [this paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www.nature.com/articles/s12276-018-0071-8.pdf))
+
 ## Other
 
 - [HPC-REDItools - A tool for large-scale RNA-editing analysis](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03562-x) (RNA-editing is a molecular process through which some cells can make discrete changes to specific nucleotide sequences within an RNA molecule after it has been generated by RNA polymerase)
 - Open source
 
+## Small non-coding RNA-Seq pipelines currently available
+
+### smrnaseq
+
+- github [here](https://github.com/nf-core/smrnaseq) and paper [here](https://www.biorxiv.org/content/10.1101/610741v1)
+- Best-practice analysis pipeline used for small RNA sequencing data
+- Open source
+- Nextflow
+- Deployable to SLURM and AWS
+- Actively maintained (last commit 12 months ago)
+
+### sports1.1
+
+- github [here](https://github.com/junchaoshi/sports1.1) and paper [here](https://www.sciencedirect.com/science/article/pii/S1672022918300445)
+- Small non-coding RNA annotation Pipeline Optimized for rRNA- and tRNA-Derived Small RNAs
+- Open source
+- Written in R and perl (not in a workflow language)
+- Actively maintained (last commit 2 months ago)
+
+### umitools
+
+- github [here](https://github.com/weng-lab/umitools) and paper [here](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-018-4933-1)
+- A toolset for handling sequencing data with unique molecular identifiers (UMIs)
+- Unique molecular identifiers (UMIs) are a type of molecular barcoding that provides error correction and increased accuracy during sequencing. These molecular barcodes are short sequences used to uniquely tag each molecule in a sample library
+- Open source
+- Written in python (not in a workflow language)
+- Hasn't been updated in two years - may not be actively maintained/supported
+
+### smallseq
+
+- Analyze small RNAs from single-cells
+- Open source
+- Written in python (not in a workflow language)
+- Hasn't been updated in three years - may not be actively maintained/supported
+
+### RNA-seq
+
+- github [here](https://github.com/biowdl/RNA-seq)
+- A Biowdl workflows usable for processing RNA-seq data. This pipeline will performs QC (including adapter clipping), mapping, variant-calling and expression quantification
+- Open source
+- Workflow Description Language
+- Actively maintained (last commit 20 days ago)
+
+### snakemake_RNA-seq
+
+- github [here](https://github.com/WilliamJeong2/snakemake_RNA-seq)
+- A snakemake pipeline for the analysis of RNA-seq data that makes use of hisat2 and Stringtie
+- Snakemake
+- Open source
+- Actively maintained (last commit 25 days ago)
+
+### snakemake_fastqc
+
+- github [here](https://github.com/AngryMaciek/snakemake_fastqc)
+- A small snakemake workflow for FastQC
+- Snakemake
+- Open source
+- Actively maintained (last commit 25 days ago)
+
+### snakemake_deeptools
+
+- github [here](https://github.com/AngryMaciek/snakemake_deeptools)
+- Snakemake pipeline for RNA-Seq data analysis with deepTools
+- Snakemake
+- Open source
+- Actively maintained (last commit 25 days ago)
+
+## Other
+
+- A JBrowse plugin to support small RNA visualization [here](https://github.com/bhofmei/jbplugin-smallrna)
