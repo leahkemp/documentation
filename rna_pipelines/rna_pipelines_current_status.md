@@ -1,7 +1,7 @@
 # RNA pipelines - current status
 
 Created: 2020/09/24 15:19:42
-Last modified: 2020/09/29 10:55:04
+Last modified: 2020/09/30 16:13:32
 
 - **Aim:** Evaluate the current pipelines available for processing RNA-seq data. This will help us decide if there is a pipeline currently available for our use, one we could adapt, or if we will need to create an RNA-seq pipeline from scratch
 
@@ -43,7 +43,18 @@ Last modified: 2020/09/29 10:55:04
     - [snakemake_RNA-seq](#snakemake_rna-seq)
     - [snakemake_fastqc](#snakemake_fastqc)
     - [snakemake_deeptools](#snakemake_deeptools)
-  - [Other](#other-1)
+    - [SnapT](#snapt)
+    - [short-ncrna-annotation](#short-ncrna-annotation)
+    - [ncRNA_Pipeline](#ncrna_pipeline)
+    - [FlaiMapper](#flaimapper)
+    - [irap](#irap)
+    - [ymp](#ymp)
+    - [rnaseq-pipeline](#rnaseq-pipeline)
+    - [exceRNApipeline](#excernapipeline)
+    - [sRNAflow](#srnaflow)
+    - [gorap](#gorap)
+  - [Other things of possible interest](#other-things-of-possible-interest)
+  - [Notes](#notes)
 
 ## Overview
 
@@ -290,6 +301,7 @@ A [recent paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www
 
 ### smallseq
 
+- github [here](https://github.com/eyay/smallseq)
 - Analyze small RNAs from single-cells
 - Open source
 - Written in python (not in a workflow language)
@@ -327,6 +339,102 @@ A [recent paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www
 - Open source
 - Actively maintained (last commit 25 days ago)
 
-## Other
+### SnapT
 
+- github [here](https://github.com/ursky/SnapT)
+- A Small non-coding RNA annotation pipeline for Transcriptomic or metatranscriptomic data
+- Written in python (not in a workflow language)
+- Open source
+- Actively maintained (last commit 6 months ago)
+
+### short-ncrna-annotation
+
+- github [here](https://github.com/SimonSchafferer/short-ncrna-annotation)
+- Annotation of commonly used interval/range based data such as the browser extended display format (BED), or the general feature format (GFF). In addition, it provides sequence based annotation, by employing the NCBI blast+ software
+- Written in R (not in a workflow language)
+- Open source
+- Hasn't been updated in six years - may not be actively maintained/supported
+
+### ncRNA_Pipeline
+
+- github [here](https://github.com/navygit/ncRNA_Pipeline)
+- Open source
+- Written in perl (not in a workflow language)
+- Hasn't been updated in five years - may not be actively maintained/supported
+
+### FlaiMapper
+
+- github [here], paper [here](https://academic.oup.com/bioinformatics/article/31/5/665/2748143)
+- Annotation of small ncRNA-derived fragments using RNA-seq high-throughput data
+- Open source
+- Written in bash (not in a workflow language)
+- Hasn't been updated in four years - may not be actively maintained/supported
+
+### irap
+
+- github [here], paper [here](https://academic.oup.com/bioinformatics/article/31/5/665/2748143)
+- Flexible RNA-seq analysis pipeline that allows the user to select and apply their preferred combination of existing tools for mapping reads, quantifying expression and testing for differential expression
+- Open source
+- Written in R, perl, bash (not in a workflow language)
+- Hasn't been updated in two years - may not be actively maintained/supported
+
+### ymp
+
+- github [here](https://github.com/epruesse/ymp)
+- Flexible omics pipeline (QC, trimming, contaminant removal), assemble metagenomes, annotate assemblies, or assemble and quantify RNA-Seq transcripts, offering a choice of tools for each of those procecssing stages.
+- Written in python (not in a workflow language)
+- Open source
+- Actively maintained (last commit a month ago)
+
+### rnaseq-pipeline
+
+- github [here](https://github.com/PavlidisLab/rnaseq-pipeline)
+- Written in python, R (not in a workflow language)
+- Open source
+- Actively maintained (last commit 3 months ago)
+
+### exceRNApipeline
+
+- github [here](https://github.com/zhuchcn/exceRNApipeline)
+- Data processing pipeline for extracellular small RNA-seq from human specimen.The pipeline is designated for running on HPC with the job management system SLURM.
+- Preprocess: remove adapters and trimming low quality nucleotides, using HTStream.
+- UniVec: map to the NCBI's UniVec database to remove vector origins
+- RiboRNA: map to the rRNA sequences
+- Human Genome: map to human genome
+- Repetitive Elements: map to RepeatMasker's repetitive elements sequences
+- SILVA: map to SILVA's ribosomal rRNA gene of bacteria, archaea, and fungi
+- Bacteria: map to all bacteria genomes in ensemble's
+- Only supports single end sequencing data
+- Snakemake
+- Open source
+- Actively maintained (last commit 6 months ago)
+
+### sRNAflow
+
+- github [here](https://github.com/zajakin/sRNAflow)
+- Analysis of small RNA that fulfills the specific needs for samples derived from biofluids
+- Nextflow
+- Open source
+- Actively maintained (last commit 28 days ago)
+
+### gorap
+
+- github [here](https://github.com/koriege/gorap), website [here](https://www.rna.uni-jena.de/research/software/)
+- Screens genomic sequences for all non-coding RNAs present in the Rfam database
+- Provides ncRNA based reconstruction of phylogenetic trees and is able to perform de novo predictions including TPM calculations from RNA-Seq experiments
+- Open source
+- Written in perl (not in a workflow language)
+- Actively maintained (last commit 7 months ago)
+
+## Other things of possible interest
+
+- Prediction and annotation of tRNA-derived small RNAs [here](https://github.com/wangqinhu/tsRFinder)
 - A JBrowse plugin to support small RNA visualization [here](https://github.com/bhofmei/jbplugin-smallrna)
+- A set of tools related to the Rfam (database of non-coding RNA families https://rfam.org/) production pipeline [here](https://github.com/Rfam/rfam-production)
+- Script to map annotated ncRNAs (and other elements) to a chromosome and visualise [here](https://github.com/fanagislab/draw_annotation/tree/master/bin)
+
+## Notes
+
+- There seems to be a number of RNA-seq pipelines currently available (open access) on github\
+- There seems to very few pipelines dedicated to small non-coding RNA-seq
+- 
