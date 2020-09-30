@@ -1,7 +1,7 @@
 # RNA pipelines - current status
 
 Created: 2020/09/24 15:19:42
-Last modified: 2020/09/30 16:26:45
+Last modified: 2020/09/30 16:33:11
 
 - **Aim:** Evaluate the current pipelines available for processing RNA-seq data. This will help us decide if there is a pipeline currently available for our use, one we could adapt, or if we will need to create an RNA-seq pipeline from scratch
 
@@ -57,39 +57,15 @@ Last modified: 2020/09/30 16:26:45
 
 ## Overview
 
-
 A summary of some of the RNA-seq data analysis tools by [Ruairi J MacKenzie, 2018](https://www.technologynetworks.com/genomics/articles/rna-seq-basics-applications-and-protocol-299461):
 
 "Tools like Sailfish, RSEM and BitSeq12 will help you quantify your expression levels, whilst tools like MISO, which quantifies alternatively spliced genes, are available for more specialized analysis. There is a library of these tools out there, and reading reviews and roundups are your best way to find the right tool for your research."
 
-Note that there also exists an R framework for comparing pipelines (see [here](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://genomebiology.biomedcentral.com/track/pdf/10.1186/s13059-020-02136-7))
-
-Papers that compare single-cell RNA pipelines (from [this paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://genomebiology.biomedcentral.com/track/pdf/10.1186/s13059-020-02136-7)):
-
-- Cobos FA, Alquicira-Hernandez J, Powell J, Mestdagh P, De Preter K. Comprehensive benchmarking of computational deconvolution of transcriptomics data. bio Rxiv. 2020.https://doi.org/10.1101/2020.01.10.897116.T.4.   
-- Cole MB, Risso D, Wagner A, DeTomaso D, Ngai J, Purdom E, Dudoit S, Yosef N. Performance assessment and selection of normalization procedures for single-cell RNA-Seq. Cell Syst. 2019;8(4):315–28.https://doi.org/10.1016/j.cels.2019.03.010.5.   
-- Dal Molin A, Baruzzo G, Di Camillo B. Single-cell RNA-sequencing: Assessment of differential expression analysis methods. Front Genet. 2017;8(62):.https://doi.org/10.3389/fgene.2017.00062.6.   
-- Duo A, Robinson MD, Soneson C. A systematic performance evaluation of clustering methods for single-cell RNA-seq data. F1000Research. 2018;7:1141.https://doi.org/10.12688/f1000research.15666.2.
-- Freytag S, Tian L, Lönnstedt I, Ng M, Bahlo M. Comparison of clustering tools in R for medium-sized 10x Genomics single-cell RNA-sequencing data. F1000Research. 2018;7(1297):1–29.https://doi.org/10.12688/f1000research.15809.2.8.   
-- Gao M, Ling M, Tang X, Wang S, Xiao X, Qiao Y, Yang W, Yu R. Comparison of high-throughput single-cell RNA sequencing data processing pipelines. bioRxiv. 2020.https://doi.org/10.1101/2020.02.09.940221.9.   - Heiser CN, Lau KS. A quantitative framework for evaluating single-cell data structure preservation by dimensionality reduction techniques. bioRxiv. 2019684340.https://doi.org/10.1101/684340.10. 
-- Hou W, Ji Z, Ji H, Hicks SC. A systematic evaluation of single-cell RNA-sequencing imputation methods. bioRxiv.2020.https://doi.org/10.1101/2020.01.29.925974.11.  
-- Jaakkola MK, Seyednasrollah F, Mehmood A, Elo LL. Comparison of methods to detect differentially expressed genes between single-cell populations. Brief Bioinforma. 2017;18(5):735–43.https://doi.org/10.1093/bib/bbw057.12.  
-- Krzak M, Raykov Y, Boukouvalas A, Cutillo L, Angelini C. Benchmark and parameter sensitivity analysis of single-cellRNA sequencing clustering methods. Front Genet. 2019;10:1253.https://doi.org/10.3389/fgene.2019.01253.13.  
-- Soneson C, Robinson MD. Bias, robustness and scalability in single-cell differential expression analysis. Nat Methods.2018;15(4):255–61.https://doi.org/10.1038/nmeth.4612.14.  
-- Sun S, Zhu J, Ma Y, Zhou X. Accuracy, robustness and scalability of dimensionality reduction methods for single-cell RNA-seq analysis. Genome Biol. 2019;20(269):1–21.https://doi.org/10.1186/s13059-019-1898-6.15.  
-- Tian L, Dong X, Freytag S, Le Cao K-A, Su S, Amann-Zalcenstein D, Weber TS, Seidi A, Naik S, Ritchie ME.scRNA-seq mixology: towards better benchmarking of single cell RNA-seq protocols and analysis methods. bioRxiv.2018433102.https://doi.org/10.1101/433102.16.  
-- Tran HTN, Ang KS, Chevrier M, Zhang X, Lee NYS, Goh M, Chen J. A benchmark of batch-effect correction methods for single-cell RNA sequencing data,. Genome Biol. 2020;21(1):1–32.https://doi.org/10.1186/s13059-019-1850-9.17.  
-- Tsuyuzaki K, Sato H, Sato K, Nikaido I. Benchmarking principal component analysis for large-scale single-cellRNA-sequencing. Genome Biol. 2020;21(9):1–17.https://doi.org/10.1186/s13059-019-1900-3.18.  
-- Vieth B, Parekh S, Ziegenhain C, Enard W, Hellmann I. A systematic evaluation of single cell RNA-seq analysis pipelines. Nat Commun. 2019;10(1):1–11.https://doi.org/10.1038/s41467-019-12266-7.19.  
-- Wang T, Li B, Nelson CE, Nabavi S. Comparative analysis of differential gene expression analysis tools for single-cellRNA sequencing data. BMC Bioinformatics. 2019;20.1(40):1–16.https://doi.org/10.1186/s12859-019-2599-6.20.  
-- Yip SH, Sham PC, Wang J. Evaluation of tools for highly variable gene discovery from single-cell RNA-seq data. Brief Bioinforma. 2018;20(4):1583–9.https://doi.org/10.1093/bib/bby011.21.  
-- Zhang L, Zhang S. Comparison of computational methods for imputing single-cell RNA-sequencing data. IEEE/ACMTrans Comput Biol Bioinforma. 2018.https://doi.org/10.1109/TCBB.2018.2848633.22.
-
-A [recent paper](https://www.embopress.org/doi/full/10.15252/msb.20188746) (2019) that describes the best practices in single-cell RNA-seq analysis
-
-A [recent paper](AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAAqUwggKhBgkqhkiG9w0BBwagggKSMIICjgIBADCCAocGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMdbpTwGltlCc7WTjbAgEQgIICWEvhDFT) (2018) that describes a website that acts as a referece set/database of human long non-coding RNAs
-
-A [recent paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www.nature.com/articles/s12276-018-0071-8.pdf) (2018) that describes Single-cell RNA sequencing technologiesand bioinformatics pipelines
+- There also exists an R framework for comparing pipelines (see [here](https://genomebiology.biomedcentral.com/track/pdf/10.1186/s13059-020-02136-7))
+- [This paper](https://genomebiology.biomedcentral.com/track/pdf/10.1186/s13059-020-02136-70) outlines a number of papers that compare single-cell RNA pipelines
+- A [recent paper](https://www.embopress.org/doi/full/10.15252/msb.20188746) (2019) that describes the best practices in single-cell RNA-seq analysis
+- A [recent paper](AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAAqUwggKhBgkqhkiG9w0BBwagggKSMIICjgIBADCCAocGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMdbpTwGltlCc7WTjbAgEQgIICWEvhDFT) (2018) that describes a website that acts as a reference set/database of human long non-coding RNAs
+- A [recent paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www.nature.com/articles/s12276-018-0071-8.pdf) (2018) that describes Single-cell RNA sequencing technologies and bioinformatics pipelines
 
 ## RNA pipelines currently available
 
