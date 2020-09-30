@@ -1,7 +1,7 @@
 # RNA pipelines - current status
 
 Created: 2020/09/24 15:19:42
-Last modified: 2020/09/30 16:33:43
+Last modified: 2020/09/30 16:44:10
 
 - **Aim:** Evaluate the current pipelines available for processing RNA-seq data. This will help us decide if there is a pipeline currently available for our use, one we could adapt, or if we will need to create an RNA-seq pipeline from scratch
 
@@ -41,6 +41,7 @@ Last modified: 2020/09/30 16:33:43
     - [snakemake_RNA-seq](#snakemake_rna-seq)
     - [snakemake_fastqc](#snakemake_fastqc)
     - [snakemake_deeptools](#snakemake_deeptools)
+    - [omics_pipe](#omics_pipe)
   - [Small non-coding RNA-Seq pipelines currently available](#small-non-coding-rna-seq-pipelines-currently-available)
     - [smrnaseq](#smrnaseq)
     - [sports1.1](#sports11)
@@ -304,6 +305,12 @@ A summary of some of the RNA-seq data analysis tools by [Ruairi J MacKenzie, 201
 - Snakemake
 - Open source
 - Actively maintained (last commit 25 days ago)
+
+### omics_pipe
+
+- pypi [here](https://pypi.org/project/omics_pipe/), paper [here](https://watermark.silverchair.com/btv061.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAAsQwggLABgkqhkiG9w0BBwagggKxMIICrQIBADCCAqYGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMunJwtqi7vVQY1pnxAgEQgIICdwI8KS4jfan_7kqncenMG6a7TWMf1z3nUUF2P-z6JQjhHKWVHh33yTeb3hafkRzYW8VTwXPY3lNV7Rew8P_Dq5HLIjhyaq1lhGb6cRuOtcAZyCAda15jz5-vfRLXP29YIjZ4CYdoeqPcTgXVaa9pX54-wD6tLsSLOatfbCLPVT94obKI2soNh9FSN_UvAk3-gWUaCs0CGt9eJ6bxf2F9hh3o0FgbSAt4_gdaAiQoVaB3CF1MjUDf3gL-QnNd-x2_q4EqqsZ350idWcJMK0jTKsEuUbFnWuUZJw03gr-D8gL_MgtiQ71GXV45BGBJ9JEDFoKDPfTNIu5bB1MOdl76VBTU1DcCJNv1P_YSxJ0dJp_AtNGn4RhT2KnnQwDfbvxbjGcIPSD32pUwYrbZ_QgCwK1icMN_5JsBiMN2BzP9j2cHrMZucRCRmye77crMXRyFqdeTaocacnO0KZoFLg_2r_N5JyZ4v8hTPEFsT2IynksHoxbnL6CMpvfQFZP5wFdSjKYui4luoS5XgmrxzcVUdbah4SYEOPqC2ZInkidtBH-Gew5p71FAfJAfc12aM6iVpdrPLJATHG9h60CbmixkjBCdu8pO9lpaHX8wJpwABDymWNrZ_6r1zaLGGabYP3qQszMk9Jq_c_mQVZhLk76SKkL9iav5X-Yo3T6HFLt6fQWcuEOnbpDxHShDkJMw6L8mr-xjlP7F7dH03A7n7lYXnWfOarjtFyKCSh6PP6g-KvXfRbqfvwk109owgJBn16RsKUNEFBe-teN6jx-jLgbjahyfumE4klbF-Vbot8xLww-ZLjV5Dk3wFsQu7MqwIo5agToy15oq9XE)
+- A computational framework that automates multi-omics data analysis pipelines on high performance compute clusters and in the cloud. It supports best practice published pipelines for RNA-seq, miRNA-seq, Exome-seq, Whole-Genome sequencing, ChIP-seq analyses and automatic processing of data from The Cancer Genome Atlas (TCGA)
+- Older - paper published in 2015
 
 ## Small non-coding RNA-Seq pipelines currently available
 
