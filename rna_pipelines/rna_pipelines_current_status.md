@@ -1,7 +1,7 @@
 # RNA pipelines - current status
 
 Created: 2020/09/24 15:19:42
-Last modified: 2020/10/01 10:22:58
+Last modified: 2020/10/01 10:23:24
 
 - **Aim:** Evaluate the current pipelines available for processing RNA-seq data. This will help us decide if there is a pipeline currently available for our use, one we could adapt, or if we will need to create an RNA-seq pipeline from scratch
 
@@ -415,7 +415,7 @@ A summary of some of the RNA-seq data analysis tools by [Ruairi J MacKenzie, 201
 
 
 
--	The smrnaseq  pipeline](https://github.com/nf-core/smrnaseq) is still the most robust pipeline I’ve come across in terms of:
+-	[smrnaseq](https://github.com/nf-core/smrnaseq) is still the most robust pipeline I’ve come across in terms of:
     - being in a workflow language
     - being specific to both small and non-coding RNA
     - being deployable to cluster/cloud environments
