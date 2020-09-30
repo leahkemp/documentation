@@ -1,7 +1,7 @@
 # RNA pipelines - current status
 
 Created: 2020/09/24 15:19:42
-Last modified: 2020/09/30 16:44:10
+Last modified: 2020/10/01 10:19:36
 
 - **Aim:** Evaluate the current pipelines available for processing RNA-seq data. This will help us decide if there is a pipeline currently available for our use, one we could adapt, or if we will need to create an RNA-seq pipeline from scratch
 
@@ -187,7 +187,7 @@ A summary of some of the RNA-seq data analysis tools by [Ruairi J MacKenzie, 201
 
 ### GeneTEFlow
 
-- github [here](https://github.com/zhongw2/GeneTEFlow), paper [here](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0232994&type=printable)
+- github [here](https://github.com/zhongw2/GeneTEFlow), paper [here](https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0232994&type=printable)
 - Differential expression analysis of genes and locus-specific transposable elements from RNA sequencing
 - Open source
 - Nextflow
@@ -203,20 +203,20 @@ A summary of some of the RNA-seq data analysis tools by [Ruairi J MacKenzie, 201
 
 ### DiMSum
 
-- github [here](https://github.com/lehner-lab/DiMSum), paper [here](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://genomebiology.biomedcentral.com/track/pdf/10.1186/s13059-020-02091-3)
+- github [here](https://github.com/lehner-lab/DiMSum), paper [here](https://genomebiology.biomedcentral.com/track/pdf/10.1186/s13059-020-02091-3)
 - Deep mutational scanning (DMS) enabling the multiplexed measurement of the effects of thousands of variants of proteins, RNAs, and regulatory elements
 - Open source
 - Written in R (not in a workflow language)
 
 ### scTyper
 
-- github [here](https://github.com/omicsCore/scTyper), paper [here](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03700-5)
+- github [here](https://github.com/omicsCore/scTyper), paper [here](https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03700-5)
 - Cell typing analysis of single-cell RNA-seq data
 - Written in R (not in a workflow language)
 
 ### RiboMiner
 
-- github [here](https://github.com/xryanglab/RiboMiner), paper [here](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03670-8)
+- github [here](https://github.com/xryanglab/RiboMiner), paper [here](https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03670-8)
 - Open source
 - Mining multi-dimensional features of the translatome with ribosome profiling data
 - Four function parts: Quality Control, Metagene Analysis, Feature Analysis, Enrichment Analysis:
@@ -224,7 +224,7 @@ A summary of some of the RNA-seq data analysis tools by [Ruairi J MacKenzie, 201
 
 ### SLFinder
 
-- github [here](https://github.com/LBC-Iriarte/SLFinder), paper [here](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03610-6)
+- github [here](https://github.com/LBC-Iriarte/SLFinder), paper [here](https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03610-6)
 - Open source
 - Novel identification of splice-leader sequences
 - Actively maintained (last commit 3 months ago)
@@ -234,13 +234,13 @@ A summary of some of the RNA-seq data analysis tools by [Ruairi J MacKenzie, 201
 - website [here](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger)
 - Looks like it's open source
 - A set of analysis pipelines that process Chromium single-cell RNA-seq output to align reads, generate feature-barcode matrices and perform clustering and gene expression analysis
-- t-SNE is implemented (according to [this paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www.nature.com/articles/s12276-018-0071-8.pdf))
+- t-SNE is implemented (according to [this paper](https://www.nature.com/articles/s12276-018-0071-8.pdf))
 
 ### Seurat
 - website [here](https://satijalab.org/seurat/)
 - QC, analysis, and exploration of single-cell RNA-seq data
 - Written in R (not in a workflow language)
-- t-SNE is implemented (according to [this paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www.nature.com/articles/s12276-018-0071-8.pdf))
+- t-SNE is implemented (according to [this paper](https://www.nature.com/articles/s12276-018-0071-8.pdf))
 
 ### irap
 
@@ -409,11 +409,36 @@ A summary of some of the RNA-seq data analysis tools by [Ruairi J MacKenzie, 201
 - A JBrowse plugin to support small RNA visualization [here](https://github.com/bhofmei/jbplugin-smallrna)
 - A set of tools related to the Rfam (database of non-coding RNA families https://rfam.org/) production pipeline [here](https://github.com/Rfam/rfam-production)
 - Script to map annotated ncRNAs (and other elements) to a chromosome and visualise [here](https://github.com/fanagislab/draw_annotation/tree/master/bin)
-- [HPC-REDItools - A tool for large-scale RNA-editing analysis](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03562-x) (RNA-editing is a molecular process through which some cells can make discrete changes to specific nucleotide sequences within an RNA molecule after it has been generated by RNA polymerase)
+- [HPC-REDItools - A tool for large-scale RNA-editing analysis](https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03562-x) (RNA-editing is a molecular process through which some cells can make discrete changes to specific nucleotide sequences within an RNA molecule after it has been generated by RNA polymerase)
 
 ## Notes
 
-- There seems to be a number of RNA-seq pipelines currently available (open access) on github
+
+
+-	The smrnaseq  pipeline (https://github.com/nf-core/smrnaseq) is still the most robust pipeline I’ve come across in terms of:
+    - being in a workflow language
+    - being specific to both small and non-coding RNA
+    - being deployable to cluster/cloud environments
+-	There are a plethora of pipelines available for RNA-seq (more than I’ve covered in this document) 
 - There seems to very few pipelines dedicated to both small and non-coding RNA-seq
-- There are a few interesting annotation pipelines that could be used after the bulk of the data processing
-- There are many possibly useful scripts that could be wrapped in a workflow language
+-	There are a bunch of interesting scripts available that might end up being useful to incorporate or compliment whichever pipeline we end up using, or be used for future analyses:
+    - CloseCall (https://github.com/StevenWingett/CloseCall) can identify RNA-RNA interactions 
+    - DiMSum (https://github.com/lehner-lab/DiMSum) uses deep mutational scanning to enable the multiplexed measurement of the effects of thousands of variants of proteins, RNAs, and regulatory elements
+    - HPC-REDItools (https://bmcbioinformatics.biomedcentral.com/track/pdf/10.1186/s12859-020-03562-x) is a tool for large-scale RNA-editing analysis
+    - draw_annotation (https://github.com/fanagislab/draw_annotation) to map annotated ncRNAs (and other elements) to a chromosome and visualise
+-	There are some other interesting pipelines: 
+    - sRNAflow (https://github.com/zajakin/sRNAflow) is a Nextflow pipeline to analyse small RNA that is tailored to meet the specific needs of samples derived from biofluids
+    - exceRNApipeline (https://github.com/zhuchcn/exceRNApipeline) is a Snakemake pipeline for extracellular small RNA-seq
+-	There are a few interesting annotation pipelines:
+    - FlaiMapper (https://github.com/yhoogstrate/flaimapper )
+    - short-ncrna-annotation (https://github.com/SimonSchafferer/short-ncrna-annotation) 
+    - However, these are typically older repos, and the scripts aren’t wrapped in a workflow language
+    - Additionally it looks like there is some overlap in the analyses in smrnaseq and FlaiMapper 
+-	Some interesting and more general RNA-Seq pipelines: 
+    - viper-rnaseq: https://github.com/hanfeisun/viper-rnaseq 
+    - rna-seq-star-deseq2: https://github.com/snakemake-workflows/rna-seq-star-deseq2
+    - rna-seq-kallisto-sleuth: https://github.com/snakemake-workflows/rna-seq-kallisto-sleuth
+    - RNA-seq: https://github.com/biowdl/RNA-seq
+    - snakemake_deeptools : https://github.com/AngryMaciek/snakemake_deeptools 
+    - omics_pipe: https://pypi.org/project/omics_pipe/ )
+
