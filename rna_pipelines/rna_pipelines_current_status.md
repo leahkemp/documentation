@@ -1,7 +1,7 @@
 # RNA pipelines - current status
 
 Created: 2020/09/24 15:19:42
-Last modified: 2020/09/30 16:33:11
+Last modified: 2020/09/30 16:33:43
 
 - **Aim:** Evaluate the current pipelines available for processing RNA-seq data. This will help us decide if there is a pipeline currently available for our use, one we could adapt, or if we will need to create an RNA-seq pipeline from scratch
 
@@ -65,7 +65,7 @@ A summary of some of the RNA-seq data analysis tools by [Ruairi J MacKenzie, 201
 - [This paper](https://genomebiology.biomedcentral.com/track/pdf/10.1186/s13059-020-02136-70) outlines a number of papers that compare single-cell RNA pipelines
 - A [recent paper](https://www.embopress.org/doi/full/10.15252/msb.20188746) (2019) that describes the best practices in single-cell RNA-seq analysis
 - A [recent paper](AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAAqUwggKhBgkqhkiG9w0BBwagggKSMIICjgIBADCCAocGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMdbpTwGltlCc7WTjbAgEQgIICWEvhDFT) (2018) that describes a website that acts as a reference set/database of human long non-coding RNAs
-- A [recent paper](chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/https://www.nature.com/articles/s12276-018-0071-8.pdf) (2018) that describes Single-cell RNA sequencing technologies and bioinformatics pipelines
+- A [recent paper](https://www.nature.com/articles/s12276-018-0071-8.pdf) (2018) that describes Single-cell RNA sequencing technologies and bioinformatics pipelines
 
 ## RNA pipelines currently available
 
