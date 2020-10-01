@@ -1,7 +1,7 @@
 # Create a configuration files for scout
 
 Created: 2020-05-08 13:00:23
-Last modified: 2020/05/08 13:34:36
+Last modified: 2020/10/01 16:55:51
 
 This document describes how to create config files for loading cases into [scout](http://www.clinicalgenomics.se/scout/)
 
@@ -84,6 +84,7 @@ vcf_snv: /scout/demo/643595.clinical.vcf.gz
 
 ## Notes
 
+- The 'family_id' value needs to match the family id in your pedigree file
 - The 'sample_id' value needs to match the sample id/s in your vcf file
 
 These can be found in the columns of your vcf file, for example for an example cohort vcf file provided by scout (643595.clinical.vcf.gz, found in the demo folder), there are three samples that were jointly called:
