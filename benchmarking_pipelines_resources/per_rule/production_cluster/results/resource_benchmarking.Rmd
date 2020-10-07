@@ -1,0 +1,500 @@
+---
+title: "Benchmarking genomic pipelines - resources - production - per rule runtime"
+author: "Leah Kemp"
+date: "9/21/2020"
+output: rmarkdown::github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FALSE)
+```
+
+## Context
+
+This document aims to plot and analyse the results of resource benchmarking tests for our genomic pipelines on the ESR cluster (production). See related docs here: [benchmarking_pipelines_resources](../benchmarking_pipeline_resources_production_per_rule_runtime.md)
+
+```{r, results = "hide"}
+# Data preparation
+library(vcfR)
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+
+# Read in data
+data <- read.csv("merged.csv")
+data$no_samples <- as.factor(data$no_samples)
+
+# Make minutes and hours columns calculated from seconds column
+data <- data %>% dplyr::mutate(minutes = s/60)
+data <- data %>% dplyr::mutate(hours = minutes/60)
+
+# Extract data by rule
+gatk_HaplotypeCaller_single_data <- data %>%
+  dplyr::filter(rule == "gatk_HaplotypeCaller_single")
+gatk_HaplotypeCaller_cohort_data <- data %>%
+  dplyr::filter(rule == "gatk_HaplotypeCaller_cohort")
+gatk_BaseRecalibrator_data <- data %>%
+  dplyr::filter(rule == "gatk_BaseRecalibrator")
+bwa_mem_data <- data %>%
+  dplyr::filter(rule == "bwa_mem")
+gatk_ApplyBQSR_data <- data %>%
+  dplyr::filter(rule == "gatk_ApplyBQSR")
+trim_galore_pe_data <- data %>%
+  dplyr::filter(rule == "trim_galore_pe")
+gatk_MarkDuplicates_data <- data %>%
+  dplyr::filter(rule == "gatk_MarkDuplicates")
+fastqc_data <- data %>%
+  dplyr::filter(rule == "fastqc")
+gatk_CNNScoreVariants_data <- data %>%
+  dplyr::filter(rule == "gatk_CNNScoreVariants")
+gatk_FilterVariantTranches_data <- data %>%
+  dplyr::filter(rule == "gatk_FilterVariantTranches")
+SnpSift_dbnsfp_data <- data %>%
+  dplyr::filter(rule == "SnpSift_dbnsfp")
+genmod_annotate_CADD_data <- data %>%
+  dplyr::filter(rule == "genmod_annotate_CADD")
+SnpSift_annotate_dbSNP_data <- data %>%
+  dplyr::filter(rule == "SnpSift_annotate_dbSNP")
+bcftools_view_multiallelicsites_data <- data %>%
+  dplyr::filter(rule == "bcftools_view_multiallelicsites")
+genmod_score_data <- data %>%
+  dplyr::filter(rule == "genmod_score")
+gatk_CombineGVCFs_data <- data %>%
+  dplyr::filter(rule == "gatk_CombineGVCFs")
+gatk_GenotypeGVCFs_data <- data %>%
+  dplyr::filter(rule == "gatk_GenotypeGVCFs")
+gatk_VariantRecalibrator_indel_data <- data %>%
+  dplyr::filter(rule == "gatk_VariantRecalibrator_indel")
+gatk_VariantRecalibrator_snp_data <- data %>%
+  dplyr::filter(rule == "gatk4_VariantRecalibrator_snp")
+gatk_VQSR_indel_data <- data %>%
+  dplyr::filter(rule == "gatk_VQSR_indel")
+gatk_VQSR_snp_data <- data %>%
+  dplyr::filter(rule == "gatk_VQSR_snp")
+vep_data <- data %>%
+  dplyr::filter(rule == "vep")
+gatk_CalculateGenotypePosteriors_data <- data %>%
+  dplyr::filter(rule == "gatk_CalculateGenotypePosteriors")
+gatk_VariantAnnotator_PossibleDeNovo_data <- data %>%
+  dplyr::filter(rule == "gatk_VariantAnnotator_PossibleDeNovo")
+
+# Further extract data from pipelines run on 8 samples
+gatk_HaplotypeCaller_single_eightsample_data <- gatk_HaplotypeCaller_single_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_HaplotypeCaller_cohort_eightsample_data <- gatk_HaplotypeCaller_cohort_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_BaseRecalibrator_eightsample_data <- gatk_BaseRecalibrator_data %>%
+  dplyr::filter(no_samples == "8")
+bwa_mem_eightsample_data <- bwa_mem_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_ApplyBQSR_eightsample_data <- gatk_ApplyBQSR_data %>%
+  dplyr::filter(no_samples == "8")
+trim_galore_pe_eightsample_data <- trim_galore_pe_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_MarkDuplicates_eightsample_data <- gatk_MarkDuplicates_data %>%
+  dplyr::filter(no_samples == "8")
+fastqc_eightsample_data <- fastqc_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_CNNScoreVariants_eightsample_data <- gatk_CNNScoreVariants_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_FilterVariantTranches_eightsample_data <- gatk_FilterVariantTranches_data %>%
+  dplyr::filter(no_samples == "8")
+SnpSift_dbnsfp_eightsamplep_data <- SnpSift_dbnsfp_data %>%
+  dplyr::filter(no_samples == "8")
+genmod_annotate_CADD_eightsample_data <- genmod_annotate_CADD_data %>%
+  dplyr::filter(no_samples == "8")
+SnpSift_annotate_dbSNP_eightsample_data <- SnpSift_annotate_dbSNP_data %>%
+  dplyr::filter(no_samples == "8")
+bcftools_view_multiallelicsites_eightsample_data <- bcftools_view_multiallelicsites_data %>%
+  dplyr::filter(no_samples == "8")
+genmod_score_eightsample_data <- genmod_score_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_CombineGVCFs_eightsample_data <- gatk_CombineGVCFs_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_GenotypeGVCFs_eightsample_data <- gatk_GenotypeGVCFs_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_VariantRecalibrator_indel_eightsample_data <- gatk_VariantRecalibrator_indel_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_VariantRecalibrator_snp_eightsample_data <- gatk_VariantRecalibrator_snp_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_VQSR_indel_eightsample_data <- gatk_VQSR_indel_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_VQSR_snp_eightsample_data <- gatk_VQSR_snp_data %>%
+  dplyr::filter(no_samples == "8")
+vep_eightsample_data <- vep_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_CalculateGenotypePosteriors_eightsample_data <- gatk_CalculateGenotypePosteriors_data %>%
+  dplyr::filter(no_samples == "8")
+gatk_VariantAnnotator_PossibleDeNovo_eightsample_data <- gatk_VariantAnnotator_PossibleDeNovo_data %>%
+  dplyr::filter(no_samples == "8")
+```
+
+## Find optimal threads for each rule (diminishing return in speed)
+
+- The dashed line indicates the threading level that will be set for each rule in the pipelines based on these tests - that will increase the pipeline speed, but not use resources inefficiently
+- Each point represents one sample
+- Samples/points from the same pipeline run are connected in each plot with a line
+
+```{r}
+# Extract one sample for rules that were run in a cohort run as one family (and therefore actually ran 3 samples at once)
+
+# Create plots
+xlab = "Threads per rule"
+ylab = "Minutes"
+legendtitle = "Number of samples in pipeline run"
+secondaxis = "Hours"
+my_alpha = 0.5
+
+fastqc_plot <- ggplot2::ggplot(data = fastqc_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "fastqc", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,30), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+trim_galore_pe_plot <- ggplot2::ggplot(data = trim_galore_pe_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "trim_galore_pe", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,180), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 8, linetype = "dashed")
+
+bwa_mem_plot <- ggplot2::ggplot(data = bwa_mem_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "bwa_mem", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,500), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 16, linetype = "dashed")
+
+gatk_MarkDuplicates_plot <- ggplot2::ggplot(data = gatk_MarkDuplicates_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_MarkDuplicates", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,60), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 2, linetype = "dashed")
+
+gatk_BaseRecalibrator_plot <- ggplot2::ggplot(data = gatk_BaseRecalibrator_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_BaseRecalibrator", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,120), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 2, linetype = "dashed")
+
+gatk_ApplyBQSR_plot <- ggplot2::ggplot(data = gatk_ApplyBQSR_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_ApplyBQSR", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,120), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_HaplotypeCaller_single_plot <- ggplot2::ggplot(data = gatk_HaplotypeCaller_single_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_HaplotypeCaller_single", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,400), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_HaplotypeCaller_cohort_plot <- ggplot2::ggplot(data = gatk_HaplotypeCaller_cohort_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_HaplotypeCaller_cohort", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,400), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_CNNScoreVariants_plot <- ggplot2::ggplot(data = gatk_CNNScoreVariants_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_CNNScoreVariants", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,500), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_FilterVariantTranches_plot <- ggplot2::ggplot(data = gatk_FilterVariantTranches_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_FilterVariantTranches", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,1), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+SnpSift_dbnsfp_plot <- ggplot2::ggplot(data = SnpSift_dbnsfp_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "SnpSift_dbnsfp", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,200), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+genmod_annotate_CADD_plot <- ggplot2::ggplot(data = genmod_annotate_CADD_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "genmod_annotate_CADD", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,100), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+SnpSift_annotate_dbSNP_plot <- ggplot2::ggplot(data = SnpSift_annotate_dbSNP_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "SnpSift_annotate_dbSNP", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,3), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+bcftools_view_multiallelicsites_plot <- ggplot2::ggplot(data = bcftools_view_multiallelicsites_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "bcftools_view_multiallelicsites", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,1), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+genmod_score_plot <- ggplot2::ggplot(data = genmod_score_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "genmod_score", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,2), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_CombineGVCFs_plot <- ggplot2::ggplot(data = gatk_CombineGVCFs_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_CombineGVCFs", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,2), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_GenotypeGVCFs_plot <- ggplot2::ggplot(data = gatk_GenotypeGVCFs_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_GenotypeGVCFs", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,30), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_VariantRecalibrator_indel_plot <- ggplot2::ggplot(data = gatk_VariantRecalibrator_indel_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_VariantRecalibrator_indel", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,5), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_VariantRecalibrator_snp_plot <- ggplot2::ggplot(data = gatk_VariantRecalibrator_snp_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_VariantRecalibrator_snp", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,5), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_VQSR_indel_plot <- ggplot2::ggplot(data = gatk_VQSR_indel_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_VQSR_indel", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,1), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_VQSR_snp_plot <- ggplot2::ggplot(data = gatk_VQSR_snp_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_VQSR_snp", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,1), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+vep_plot <- ggplot2::ggplot(data = vep_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "vep", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,1), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_CalculateGenotypePosteriors_plot <- ggplot2::ggplot(data = gatk_CalculateGenotypePosteriors_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_CalculateGenotypePosteriors", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,3), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+
+gatk_VariantAnnotator_PossibleDeNovo_plot <- ggplot2::ggplot(data = gatk_VariantAnnotator_PossibleDeNovo_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = no_samples)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_VariantAnnotator_PossibleDeNovo", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,3), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis)) +
+  geom_vline(xintercept = 1, linetype = "dashed")
+```
+
+### human_genomics_pipeline
+
+```{r}
+# Plot plots
+grid.arrange(fastqc_plot,
+             trim_galore_pe_plot,
+             ncol = 1, nrow = 2)
+
+grid.arrange(bwa_mem_plot,
+             gatk_MarkDuplicates_plot,
+             ncol = 1, nrow = 2)
+             
+grid.arrange(gatk_BaseRecalibrator_plot,
+             gatk_ApplyBQSR_plot,
+             ncol = 1, nrow = 2)
+
+grid.arrange(gatk_HaplotypeCaller_single_plot,
+             gatk_HaplotypeCaller_cohort_plot,
+             ncol = 1, nrow = 2)    
+
+grid.arrange(gatk_GenotypeGVCFs_plot,
+             ncol = 1, nrow = 2)
+#gatk_CombineGVCFs_plot,
+```
+
+### vcf_annotation_pipeline
+
+```{r}
+# Plot plots
+ 
+
+grid.arrange(gatk_CNNScoreVariants_plot,
+             gatk_FilterVariantTranches_plot,
+             ncol = 1, nrow = 2)
+
+grid.arrange(gatk_VariantRecalibrator_indel_plot,
+             # gatk_VariantRecalibrator_snp_plot,
+             ncol = 1, nrow = 2)
+
+grid.arrange(gatk_VQSR_indel_plot,
+             gatk_VQSR_snp_plot,
+             ncol = 1, nrow = 2)
+          
+grid.arrange(SnpSift_dbnsfp_plot,
+             # vep_plot,
+             ncol = 1, nrow = 2)
+
+grid.arrange(genmod_annotate_CADD_plot,
+             SnpSift_annotate_dbSNP_plot,
+             ncol = 1, nrow = 2)
+
+grid.arrange(gatk_CalculateGenotypePosteriors_plot,
+             gatk_VariantAnnotator_PossibleDeNovo_plot,
+             ncol = 1, nrow = 2)
+
+grid.arrange(
+# genmod_models_plot,
+  bcftools_view_multiallelicsites_plot,
+  ncol = 1, nrow = 2)
+
+grid.arrange(
+# SnpSift_filter_proband_plot,
+  genmod_score_plot,
+  ncol = 1, nrow = 2)
+             
+```
+
+## Check runtimes against the cluster node the sample/rule was deployed to
+
+*Note. node information was not available for all rules*
+
+- This was plotted only for pipelines running on eight samples, to account for sample number
+
+### Pipeline runs on eight samples
+
+```{r}
+xlab = "Threads per rule"
+ylab = "Minutes"
+legendtitle = "Cluster node"
+secondaxis = "Hours"
+my_alpha = 0.5
+
+bwa_mem_eightsample_node_plot <- ggplot2::ggplot(data = bwa_mem_eightsample_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = node)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "bwa_mem - eight samples", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,500), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis))
+
+gatk_MarkDuplicates_eightsample_node_plot <- ggplot2::ggplot(data = gatk_MarkDuplicates_eightsample_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = node)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_MarkDuplicates - eight samples", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,60), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis))
+
+gatk_BaseRecalibrator_eightsample_node_plot <- ggplot2::ggplot(data = gatk_BaseRecalibrator_eightsample_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = node)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_BaseRecalibrator - eight samples", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,120), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis))
+
+gatk_ApplyBQSR_eightsample_node_plot <- ggplot2::ggplot(data = gatk_ApplyBQSR_eightsample_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = node)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_ApplyBQSR - eight samples", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,120), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis))
+
+gatk_HaplotypeCaller_single_eightsample_node_plot <- ggplot2::ggplot(data = gatk_HaplotypeCaller_single_eightsample_data, aes(x = threads_per_rule, y = minutes, group = filepath_benchmarking_file, colour = node)) +
+  geom_point(alpha = my_alpha) +
+  geom_line(alpha = my_alpha) +
+  labs(title = "gatk_HaplotypeCaller_single - eight samples", x = xlab, y = ylab, colour = legendtitle) +
+  scale_x_continuous(breaks=c(1, 2, 4, 8, 16, 32), limits=c(1, 32), trans='log10') +
+  scale_y_continuous(limits=c(0,400), 
+    sec.axis = sec_axis(~ ./60, name = secondaxis))
+
+grid.arrange(bwa_mem_eightsample_node_plot,
+             gatk_MarkDuplicates_eightsample_node_plot,
+             ncol = 1, nrow = 2)
+
+grid.arrange(gatk_BaseRecalibrator_eightsample_node_plot,
+             gatk_ApplyBQSR_eightsample_node_plot,
+             ncol = 1, nrow = 2)
+
+grid.arrange(gatk_HaplotypeCaller_single_eightsample_node_plot,
+             ncol = 1, nrow = 2)
+```
+
+
+
