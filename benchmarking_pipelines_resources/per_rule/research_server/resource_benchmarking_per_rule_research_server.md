@@ -1,7 +1,7 @@
-# Benchmarking genomic pipelines - resources - wintermute - per rule runtime
+# Benchmarking pipeline resources - per rule - research server
 
 Created: 2020-09-11 13:37:04
-Last modified: 2020/10/07 14:30:24
+Last modified: 2020/10/07 14:49:44
 
 - **Aim:** Undertake benchmarking of genomics pipelines to optimise the threading of each rule in the pipelines.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [wget](https://www.gnu.org/software/wget/)
@@ -11,7 +11,7 @@ The idea is to run these pipelines ([human_genomics_pipeline](https://github.com
 
 ## Table of contents
 
-- [Benchmarking genomic pipelines - resources - wintermute - per rule runtime](#benchmarking-genomic-pipelines---resources---wintermute---per-rule-runtime)
+- [Benchmarking pipeline resources - per rule - research server](#benchmarking-pipeline-resources---per-rule---research-server)
   - [Table of contents](#table-of-contents)
   - [Create a test dataset](#create-a-test-dataset)
     - [Setup](#setup)
@@ -153,7 +153,7 @@ Full run settings and outputs for each threading level for can be found at:
 - [resource_bench_16_thread_cohort](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_16_threads_cohort)
 - [resource_bench_32_thread_cohort](https://github.com/leahkemp/human_genomics_pipeline/tree/resource_bench_32_threads_cohort)
   
-Plotting/report can be found [here](results/wintermute/)
+Plotting/report can be found [here](results/)
 
 ## Previous resource benchmarking
 

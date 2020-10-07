@@ -1,17 +1,17 @@
-# Benchmarking genomic pipelines - resources - production - per rule runtime
+# Benchmarking pipeline resources - per rule - production cluster
 
 Created: 2020-09-11 13:37:04
-Last modified: 2020/09/25 18:31:44
+Last modified: 2020/10/07 14:51:05
 
 - **Aim:** Undertake benchmarking of genomics pipelines to optimise the threading of each rule in the pipelines.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [wget](https://www.gnu.org/software/wget/)
 - **OS:** ESR production cluster
 
-The idea is to run these pipelines ([human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)) and evaluate the clock time for each step in the pipelines with increased threading to evaluate the point of diminishing return. These tests will extend those undertaken on Wintermute (see [these docs](../benchmarking_pipeline_resources_wintermute.md)) by accounting for the number of samples analysed in a pipeline run at one time. These tests will be undertaken on the ESR production cluster in order to scale up the sample number in the pipeline runs as well as get more accurate pipeline run times since we will be analysing our clinical exomes on the ESR production cluster. These tests will be undertaken on exomes sequenced at ESR (as opposed to the public exome used in [these tests](../benchmarking_pipeline_resources_wintermute.md)) because there are multiple exomes to use for testing pipeline runs with multiple samples and the size of the input fastq files will be more comparable to the size of the clinical exomes we will be analysing.
+The idea is to run these pipelines ([human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)) and evaluate the clock time for each step in the pipelines with increased threading to evaluate the point of diminishing return. These tests will extend those undertaken on Wintermute (see [these docs](../research_server/resource_benchmarking_per_rule_research_server.md)) by accounting for the number of samples analysed in a pipeline run at one time. These tests will be undertaken on the ESR production cluster in order to scale up the sample number in the pipeline runs as well as get more accurate pipeline run times since we will be analysing our clinical exomes on the ESR production cluster. These tests will be undertaken on exomes sequenced at ESR (as opposed to the public exome used in [these tests](../research_server/resource_benchmarking_per_rule_research_server.md)) because there are multiple exomes to use for testing pipeline runs with multiple samples and the size of the input fastq files will be more comparable to the size of the clinical exomes we will be analysing.
 
 ## Table of contents
 
-- [Benchmarking genomic pipelines - resources - production - per rule runtime](#benchmarking-genomic-pipelines---resources---production---per-rule-runtime)
+- [Benchmarking pipeline resources - per rule - production cluster](#benchmarking-pipeline-resources---per-rule---production-cluster)
   - [Table of contents](#table-of-contents)
     - [Setup](#setup)
     - [Results](#results)
