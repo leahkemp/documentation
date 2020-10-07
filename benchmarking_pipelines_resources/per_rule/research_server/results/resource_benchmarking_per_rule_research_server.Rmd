@@ -1,5 +1,5 @@
 ---
-title: "Benchmarking genomic pipelines - resources - wintermute - per rule runtime"
+title: "Benchmarking pipeline resources - per rule - research server"
 author: "Leah Kemp"
 date: "9/15/2020"
 output: rmarkdown::github_document
@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FA
 
 ## Context
 
-This document aims to plot and analyse the results of resource benchmarking tests for our genomic pipelines on a single research server (Wintermute). See related docs here: [benchmarking_pipelines_resources](../benchmarking_pipeline_resources_wintermute_per_rule_runtime.md)
+This document aims to plot and analyse the results of resource benchmarking tests for our genomic pipelines on a single research server (Wintermute). See related docs here: [resource benchmarking per rule research server](../resource_benchmarking_per_rule_research_server.md)
 
 ```{r}
 # Data preparation
