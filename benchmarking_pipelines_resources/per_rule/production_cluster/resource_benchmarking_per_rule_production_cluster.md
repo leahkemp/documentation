@@ -1,7 +1,7 @@
 # Benchmarking pipeline resources - per rule - production cluster
 
 Created: 2020-09-11 13:37:04
-Last modified: 2020/10/07 14:51:05
+Last modified: 2020/10/07 15:51:50
 
 - **Aim:** Undertake benchmarking of genomics pipelines to optimise the threading of each rule in the pipelines.
 - **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [wget](https://www.gnu.org/software/wget/)
@@ -174,6 +174,14 @@ python merge_csvs.py
 ```
 
 ### Results
+
+Plotting/report can be found [here](../resource_benchmarking_per_rule_production_cluster.md)
+
+---
+
+These tests were not completed
+
+---
 
 ## Previous resource benchmarking
 
