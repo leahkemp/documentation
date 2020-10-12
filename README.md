@@ -1,6 +1,6 @@
 # Documentation
 
-Documentation for various tasks related to projects at ESR
+Documentation for various projects at ESR
 
 **Please note that this documentation is often a work in progress**
 
