@@ -1,9 +1,9 @@
 # Project notes - small RNAseq - hepatic portal
 
 Created: 2020/10/13 12:21:30
-Last modified: 2020/10/13 13:06:37
+Last modified: 2020/10/13 13:10:02
 
-- **Aim:** Evaluate the current pipelines available for processing RNA-seq data. This will help us decide if there is a pipeline currently available for our use, one we could adapt, or if we will need to create an RNA-seq pipeline from scratch
+- **Aim:** Create an overall project description for the small non-coding RNA diabetes project
 
 ## Table of contents
 
