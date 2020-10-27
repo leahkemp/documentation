@@ -435,5 +435,7 @@ scout -db demo-database load case /store/lkemp/fix_dumb_bug/DHB4177_config.yaml
 DHB4177_filtered_cleaned.vcf # works
 DHB4177_filtered_dbnsfp_cleaned.vcf.gz # 
 DHB4177_filtered_dbnsfp_vep_cleaned.vcf.gz # 
-DHB4177_filtered_dbnsfp_vep_cadd_dbsnp_cleaned.vcf # 
+DHB4177_filtered_dbnsfp_vep_cadd_dbsnp_cleaned.vcf # works
 ```
+
+This seems to fix the error!
