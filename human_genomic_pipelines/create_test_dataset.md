@@ -1,10 +1,10 @@
 # Create test dataset for pipelines
 
 Created: 2020/10/29 10:07:39
-Last modified: 2020/10/29 16:09:33
+Last modified: 2020/10/29 16:13:39
 
 - **Aim:** Create a test dataset for [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (a trio and a singleton)
-- **Prerequisite software:**  [Conda 4.8.5](https://docs.conda.io/projects/conda/en/latest/index.html), [tabix](http://www.htslib.org/doc/tabix.html), [bgzip](http://www.htslib.org/doc/bgzip.html), [gunzip](https://linux.die.net/man/1/gunzip), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [gatk](https://anaconda.org/bioconda/gatk4)
+- **Prerequisite software:**  [Conda 4.8.5](https://docs.conda.io/projects/conda/en/latest/index.html)
 - **OS:** CentOS-7 (ORAC - ESR cluster)
 
 ## Table of contents
@@ -105,7 +105,7 @@ cd workflow
 screen -S create_test_dataset
 
 # Create environment to run pipeline in
-mamba env create -f pipeline_run_env.yml
+conda env create -f pipeline_run_env.yml
 conda activate pipeline_run_env
 
 # Dryrun
