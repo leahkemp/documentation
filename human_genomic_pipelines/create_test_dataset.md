@@ -1,7 +1,7 @@
 # Create test dataset for pipelines
 
 Created: 2020/10/29 10:07:39
-Last modified: 2020/10/30 17:10:16
+Last modified: 2020/10/30 17:45:18
 
 - **Aim:** Create a test dataset for [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (a trio and a singleton)
 - **Prerequisite software:**  [Conda 4.8.5](https://docs.conda.io/projects/conda/en/latest/index.html)
@@ -21,7 +21,7 @@ Last modified: 2020/10/30 17:10:16
   - [Randomly sub-sample variants](#randomly-sub-sample-variants)
   - [Create a bed file from vcf](#create-a-bed-file-from-vcf)
   - [Pull out fastq reads from bam](#pull-out-fastq-reads-from-bam)
-  - [Create singleton](#create-singleton)
+  - [Test running test data through pipelines](#test-running-test-data-through-pipelines)
   - [Other](#other)
 
 
@@ -184,6 +184,13 @@ bams_to_process=("HG005.mate_pair.sorted" "HG006.mate_pair.sorted" "HG007.mate_p
 for bam in "${bams_to_process[@]}"; do
 # Subset bam with bed file
 samtools view $bam.bam -L family.merged.subset.probandonly.randomsubset.sorted.chr.bed -@ 16 -b > $bam.reduced.bam
+done
+```
+
+Start extracting FASTQ reads from bam
+
+```bash
+for bam in "${bams_to_process[@]}"; do
 # Extract fastq reads for which both paired reads were mapped
 samtools view -u -f 1 -F 12 $bam.reduced.bam > $bam.reduced_map_map.bam
 # Extract fastq reads for which R1 unmapped, R2 mapped
@@ -196,7 +203,7 @@ samtools view -u -f 12 -F 256 $bam.reduced.bam > $bam.reduced_unmap_unmap.bam
 samtools merge -u $bam.reduced_unmapped.bam $bam.reduced_unmap_map.bam $bam.reduced_map_unmap.bam $bam.reduced_unmap_unmap.bam
 # Sort
 samtools sort -n $bam.reduced_map_map.bam -o $bam.reduced_mapped.sort
-satools sort -n $bam.reduced_unmapped.bam -o $bam.reduced_unmapped.sort
+samtools sort -n $bam.reduced_unmapped.bam -o $bam.reduced_unmapped.sort
 done
 ```
 
@@ -311,14 +318,43 @@ mv HG007.mate_pair.sorted.reduced_R1.fastq.gz fastq/NA24695_1.fastq.gz
 mv HG007.mate_pair.sorted.reduced_R2.fastq.gz fastq/NA24695_2.fastq.gz
 ```
 
-Re
+## Test running test data through pipelines
 
-## Create singleton
+Setup
+
+```bash
+# Clone pipelines
+git clone https://github.com/ESR-NZ/human_genomics_pipeline.git
+cd human_genomics_pipeline
+git checkout a4dc43d7557df41f95f8f5963642b53f5cded99e
+cd ..
+git clone https://github.com/ESR-NZ/vcf_annotation_pipeline.git
+cd vcf_annotation_pipeline
+git checkout 5390d9320030e6dcba2596395782667d34cc0a9e
+```
+
+Manually configure pipelines
+
+Run pipelines
+
+```bash
+screen -S test_data_test
+
+conda activate pipeline_run_env
+
+cd ../human_genomics_pipeline/workflow/
+bash dryrun_hpc.sh
+bash run_hpc.sh
+```
+
+```bash
+cd ../../vcf_annotation_pipeline/workflow/
+bash dryrun_hpc.sh
+bash run_hpc.sh
+```
 
 ## Other
 
 Provide custom exome capture file and bed file
 
 Random seed for random sampling of variants - re-generating this file might produce different results due to randomisation
-
-Provide pipeline configuration files
