@@ -1,9 +1,9 @@
 # Create test dataset for pipelines
 
 Created: 2020/10/29 10:07:39
-Last modified: 2020/11/09 16:23:01
+Last modified: 2020/11/09 16:51:27
 
-- **Aim:** Create a test dataset for [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (a trio and a singleton)
+- **Aim:** Create a test dataset for [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)
 - **Prerequisite software:**  [Conda 4.8.5](https://docs.conda.io/projects/conda/en/latest/index.html)
 - **OS:** CentOS-7 (ORAC - ESR cluster)
 
@@ -14,12 +14,12 @@ Last modified: 2020/11/09 16:23:01
   - [Setup](#setup)
   - [Get bams and vcf for publicly available trio](#get-bams-and-vcf-for-publicly-available-trio)
   - [Manually create pedigree file](#manually-create-pedigree-file)
-  - [Reduce dataset - subset by exome capture regions](#reduce-dataset---subset-by-exome-capture-regions)
-  - [Process vcf](#process-vcf)
-    - [SnpSift_filter_proband](#snpsift_filter_proband)
-  - [Randomly sub-sample variants](#randomly-sub-sample-variants)
-  - [Create a bed file from vcf](#create-a-bed-file-from-vcf)
-  - [Pull out fastq reads from bam](#pull-out-fastq-reads-from-bam)
+  - [Reduce vcf](#reduce-vcf)
+    - [Subset by exome capture regions](#subset-by-exome-capture-regions)
+    - [Filter for variants only found in the proband](#filter-for-variants-only-found-in-the-proband)
+    - [Randomly sub-sample variants](#randomly-sub-sample-variants)
+  - [Create a bed file from the reduced vcf](#create-a-bed-file-from-the-reduced-vcf)
+  - [Pull out fastq reads from bams](#pull-out-fastq-reads-from-bams)
   - [Test running test data through pipelines](#test-running-test-data-through-pipelines)
   - [Other](#other)
 
@@ -32,8 +32,6 @@ cd create_test_dataset
 ```
 
 ## Get bams and vcf for publicly available trio
-
-ChineseTrio
 
 ```bash
 # vcf
@@ -52,9 +50,11 @@ See [here](https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/ChineseTrio/analysis
 
 ## Manually create pedigree file
 
-Label manually created pedigree file as `NA24694_pedigree.ped` and put in the `.pedigrees/` directory
+Label manually created pedigree file as `NA24631_pedigree.ped` and put in the `.pedigrees/` directory
 
-## Reduce dataset - subset by exome capture regions
+## Reduce vcf
+
+### Subset by exome capture regions
 
 Create conda env with GATK4 installed
 
@@ -75,13 +75,7 @@ gatk SelectVariants \
 
 This takes the vcf file from 6,226,947 variants to 329,619 variants
 
-## Process vcf
-
-- Data/vcf is already filtered
-
-### SnpSift_filter_proband
-
-Filter for variants only found in the proband
+### Filter for variants only found in the proband
 
 Code based on [this version of the pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline/blob/c82f0749a705ebc85d9589cd2b84f014cc8b735f/workflow/rules/SnpSift_filter_proband.smk)
 
@@ -93,11 +87,7 @@ conda install -c bioconda snpsift=4.3.1t
 cat family.merged.subset.vcf | SnpSift filter '( isVariant ( GEN[NA24631] ) ) ' > family.merged.subset.probandonly.vcf
 ```
 
-Now 255,194 variants
-
-## Randomly sub-sample variants
-
-50% of the variants
+### Randomly sub-sample variants
 
 ```bash
 conda activate gatk4
@@ -108,36 +98,7 @@ gatk SelectVariants \
 --select-random-fraction 0.5
 ```
 
-Now 1246 variants throughout these chromosomes:
-
-```bash
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-X
-Y
-```
-
-## Create a bed file from vcf
+## Create a bed file from the reduced vcf
 
 Get the positions of the variants - create a bed file
 
@@ -147,21 +108,15 @@ conda activate bedops
 conda install -c bioconda bedops=2.4.39
 
 vcf2bed < family.merged.subset.probandonly.randomsubset.vcf > family.merged.subset.probandonly.randomsubset.bed
-```
 
-Re-sort bed
-
-```bash
+# Re-sort bed
 sort -V -k1,1 -k2,2 family.merged.subset.probandonly.randomsubset.bed > family.merged.subset.probandonly.randomsubset.sorted.bed
-```
 
-Add chr prefix (so it is compatible with bams downstream, note. chrM/MT doesn't need to be fixed, not present in bed)
-
-```bash
+# Add chr prefix (so it is compatible with bams downstream, note. chrM/MT doesn't need to be fixed, not present in bed)
 awk 'OFS="\t" {if (NR > 5) $1="chr"$1; print}' family.merged.subset.probandonly.randomsubset.sorted.bed > family.merged.subset.probandonly.randomsubset.sorted.chr.bed
 ```
 
-## Pull out fastq reads from bam
+## Pull out fastq reads from bams
 
 Use these variant positions (defined in the bed file) to extract the fastq reads from the bam files (following [this guide](https://gist.github.com/darencard/72ddd9e6c08aaff5ff64ca512a04a6dd))
 
@@ -197,80 +152,6 @@ samtools merge -u $bam.reduced_unmapped.bam $bam.reduced_unmap_map.bam $bam.redu
 samtools sort -n $bam.reduced_map_map.bam -o $bam.reduced_mapped.sort
 samtools sort -n $bam.reduced_unmapped.bam -o $bam.reduced_unmapped.sort
 done
-```
-
-Check that the number of unmapped and mapped reads total the number of reads in the original bam file (for the reduced bams)
-
-```bash
-for bam in "${bams_to_process[@]}"; do
-samtools flagstat $bam.reduced.bam
-done
-```
-
-```bash
-1790779 + 0 in total (QC-passed reads + QC-failed reads)
-0 + 0 secondary
-13026 + 0 supplementary
-0 + 0 duplicates
-1790648 + 0 mapped (99.99% : N/A)
-1777753 + 0 paired in sequencing
-895801 + 0 read1
-881952 + 0 read2
-1667792 + 0 properly paired (93.81% : N/A)
-1765307 + 0 with itself and mate mapped
-12315 + 0 singletons (0.69% : N/A)
-70943 + 0 with mate mapped to a different chr
-55191 + 0 with mate mapped to a different chr (mapQ>=5)
-
-2034368 + 0 in total (QC-passed reads + QC-failed reads)
-0 + 0 secondary
-12248 + 0 supplementary
-0 + 0 duplicates
-2034223 + 0 mapped (99.99% : N/A)
-2022120 + 0 paired in sequencing
-1018632 + 0 read1
-1003488 + 0 read2
-1826298 + 0 properly paired (90.32% : N/A)
-2009917 + 0 with itself and mate mapped
-12058 + 0 singletons (0.60% : N/A)
-81082 + 0 with mate mapped to a different chr
-63847 + 0 with mate mapped to a different chr (mapQ>=5)
-
-1902482 + 0 in total (QC-passed reads + QC-failed reads)
-0 + 0 secondary
-11682 + 0 supplementary
-0 + 0 duplicates
-1902354 + 0 mapped (99.99% : N/A)
-1890800 + 0 paired in sequencing
-952414 + 0 read1
-938386 + 0 read2
-1709973 + 0 properly paired (90.44% : N/A)
-1878819 + 0 with itself and mate mapped
-11853 + 0 singletons (0.63% : N/A)
-71685 + 0 with mate mapped to a different chr
-55869 + 0 with mate mapped to a different chr (mapQ>=5)
-```
-
-Compare this to the number of mapped and unmapped reads
-
-```bash
-for bam in "${bams_to_process[@]}"; do
-# Mapped reads
-samtools view -c $bam.reduced_mapped.sort
-# Unmapped reads
-samtools view -c $bam.reduced_unmapped.sort
-done
-```
-
-My output:
-
-```bash
-1777858
-12921
-2021739
-12629
-1890089
-12393
 ```
 
 Create FASTQ read files
@@ -313,6 +194,7 @@ Check the number of reads in each fastq file is consistent between reads 1 and 2
 fastqs_to_process=("NA24631_1.fastq.gz" "NA24631_2.fastq.gz" "NA24694_1.fastq.gz" "NA24694_2.fastq.gz" "NA24695_1.fastq.gz" "NA24695_2.fastq.gz")
 
 for fastq in "${fastqs_to_process[@]}"; do
+echo "Reads in $fastq:"
 echo $(zcat fastq/$fastq | wc -l)/4| bc
 done
 ```
@@ -320,11 +202,17 @@ done
 My output:
 
 ```bash
+Reads in NA24631_1.fastq.gz:
 27730
+Reads in NA24631_2.fastq.gz:
 27730
+Reads in NA24694_1.fastq.gz:
 27758
+Reads in NA24694_2.fastq.gz:
 27758
+Reads in NA24695_1.fastq.gz:
 23746
+Reads in NA24695_2.fastq.gz:
 23746
 ```
 
@@ -362,6 +250,8 @@ cd ../../vcf_annotation_pipeline/workflow/
 bash dryrun_hpc.sh
 bash run_hpc.sh
 ```
+
+Works great!
 
 ## Other
 
