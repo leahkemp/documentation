@@ -1,7 +1,7 @@
 # Create test dataset for pipelines
 
 Created: 2020/10/29 10:07:39
-Last modified: 2020/11/10 11:52:05
+Last modified: 2020/11/10 12:11:03
 
 - **Aim:** Create a test dataset for [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)
 - **Prerequisite software:**  [Conda 4.8.5](https://docs.conda.io/projects/conda/en/latest/index.html)
@@ -68,7 +68,7 @@ conda install -c bioconda gatk4=4.1.9.0
 conda activate gatk4
 ```
 
-Subset vcf by custom exome capture regions
+Subset vcf by custom exome capture regions (file can be found [here](./create_test_dataset_files/custom.bed.gz))
 
 ```bash
 gatk SelectVariants \
@@ -119,6 +119,8 @@ sort -V -k1,1 -k2,2 family.merged.subset.probandonly.randomsubset.bed > family.m
 # Add chr prefix (so it is compatible with bams downstream, note. chrM/MT doesn't need to be fixed, not present in bed)
 awk 'OFS="\t" {if (NR > 5) $1="chr"$1; print}' family.merged.subset.probandonly.randomsubset.sorted.bed > family.merged.subset.probandonly.randomsubset.sorted.chr.bed
 ```
+
+*Note. the resulting `family.merged.subset.probandonly.randomsubset.sorted.chr.bed` file can be found [here](./create_test_dataset_files/family.merged.subset.probandonly.randomsubset.sorted.chr.bed)*
 
 ## Pull out fastq reads from bams
 
