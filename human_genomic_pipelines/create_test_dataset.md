@@ -1,7 +1,7 @@
 # Create test dataset for pipelines
 
 Created: 2020/10/29 10:07:39
-Last modified: 2020/11/09 16:51:27
+Last modified: 2020/11/10 11:52:05
 
 - **Aim:** Create a test dataset for [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)
 - **Prerequisite software:**  [Conda 4.8.5](https://docs.conda.io/projects/conda/en/latest/index.html)
@@ -20,7 +20,11 @@ Last modified: 2020/11/09 16:51:27
     - [Randomly sub-sample variants](#randomly-sub-sample-variants)
   - [Create a bed file from the reduced vcf](#create-a-bed-file-from-the-reduced-vcf)
   - [Pull out fastq reads from bams](#pull-out-fastq-reads-from-bams)
-  - [Test running test data through pipelines](#test-running-test-data-through-pipelines)
+  - [Run test data through pipelines](#run-test-data-through-pipelines)
+    - [Run cohort test data through pipelines](#run-cohort-test-data-through-pipelines)
+    - [Integrate cohort test data with github repos](#integrate-cohort-test-data-with-github-repos)
+    - [Run single sample test data through pipelines](#run-single-sample-test-data-through-pipelines)
+    - [Integrate single sample test data with github repos](#integrate-single-sample-test-data-with-github-repos)
   - [Other](#other)
 
 
@@ -46,7 +50,7 @@ wget https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/ChineseTrio/HG007_NA24695-
 wget https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/ChineseTrio/HG007_NA24695-hu38168_mother/NIST_Stanford_Illumina_6kb_matepair/bams/HG007.mate_pair.sorted.bam.bai
 ```
 
-See [here](https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/ChineseTrio/analysis/RTG_RTGJointTrio_06062019/GRCh37/README.md) for information on this data
+See [here](https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/ChineseTrio/analysis/RTG_RTGJointTrio_06062019/GRCh37/README.md) for information on this vcf data, as well as [HG005_NA24631_son](https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/ChineseTrio/HG005_NA24631_son/NIST_Stanford_Illumina_6kb_matepair/README.NIST_Stanford_Illumina_6kb_matepair), [HG006_NA24694-huCA017E_father](https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/ChineseTrio/HG006_NA24694-huCA017E_father/NIST_Stanford_Illumina_6kb_matepair/README.NIST_Stanford_Illumina_6kb_matepair) and [HG007_NA24695-hu38168_mother](https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/ChineseTrio/HG007_NA24695-hu38168_mother/NIST_Stanford_Illumina_6kb_matepair/README.NIST_Stanford_Illumina_6kb_matepair) for information on this bam data.
 
 ## Manually create pedigree file
 
@@ -216,7 +220,7 @@ Reads in NA24695_2.fastq.gz:
 23746
 ```
 
-## Test running test data through pipelines
+## Run test data through pipelines
 
 Setup
 
@@ -224,14 +228,18 @@ Setup
 # Clone pipelines
 git clone https://github.com/ESR-NZ/human_genomics_pipeline.git
 cd human_genomics_pipeline
-git checkout a4dc43d7557df41f95f8f5963642b53f5cded99e
+git checkout v1.0.0
 cd ..
 git clone https://github.com/ESR-NZ/vcf_annotation_pipeline.git
 cd vcf_annotation_pipeline
-git checkout 5390d9320030e6dcba2596395782667d34cc0a9e
+git checkout v1.0.0
 ```
 
 Manually configure pipelines
+
+### Run cohort test data through pipelines
+
+Manually set `DATA:` in `human_genomics_pipeline/config/config.yaml` and `vcf_annotation_pipeline/config/config.yaml` to `DATA: "Cohort"`
 
 Run pipelines
 
@@ -245,13 +253,32 @@ bash dryrun_hpc.sh
 bash run_hpc.sh
 ```
 
+### Integrate cohort test data with github repos
+
+### Run single sample test data through pipelines
+
+Manually set `DATA:` in `human_genomics_pipeline/config/config.yaml` and `vcf_annotation_pipeline/config/config.yaml` to `DATA: "Single"`
+
+Remove previous run results, metadata and unnecessary input data
+
 ```bash
-cd ../../vcf_annotation_pipeline/workflow/
+rm ../../fastq/NA24694*
+rm ../../fastq/NA24695*
+
+rm -r ../results/*
+rm slurm*
+rm -r logs
+rm -r benchmarks
+```
+
+Run pipelines
+
+```bash
 bash dryrun_hpc.sh
 bash run_hpc.sh
 ```
 
-Works great!
+### Integrate single sample test data with github repos
 
 ## Other
 
