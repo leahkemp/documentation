@@ -1,7 +1,7 @@
 # Create test dataset for pipelines
 
 Created: 2020/10/29 10:07:39
-Last modified: 2020/11/10 12:11:03
+Last modified: 2020/11/10 12:13:05
 
 - **Aim:** Create a test dataset for [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline)
 - **Prerequisite software:**  [Conda 4.8.5](https://docs.conda.io/projects/conda/en/latest/index.html)
@@ -22,10 +22,7 @@ Last modified: 2020/11/10 12:11:03
   - [Pull out fastq reads from bams](#pull-out-fastq-reads-from-bams)
   - [Run test data through pipelines](#run-test-data-through-pipelines)
     - [Run cohort test data through pipelines](#run-cohort-test-data-through-pipelines)
-    - [Integrate cohort test data with github repos](#integrate-cohort-test-data-with-github-repos)
     - [Run single sample test data through pipelines](#run-single-sample-test-data-through-pipelines)
-    - [Integrate single sample test data with github repos](#integrate-single-sample-test-data-with-github-repos)
-  - [Other](#other)
 
 
 ## Setup
@@ -255,7 +252,7 @@ bash dryrun_hpc.sh
 bash run_hpc.sh
 ```
 
-### Integrate cohort test data with github repos
+Integrate cohort test data with github repos
 
 ### Run single sample test data through pipelines
 
@@ -280,10 +277,4 @@ bash dryrun_hpc.sh
 bash run_hpc.sh
 ```
 
-### Integrate single sample test data with github repos
-
-## Other
-
-Provide custom exome capture file and bed file
-
-Random seed for random sampling of variants - re-generating this file might produce different results due to randomisation
+Integrate single sample test data with github repos
