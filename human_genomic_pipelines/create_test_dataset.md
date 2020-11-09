@@ -1,7 +1,7 @@
 # Create test dataset for pipelines
 
 Created: 2020/10/29 10:07:39
-Last modified: 2020/10/30 17:45:18
+Last modified: 2020/11/09 16:23:01
 
 - **Aim:** Create a test dataset for [human_genomics_pipeline](https://github.com/ESR-NZ/human_genomics_pipeline) and [vcf_annotation_pipeline](https://github.com/ESR-NZ/vcf_annotation_pipeline) (a trio and a singleton)
 - **Prerequisite software:**  [Conda 4.8.5](https://docs.conda.io/projects/conda/en/latest/index.html)
@@ -15,7 +15,6 @@ Last modified: 2020/10/30 17:45:18
   - [Get bams and vcf for publicly available trio](#get-bams-and-vcf-for-publicly-available-trio)
   - [Manually create pedigree file](#manually-create-pedigree-file)
   - [Reduce dataset - subset by exome capture regions](#reduce-dataset---subset-by-exome-capture-regions)
-  - [Prepare files and file directory structure to run through pipeline](#prepare-files-and-file-directory-structure-to-run-through-pipeline)
   - [Process vcf](#process-vcf)
     - [SnpSift_filter_proband](#snpsift_filter_proband)
   - [Randomly sub-sample variants](#randomly-sub-sample-variants)
@@ -76,13 +75,6 @@ gatk SelectVariants \
 
 This takes the vcf file from 6,226,947 variants to 329,619 variants
 
-## Prepare files and file directory structure to run through pipeline
-
-```bash
-mkdir -p human_genomics_pipeline/results/called/ pedigrees/
-mv family.merged.subset.vcf human_genomics_pipeline/results/called/NA24694_raw_snps_indels.g.vcf
-```
-
 ## Process vcf
 
 - Data/vcf is already filtered
@@ -105,7 +97,7 @@ Now 255,194 variants
 
 ## Randomly sub-sample variants
 
-0.5% of the variants
+50% of the variants
 
 ```bash
 conda activate gatk4
@@ -113,7 +105,7 @@ conda activate gatk4
 gatk SelectVariants \
 -V family.merged.subset.probandonly.vcf \
 -O family.merged.subset.probandonly.randomsubset.vcf \
---select-random-fraction 0.005
+--select-random-fraction 0.5
 ```
 
 Now 1246 variants throughout these chromosomes:
@@ -191,13 +183,13 @@ Start extracting FASTQ reads from bam
 
 ```bash
 for bam in "${bams_to_process[@]}"; do
-# Extract fastq reads for which both paired reads were mapped
+# R1 mapped, R2 mapped
 samtools view -u -f 1 -F 12 $bam.reduced.bam > $bam.reduced_map_map.bam
-# Extract fastq reads for which R1 unmapped, R2 mapped
+# R1 unmapped, R2 mapped
 samtools view -u -f 4 -F 264 $bam.reduced.bam > $bam.reduced_unmap_map.bam
-# Extract fastq reads for which R1 mapped, R2 unmapped
+# R1 mapped, R2 unmapped
 samtools view -u -f 8 -F 260 $bam.reduced.bam > $bam.reduced_map_unmap.bam
-# Extract fastq reads for which R1 & R2 unmapped
+# R1 unmapped, R2 unmapped
 samtools view -u -f 12 -F 256 $bam.reduced.bam > $bam.reduced_unmap_unmap.bam
 # Merge the three files that contain at least one unmapped pair
 samtools merge -u $bam.reduced_unmapped.bam $bam.reduced_unmap_map.bam $bam.reduced_map_unmap.bam $bam.reduced_unmap_unmap.bam
@@ -207,59 +199,56 @@ samtools sort -n $bam.reduced_unmapped.bam -o $bam.reduced_unmapped.sort
 done
 ```
 
-Check that the number of unmapped and mapped reads total the number of reads in the original reduced bam file
+Check that the number of unmapped and mapped reads total the number of reads in the original bam file (for the reduced bams)
 
 ```bash
-# Number of unmapped and mapped reads in the original reduced bam file
 for bam in "${bams_to_process[@]}"; do
 samtools flagstat $bam.reduced.bam
 done
 ```
 
-My output
-
 ```bash
-18799 + 0 in total (QC-passed reads + QC-failed reads)
+1790779 + 0 in total (QC-passed reads + QC-failed reads)
 0 + 0 secondary
-128 + 0 supplementary
+13026 + 0 supplementary
 0 + 0 duplicates
-18798 + 0 mapped (99.99% : N/A)
-18671 + 0 paired in sequencing
-9405 + 0 read1
-9266 + 0 read2
-17685 + 0 properly paired (94.72% : N/A)
-18563 + 0 with itself and mate mapped
-107 + 0 singletons (0.57% : N/A)
-573 + 0 with mate mapped to a different chr
-468 + 0 with mate mapped to a different chr (mapQ>=5)
+1790648 + 0 mapped (99.99% : N/A)
+1777753 + 0 paired in sequencing
+895801 + 0 read1
+881952 + 0 read2
+1667792 + 0 properly paired (93.81% : N/A)
+1765307 + 0 with itself and mate mapped
+12315 + 0 singletons (0.69% : N/A)
+70943 + 0 with mate mapped to a different chr
+55191 + 0 with mate mapped to a different chr (mapQ>=5)
 
-21236 + 0 in total (QC-passed reads + QC-failed reads)
+2034368 + 0 in total (QC-passed reads + QC-failed reads)
 0 + 0 secondary
-143 + 0 supplementary
+12248 + 0 supplementary
 0 + 0 duplicates
-21235 + 0 mapped (100.00% : N/A)
-21093 + 0 paired in sequencing
-10603 + 0 read1
-10490 + 0 read2
-19276 + 0 properly paired (91.39% : N/A)
-20986 + 0 with itself and mate mapped
-106 + 0 singletons (0.50% : N/A)
-602 + 0 with mate mapped to a different chr
-499 + 0 with mate mapped to a different chr (mapQ>=5)
+2034223 + 0 mapped (99.99% : N/A)
+2022120 + 0 paired in sequencing
+1018632 + 0 read1
+1003488 + 0 read2
+1826298 + 0 properly paired (90.32% : N/A)
+2009917 + 0 with itself and mate mapped
+12058 + 0 singletons (0.60% : N/A)
+81082 + 0 with mate mapped to a different chr
+63847 + 0 with mate mapped to a different chr (mapQ>=5)
 
-20169 + 0 in total (QC-passed reads + QC-failed reads)
+1902482 + 0 in total (QC-passed reads + QC-failed reads)
 0 + 0 secondary
-139 + 0 supplementary
+11682 + 0 supplementary
 0 + 0 duplicates
-20169 + 0 mapped (100.00% : N/A)
-20030 + 0 paired in sequencing
-10248 + 0 read1
-9782 + 0 read2
-18268 + 0 properly paired (91.20% : N/A)
-19919 + 0 with itself and mate mapped
-111 + 0 singletons (0.55% : N/A)
-620 + 0 with mate mapped to a different chr
-519 + 0 with mate mapped to a different chr (mapQ>=5)
+1902354 + 0 mapped (99.99% : N/A)
+1890800 + 0 paired in sequencing
+952414 + 0 read1
+938386 + 0 read2
+1709973 + 0 properly paired (90.44% : N/A)
+1878819 + 0 with itself and mate mapped
+11853 + 0 singletons (0.63% : N/A)
+71685 + 0 with mate mapped to a different chr
+55869 + 0 with mate mapped to a different chr (mapQ>=5)
 ```
 
 Compare this to the number of mapped and unmapped reads
@@ -276,12 +265,12 @@ done
 My output:
 
 ```bash
-18686
-113
-21124
-112
-20054
-115
+1777858
+12921
+2021739
+12629
+1890089
+12393
 ```
 
 Create FASTQ read files
@@ -316,6 +305,27 @@ mv HG006.mate_pair.sorted.reduced_R2.fastq.gz fastq/NA24694_2.fastq.gz
 # Mother
 mv HG007.mate_pair.sorted.reduced_R1.fastq.gz fastq/NA24695_1.fastq.gz
 mv HG007.mate_pair.sorted.reduced_R2.fastq.gz fastq/NA24695_2.fastq.gz
+```
+
+Check the number of reads in each fastq file is consistent between reads 1 and 2 for all samples
+
+```bash
+fastqs_to_process=("NA24631_1.fastq.gz" "NA24631_2.fastq.gz" "NA24694_1.fastq.gz" "NA24694_2.fastq.gz" "NA24695_1.fastq.gz" "NA24695_2.fastq.gz")
+
+for fastq in "${fastqs_to_process[@]}"; do
+echo $(zcat fastq/$fastq | wc -l)/4| bc
+done
+```
+
+My output:
+
+```bash
+27730
+27730
+27758
+27758
+23746
+23746
 ```
 
 ## Test running test data through pipelines
