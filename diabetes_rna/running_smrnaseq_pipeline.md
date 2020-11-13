@@ -1,7 +1,7 @@
 # Running smrnaseq pipeline
 
 Created: 2020/11/13 12:29:25
-Last modified: 2020/11/13 18:08:27
+Last modified: 2020/11/13 18:20:49
 
 - **Aim:** In [this document](./rna_pipelines_current_status.md) I settled on using the [smrnaseq](https://github.com/nf-core/smrnaseq) nextflow pipeline to process our small non-coding RNA-seq data. This document documents/describes the process of trying this pipeline out on the data (extending on Miles Bentons work). Thi is part of the wider [small rnaseq hepatic portal project](./project_notes_small_rnaseq_hepatic_portal.md)
 - **Prerequisite software:** [conda 4.9.0](https://docs.conda.io/en/latest/), [git 2.7.4](https://git-scm.com/)
@@ -33,7 +33,6 @@ Last modified: 2020/11/13 18:08:27
       - [i. Post-alignment processing of alignment against host reference genome (SAMtools)](#i-post-alignment-processing-of-alignment-against-host-reference-genome-samtools)
     - [7. miRNA quality control (mirtrace)](#7-mirna-quality-control-mirtrace)
     - [8. Present QC for raw read, alignment, and expression results (MultiQC)](#8-present-qc-for-raw-read-alignment-and-expression-results-multiqc)
-        - [top miRNA counts per sample](#top-mirna-counts-per-sample)
 
 ## Overview of data
 
@@ -375,7 +374,7 @@ The report at `./results/pipeline_info/results_description.html`, mentions:
 The FastQC plots displayed in the MultiQC report shows untrimmed reads. They may contain adapter sequence and potentially regions with low quality. To see how your reads look after trimming, look at the FastQC reports in the trim_galore directory
 ```
 
-Therefore I'll look at the qc of the reads after trimming in the fastqc reports
+Therefore I'll look at the qc of the reads after trimming in the fastqc reports in the trim_galore directory
 
 #### i. Insert Size calculation
 
@@ -678,6 +677,8 @@ Sequence length 17-40
 
 Now all the sequences are between the 17bp and 40bp length cutoffs
 
+There is a `--max_length` flag for TrimGalore that I could play around with, but I'll have to see if the pipeline take this value.
+
 ### 3. Alignment against miRBase mature miRNA - Bowtie1
 
 ### 4. Alignment against miRBase hairpin
@@ -707,21 +708,4 @@ Heatmap of sample similarities
 ### 7. miRNA quality control (mirtrace)
 
 ### 8. Present QC for raw read, alignment, and expression results (MultiQC)
-
-[Bowtie](http://bowtie-bio.sourceforge.net/manual.shtml) is a short read aligner (what are the reads aligned to?)
-
-The file's at `results/bowtie/miRBase_mature/*_combined.mature.stats`
-
-##### top miRNA counts per sample
-
-```sh
-# quick loop through top miRNA counts per sample
-for i in results/bowtie/miRBase_mature/*_combined.mature.stats; do 
-  echo ""
-  echo "$i"
-  cat "$i" | sort -k 3 -r -V | head -n 5
-  echo ""
-done
-```
-
 
