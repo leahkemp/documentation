@@ -1,7 +1,7 @@
 # Running smrnaseq pipeline
 
 Created: 2020/11/13 12:29:25
-Last modified: 2020/11/17 13:47:20
+Last modified: 2020/11/17 14:18:51
 
 - **Aim:** In [this document](./rna_pipelines_current_status.md) I settled on using the [smrnaseq](https://github.com/nf-core/smrnaseq) nextflow pipeline to process our small non-coding RNA-seq data. This document documents/describes the process of trying this pipeline out on the data (extending on Miles Bentons work). Thi is part of the wider [small rnaseq hepatic portal project](./project_notes_small_rnaseq_hepatic_portal.md)
 - **Prerequisite software:** [conda 4.9.0](https://docs.conda.io/en/latest/), [git 2.7.4](https://git-scm.com/)
@@ -708,10 +708,9 @@ cd dev_branch_analysis
 git clone https://github.com/nf-core/smrnaseq.git
 cd smrnaseq
 git checkout dev
+cd ..
 
 conda activate nextflow
-
-cd ..
 
 nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf --input '/store/lkemp/smrnaseq_hps/fastq/*.fastq.gz' -profile conda --protocol illumina --mature --hairpin
 ```
@@ -755,7 +754,7 @@ Error
 Reference genome file not found: false
 ```
 
-Looks like it wants a reference genome file passsed to this flag:
+Looks like it wants a reference genome file passed to this flag:
 
 ```bash
       --fasta [file]                Path to fasta reference
@@ -836,7 +835,7 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --genome GRCh38 \
 --mirtrace_species hsa \
 --mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
---bt_index GRCh38_noalt_decoy_as
+--bt_index /store/lkemp/smrnaseq_hps/dev_branch_analysis/GRCh38_noalt_decoy_as/ \
 ```
 
 Just one remaining warning left: 
@@ -845,24 +844,25 @@ Just one remaining warning left:
 WARN: Access to undefined parameter `input_paths` -- Initialise it to a default value eg. `params.input_paths = some_value`
 ```
 
-I won't worry about that for now, the input fastq files seem to be taken by the pipeline just fine. Now I want to add back some of the trimming and other parameters as well as switch from using conda to singularity (more robust and recommended by the software developers in the README to use conda as a last resort)
+I won't worry about that for now, the input fastq files seem to be taken by the pipeline just fine. Now I want to add back some of the trimming and other parameters as well as switch from using conda to singularity (more robust and recommended by the software developers in the README to use conda as a last resort). I also want to reduce some of the resources the pipeline uses - I'll reduce the max_cpus variable in the pipeline config file (`/store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/nextflow.config`) from 16 to 10. Run the pipeline:
 
 ```bash
 nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
---input '/store/lkemp/smrnaseq_hps/fastq/*.fastq.gz' \
--profile sigularity \
+--input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
+-profile singularity \
 --protocol illumina \
 --mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
 --hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
 --genome GRCh38 \
 --mirtrace_species hsa \
 --mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
+--bt_index /store/lkemp/smrnaseq_hps/dev_branch_analysis/GRCh38_noalt_decoy_as/ \
 --saveReference \
 -resume \
---three_prime_adapter \
+--three_prime_adapter AGATCGGAAGAGCACACG \
 --min_length 17 \
---outdir /store/lkemp/smrnaseq_hps/dev_branch_analysis/ \
---email leah.kemp@esr.cri.nz
+--email leah.kemp@esr.cri.nz \
+--email_on_fail leah.kemp@esr.cri.nz
 ```
 
 ## Explore the outputs!
