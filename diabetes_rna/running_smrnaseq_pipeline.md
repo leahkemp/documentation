@@ -1,7 +1,7 @@
 # Running smrnaseq pipeline
 
 Created: 2020/11/13 12:29:25
-Last modified: 2020/11/13 18:20:49
+Last modified: 2020/11/17 13:47:20
 
 - **Aim:** In [this document](./rna_pipelines_current_status.md) I settled on using the [smrnaseq](https://github.com/nf-core/smrnaseq) nextflow pipeline to process our small non-coding RNA-seq data. This document documents/describes the process of trying this pipeline out on the data (extending on Miles Bentons work). Thi is part of the wider [small rnaseq hepatic portal project](./project_notes_small_rnaseq_hepatic_portal.md)
 - **Prerequisite software:** [conda 4.9.0](https://docs.conda.io/en/latest/), [git 2.7.4](https://git-scm.com/)
@@ -21,6 +21,12 @@ Last modified: 2020/11/13 18:20:49
       - [i. Insert Size calculation](#i-insert-size-calculation)
       - [ii. Collapse reads seqcsluter](#ii-collapse-reads-seqcsluter)
     - [2. Adapter trimming - Trim Galore!](#2-adapter-trimming---trim-galore)
+  - [Re-run data trough pipeline](#re-run-data-trough-pipeline)
+  - [Explore the outputs!](#explore-the-outputs-1)
+    - [1. Raw read QC - FastQC](#1-raw-read-qc---fastqc-1)
+      - [i. Insert Size calculation](#i-insert-size-calculation-1)
+      - [ii. Collapse reads seqcsluter](#ii-collapse-reads-seqcsluter-1)
+    - [2. Adapter trimming - Trim Galore!](#2-adapter-trimming---trim-galore-1)
     - [3. Alignment against miRBase mature miRNA - Bowtie1](#3-alignment-against-mirbase-mature-mirna---bowtie1)
     - [4. Alignment against miRBase hairpin](#4-alignment-against-mirbase-hairpin)
       - [Unaligned reads from step 3 (Bowtie1)](#unaligned-reads-from-step-3-bowtie1)
@@ -678,6 +684,222 @@ Sequence length 17-40
 Now all the sequences are between the 17bp and 40bp length cutoffs
 
 There is a `--max_length` flag for TrimGalore that I could play around with, but I'll have to see if the pipeline take this value.
+
+
+## Re-run data trough pipeline
+
+It turns out there is a bug in the trimming in this pipeline that Miles fixed earlier this year (see the github issue [here](https://github.com/nf-core/smrnaseq/issues/41)). I hadn't realised that the current latest release of [nf-core/smrnaseq](https://github.com/nf-core/smrnaseq) is [v1.0.0](https://github.com/nf-core/smrnaseq/releases/tag/1.0.0) which I would have used above doesn't include this fix. I'll re-run the pipeline with a newer version of the pipeline (the [dev branch](https://github.com/nf-core/smrnaseq/tree/dev) that includes this fix).
+
+```bash
+cd /store/lkemp/smrnaseq_hps/
+
+# Move old analysis to folder
+mkdir master_branch_analysis
+mv .nextflow.log ./master_branch_analysis
+mv ./work/ ./master_branch_analysis
+mv ./results/ ./master_branch_analysis
+mv ./smrnaseq ./master_branch_analysis
+mv .nextflow ./master_branch_analysis
+
+# Setup to run pipeline on dev branch of pipeline
+mkdir dev_branch_analysis
+cd dev_branch_analysis
+
+git clone https://github.com/nf-core/smrnaseq.git
+cd smrnaseq
+git checkout dev
+
+conda activate nextflow
+
+cd ..
+
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf --input '/store/lkemp/smrnaseq_hps/fastq/*.fastq.gz' -profile conda --protocol illumina --mature --hairpin
+```
+
+Getting the following error only when running the dev branch (works fine when running on the master branch):
+
+```bash
+Mature file not found: false
+```
+
+Error coming from https://github.com/nf-core/smrnaseq/blob/a115116a06ad274b475834316d0193e1b756b249/main.nf#L130
+
+It looks as though the dev branch (in contrast to the master branch) is expecting you to pass these variables:
+
+```bash
+      --mature [file]               Path to the FASTA file of mature miRNAs
+      --hairpin [file]              Path to the FASTA file of miRNA precursors
+```
+
+Get these files from [mirbase](http://mirbase.org/)
+
+```bash
+wget ftp://mirbase.org/pub/mirbase/CURRENT/hairpin.fa.gz
+wget ftp://mirbase.org/pub/mirbase/CURRENT/mature.fa.gz
+```
+
+Run again
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+--input '/store/lkemp/smrnaseq_hps/fastq/*.fastq.gz' \
+-profile conda \
+--protocol illumina \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz
+```
+
+Error
+
+```bash
+Reference genome file not found: false
+```
+
+Looks like it wants a reference genome file passsed to this flag:
+
+```bash
+      --fasta [file]                Path to fasta reference
+```
+
+Before getting the reference genome file myself, I'll see if it's happy if I just specify the reference genome using the `--genome` flag since it looks like it might be able to grab it from the iGenomes reference? (will use GRCh38 since this is what `mature.fa.gz` and `hairpin.fa.gz` are based on)
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+--input '/store/lkemp/smrnaseq_hps/fastq/*.fastq.gz' \
+-profile conda \
+--protocol illumina \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--genome GRCh38
+```
+
+Error
+
+```bash
+Reference species for miRTrace is not defined.
+```
+
+Try specifying reference species for miRTrace with the `--mirtrace_species` flag
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+--input '/store/lkemp/smrnaseq_hps/fastq/*.fastq.gz' \
+-profile conda \
+--protocol illumina \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--genome GRCh38 \
+--mirtrace_species hsa
+```
+
+It worked!! (launched the pipeline)
+
+Although I'm still getting some warnings:
+
+```bash
+WARN: Access to undefined parameter `mirna_gtf` -- Initialise it to a default value eg. `params.mirna_gtf = some_value`
+WARN: Access to undefined parameter `bt_indices` -- Initialise it to a default value eg. `params.bt_indices = some_value`
+No GTF / Bowtie 1 index supplied - host reference genome analysis will be skipped.
+WARN: Access to undefined parameter `input_paths` -- Initialise it to a default value eg. `params.input_paths = some_value`
+```
+
+Get GFF/GTF file with coordinates positions of precursor and miRNAs
+
+```bash
+wget ftp://mirbase.org/pub/mirbase/CURRENT/genomes/hsa.gff3
+```
+
+The warning about the bt_indices looks like they want us to provide an index for the reference genome in order to run the host reference genome analysis (even though it's optional to pass this file). See the `main.nf` file:
+
+```bash
+      --bt_index [file]             Path to the bowtie 1 index files of the host reference genome. Optional.
+```
+
+The [bowtie manual](http://bowtie-bio.sourceforge.net/manual.shtml) indicates where to get these index files (they indicate to get it from NCBI)
+
+```bash
+# Get the index files for bowtie
+wget https://genome-idx.s3.amazonaws.com/bt/GRCh38_noalt_decoy_as.zip
+# Unzip
+unzip GRCh38_noalt_decoy_as.zip
+```
+
+Run again
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+--input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
+-profile conda \
+--protocol illumina \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--genome GRCh38 \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
+--bt_index GRCh38_noalt_decoy_as
+```
+
+Just one remaining warning left: 
+
+```bash
+WARN: Access to undefined parameter `input_paths` -- Initialise it to a default value eg. `params.input_paths = some_value`
+```
+
+I won't worry about that for now, the input fastq files seem to be taken by the pipeline just fine. Now I want to add back some of the trimming and other parameters as well as switch from using conda to singularity (more robust and recommended by the software developers in the README to use conda as a last resort)
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+--input '/store/lkemp/smrnaseq_hps/fastq/*.fastq.gz' \
+-profile sigularity \
+--protocol illumina \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--genome GRCh38 \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
+--saveReference \
+-resume \
+--three_prime_adapter \
+--min_length 17 \
+--outdir /store/lkemp/smrnaseq_hps/dev_branch_analysis/ \
+--email leah.kemp@esr.cri.nz
+```
+
+## Explore the outputs!
+
+### 1. Raw read QC - FastQC
+
+Get sequence lengths for all reads *before* trimming
+
+```bash
+mkdir ./results/fastqc_unzipped/
+
+# Unzip fastqc files
+for zip in ./results/fastqc/*_combined_fastqc.zip; do
+unzip $zip -d ./results/fastqc_unzipped/
+done
+
+# Get sequence lengths before trimming for all samples from fastqc summary files
+for summaryfile in ./results/fastqc_unzipped/HPS*_combined_fastqc/fastqc_data.txt; do
+grep -e 'Filename' -e 'Sequence length' $summaryfile
+done
+```
+
+Output:
+
+```bash
+
+```
+
+#### i. Insert Size calculation
+
+```bash
+/store/lkemp/smrnaseq_hps/results/trim_galore/insertsize/
+```
+
+#### ii. Collapse reads seqcsluter
+
+### 2. Adapter trimming - Trim Galore!
 
 ### 3. Alignment against miRBase mature miRNA - Bowtie1
 
