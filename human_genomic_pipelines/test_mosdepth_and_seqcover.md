@@ -1,10 +1,10 @@
 # Test mosdepth and seqcover
 
 Created: 2020/11/19 09:42:29
-Last modified: 2020/11/19 11:47:34
+Last modified: 2020/11/19 17:28:02
 
 - **Aim:** Try/test [mosdepth](https://github.com/brentp/mosdepth) and [seqcover](https://github.com/brentp/seqcover) as a method for "viewing and evaluating depth-of-coverage" over many samples and for each gene
-- **Prerequisite software:** [conda](https://singularity.lbl.gov/)
+- **Prerequisite software:** [conda 4.9.0](https://singularity.lbl.gov/)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
 
 ## Table of contents
@@ -126,7 +126,7 @@ I want to try it with the same reference genome we used to analyse the data (b37
 -r my_genes_report.html
 ```
 
-Worked great! (see the output report at ./test_mosdepth_and_seqcover/my_genes_report.html)
+Worked great! (see the [output report](./test_mosdepth_and_seqcover/my_genes_report.html))
 
 I also want to try seqcover with a transcript file
 
@@ -143,7 +143,7 @@ Huh, error:
 unknown program 'save-transcripts'
 ```
 
-Doesn't seem like that's an available command despite [the README](https://github.com/brentp/seqcover/blob/master/README.md)
+Doesn't seem like that's an available command despite [the README](https://github.com/brentp/seqcover/blob/master/README.md) referring to using this command
 
 ```bash
 ./seqcover --help
@@ -196,14 +196,15 @@ for b in *.bam; do
   mosdepth -x -t 4 samples/$n $b
 done
 
+# Re-create report
 ../../run_1/bams/seqcover report \
 --genes PIGA,KCNQ2,ARX,DNM1,SLC25A22,CDKL5,GABRA1,CAD,MDH2,SCN1B,CNPY3,CPLX1,NEB,HNRNPA1,CCDC39,AIFM1,CHCHD10 \
 --fasta /store/lkemp/publicData/b37/human_g1k_v37_decoy.fasta \
 ./samples/*.bed.gz \
--r my_genes_report_w_background.html
+-r my_genes_report_2.html
 ```
 
-Worked great! (see the output report at ./test_mosdepth_and_seqcover/my_genes_report_w_background.html)
+Worked great! ([see the output report](./test_mosdepth_and_seqcover/my_genes_report_2.html))
 
 ## Notes/findings
 
