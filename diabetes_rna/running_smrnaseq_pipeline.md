@@ -1,7 +1,7 @@
 # Running smrnaseq pipeline
 
 Created: 2020/11/13 12:29:25
-Last modified: 2020/11/17 14:18:51
+Last modified: 2020/11/17 17:01:03
 
 - **Aim:** In [this document](./rna_pipelines_current_status.md) I settled on using the [smrnaseq](https://github.com/nf-core/smrnaseq) nextflow pipeline to process our small non-coding RNA-seq data. This document documents/describes the process of trying this pipeline out on the data (extending on Miles Bentons work). Thi is part of the wider [small rnaseq hepatic portal project](./project_notes_small_rnaseq_hepatic_portal.md)
 - **Prerequisite software:** [conda 4.9.0](https://docs.conda.io/en/latest/), [git 2.7.4](https://git-scm.com/)
@@ -21,7 +21,7 @@ Last modified: 2020/11/17 14:18:51
       - [i. Insert Size calculation](#i-insert-size-calculation)
       - [ii. Collapse reads seqcsluter](#ii-collapse-reads-seqcsluter)
     - [2. Adapter trimming - Trim Galore!](#2-adapter-trimming---trim-galore)
-  - [Re-run data trough pipeline](#re-run-data-trough-pipeline)
+  - [Re-run data through pipeline](#re-run-data-through-pipeline)
   - [Explore the outputs!](#explore-the-outputs-1)
     - [1. Raw read QC - FastQC](#1-raw-read-qc---fastqc-1)
       - [i. Insert Size calculation](#i-insert-size-calculation-1)
@@ -686,7 +686,7 @@ Now all the sequences are between the 17bp and 40bp length cutoffs
 There is a `--max_length` flag for TrimGalore that I could play around with, but I'll have to see if the pipeline take this value.
 
 
-## Re-run data trough pipeline
+## Re-run data through pipeline
 
 It turns out there is a bug in the trimming in this pipeline that Miles fixed earlier this year (see the github issue [here](https://github.com/nf-core/smrnaseq/issues/41)). I hadn't realised that the current latest release of [nf-core/smrnaseq](https://github.com/nf-core/smrnaseq) is [v1.0.0](https://github.com/nf-core/smrnaseq/releases/tag/1.0.0) which I would have used above doesn't include this fix. I'll re-run the pipeline with a newer version of the pipeline (the [dev branch](https://github.com/nf-core/smrnaseq/tree/dev) that includes this fix).
 
@@ -863,6 +863,194 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --min_length 17 \
 --email leah.kemp@esr.cri.nz \
 --email_on_fail leah.kemp@esr.cri.nz
+```
+
+Failed with error:
+
+```bash
+Error executing process > 'bowtie_ref (HPS061_combined_trimmed.fq.gz)'
+
+Caused by:
+  Process `bowtie_ref (HPS061_combined_trimmed.fq.gz)` terminated with an error exit status (1)
+
+Command executed:
+
+  bowtie \
+      GRCh38_noalt_decoy_as.4.bt2 \
+      -q <(zcat HPS061_combined_trimmed.fq.gz) \
+      -p 10 \
+      -t \
+      -k 50 \
+      --best \
+      --strata \
+      -e 99999 \
+      --chunkmbs 2048 \
+      -S  \
+      | samtools view -bS - > HPS061_combined.genome.bam
+
+Command exit status:
+  1
+
+Command output:
+  (empty)
+
+Command error:
+  Could not locate a Bowtie index corresponding to basename "GRCh38_noalt_decoy_as.4.bt2"
+  Overall time: 00:00:00
+  Command: /opt/conda/envs/nf-core-smrnaseq-1.1dev/bin/bowtie-align-s --wrapper basic-0 -q -p 10 -t -k 50 --best --strata -e 99999 --chunkmbs 2048 -S GRCh38_noalt_decoy_as.4.bt2 /dev/fd/63
+```
+
+Will try run passing the `GRCh38_noalt_decoy_as.4.bt2` file directly to the `--bt-index` flag
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+--input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
+-profile singularity \
+--protocol illumina \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--genome GRCh38 \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
+--bt_index /store/lkemp/smrnaseq_hps/dev_branch_analysis/GRCh38_noalt_decoy_as/GRCh38_noalt_decoy_as.4.bt2 \
+--saveReference \
+-resume \
+--three_prime_adapter AGATCGGAAGAGCACACG \
+--min_length 17 \
+--email leah.kemp@esr.cri.nz \
+--email_on_fail leah.kemp@esr.cri.nz
+```
+
+Error thrown again. Try other bowtie index file
+
+```bash
+wget https://genome-idx.s3.amazonaws.com/bt/GRCh38_noalt_as.zip
+unzip GRCh38_noalt_as.zip
+```
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+--input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
+-profile singularity \
+--protocol illumina \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--genome GRCh38 \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
+--bt_index /store/lkemp/smrnaseq_hps/dev_branch_analysis/GRCh38_noalt_as/ \
+--saveReference \
+-resume \
+--three_prime_adapter AGATCGGAAGAGCACACG \
+--min_length 17 \
+--email leah.kemp@esr.cri.nz \
+--email_on_fail leah.kemp@esr.cri.nz
+```
+
+Didn't work
+
+From [this question on stackoverflow](https://stackoverflow.com/questions/38502194/could-not-locate-a-bowtie-index-corresponding-to-basename/38568771) it looks like I was passing the indexes incorrectly
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+--input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
+-profile singularity \
+--protocol illumina \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--genome GRCh38 \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
+--bt_index /store/lkemp/smrnaseq_hps/dev_branch_analysis/GRCh38_noalt_as/GRCh38_noalt_as \
+--saveReference \
+-resume \
+--three_prime_adapter AGATCGGAAGAGCACACG \
+--min_length 17 \
+--email leah.kemp@esr.cri.nz \
+--email_on_fail leah.kemp@esr.cri.nz
+```
+
+Didn't work
+
+Try on GRCh37
+
+```bash
+wget https://genome-idx.s3.amazonaws.com/bt/GRCh37.zip
+unzip GRCh37.zip
+wget ftp://mirbase.org/pub/mirbase/CURRENT/genomes/hsa.gff3
+```
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+--input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
+-profile singularity \
+--protocol illumina \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--genome GRCh38 \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
+--bt_index /store/lkemp/smrnaseq_hps/dev_branch_analysis/GRCh37/GRCh37 \
+--saveReference \
+-resume \
+--three_prime_adapter AGATCGGAAGAGCACACG \
+--min_length 17 \
+--email leah.kemp@esr.cri.nz \
+--email_on_fail leah.kemp@esr.cri.nz
+```
+
+Didn't work, try with index files from the ftp site (ftp://ftp.ccb.jhu.edu/pub/data/bowtie_indexes/)
+
+```bash
+mkdir bowtie_indexes
+cd bowtie_indexes
+wget ftp://ftp.ccb.jhu.edu/pub/data/bowtie_indexes/GRCh38.*.ebwt
+cd ..
+```
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+--input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
+-profile singularity \
+--protocol illumina \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--genome GRCh38 \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
+--bt_index /store/lkemp/smrnaseq_hps/dev_branch_analysis/GRCh38/GRCh38 \
+--saveReference \
+-resume \
+--three_prime_adapter AGATCGGAAGAGCACACG \
+--min_length 17 \
+--email leah.kemp@esr.cri.nz \
+--email_on_fail leah.kemp@esr.cri.nz
+```
+
+Run without bowtie index (and therefore without the host reference genome analysis)
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+--input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
+-profile singularity \
+--protocol illumina \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--genome GRCh38 \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
+--saveReference \
+-resume \
+--three_prime_adapter AGATCGGAAGAGCACACG \
+--min_length 17 \
+--email leah.kemp@esr.cri.nz \
+--email_on_fail leah.kemp@esr.cri.nz
+```
+
+Output:
+
+```bash
+
 ```
 
 ## Explore the outputs!
