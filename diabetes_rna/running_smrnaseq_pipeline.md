@@ -1,7 +1,7 @@
 # Running smrnaseq pipeline
 
 Created: 2020/11/13 12:29:25
-Last modified: 2020/11/17 17:01:03
+Last modified: 2020/11/30 16:18:29
 
 - **Aim:** In [this document](./rna_pipelines_current_status.md) I settled on using the [smrnaseq](https://github.com/nf-core/smrnaseq) nextflow pipeline to process our small non-coding RNA-seq data. This document documents/describes the process of trying this pipeline out on the data (extending on Miles Bentons work). Thi is part of the wider [small rnaseq hepatic portal project](./project_notes_small_rnaseq_hepatic_portal.md)
 - **Prerequisite software:** [conda 4.9.0](https://docs.conda.io/en/latest/), [git 2.7.4](https://git-scm.com/)
@@ -744,8 +744,8 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --input '/store/lkemp/smrnaseq_hps/fastq/*.fastq.gz' \
 -profile conda \
 --protocol illumina \
---mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
---hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz
+--mature /store/lkemp/smrnaseq_hps/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/hairpin.fa.gz
 ```
 
 Error
@@ -767,8 +767,8 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --input '/store/lkemp/smrnaseq_hps/fastq/*.fastq.gz' \
 -profile conda \
 --protocol illumina \
---mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
---hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--mature /store/lkemp/smrnaseq_hps/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/hairpin.fa.gz \
 --genome GRCh38
 ```
 
@@ -785,8 +785,8 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --input '/store/lkemp/smrnaseq_hps/fastq/*.fastq.gz' \
 -profile conda \
 --protocol illumina \
---mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
---hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--mature /store/lkemp/smrnaseq_hps/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/hairpin.fa.gz \
 --genome GRCh38 \
 --mirtrace_species hsa
 ```
@@ -807,6 +807,39 @@ Get GFF/GTF file with coordinates positions of precursor and miRNAs
 ```bash
 wget ftp://mirbase.org/pub/mirbase/CURRENT/genomes/hsa.gff3
 ```
+
+Have a look at this file:
+
+```bash
+head -n 20 hsa.gff3
+```
+
+Output:
+
+```bash
+##gff-version 3
+##date 2018-3-5
+#
+# Chromosomal coordinates of Homo sapiens microRNAs
+# microRNAs:               miRBase v22
+# genome-build-id:         GRCh38
+# genome-build-accession:  NCBI_Assembly:GCA_000001405.15
+#
+# Hairpin precursor sequences have type "miRNA_primary_transcript".
+# Note, these sequences do not represent the full primary transcript,
+# rather a predicted stem-loop portion that includes the precursor
+# miRNA. Mature sequences have type "miRNA".
+#
+chr1    .       miRNA_primary_transcript        17369   17436   .       -       .       ID=MI0022705;Alias=MI0022705;Name=hsa-mir-6859-1
+chr1    .       miRNA   17409   17431   .       -       .       ID=MIMAT0027618;Alias=MIMAT0027618;Name=hsa-miR-6859-5p;Derives_from=MI0022705
+chr1    .       miRNA   17369   17391   .       -       .       ID=MIMAT0027619;Alias=MIMAT0027619;Name=hsa-miR-6859-3p;Derives_from=MI0022705
+chr1    .       miRNA_primary_transcript        30366   30503   .       +       .       ID=MI0006363;Alias=MI0006363;Name=hsa-mir-1302-2
+chr1    .       miRNA   30438   30458   .       +       .       ID=MIMAT0005890;Alias=MIMAT0005890;Name=hsa-miR-1302;Derives_from=MI0006363
+chr1    .       miRNA_primary_transcript        187891  187958  .       -       .       ID=MI0026420;Alias=MI0026420;Name=hsa-mir-6859-2
+chr1    .       miRNA   187931  187953  .       -       .       ID=MIMAT0027618_1;Alias=MIMAT0027618;Name=hsa-miR-6859-5p;Derives_from=MI0026420
+```
+
+So it's based on GRCh38
 
 The warning about the bt_indices looks like they want us to provide an index for the reference genome in order to run the host reference genome analysis (even though it's optional to pass this file). See the `main.nf` file:
 
@@ -830,8 +863,8 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
 -profile conda \
 --protocol illumina \
---mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
---hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--mature /store/lkemp/smrnaseq_hps/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/hairpin.fa.gz \
 --genome GRCh38 \
 --mirtrace_species hsa \
 --mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
@@ -851,8 +884,8 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
 -profile singularity \
 --protocol illumina \
---mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
---hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--mature /store/lkemp/smrnaseq_hps/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/hairpin.fa.gz \
 --genome GRCh38 \
 --mirtrace_species hsa \
 --mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
@@ -907,8 +940,8 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
 -profile singularity \
 --protocol illumina \
---mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
---hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--mature /store/lkemp/smrnaseq_hps/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/hairpin.fa.gz \
 --genome GRCh38 \
 --mirtrace_species hsa \
 --mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
@@ -933,8 +966,8 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
 -profile singularity \
 --protocol illumina \
---mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
---hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--mature /store/lkemp/smrnaseq_hps/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/hairpin.fa.gz \
 --genome GRCh38 \
 --mirtrace_species hsa \
 --mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
@@ -956,8 +989,8 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
 -profile singularity \
 --protocol illumina \
---mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
---hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--mature /store/lkemp/smrnaseq_hps/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/hairpin.fa.gz \
 --genome GRCh38 \
 --mirtrace_species hsa \
 --mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
@@ -985,8 +1018,8 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
 -profile singularity \
 --protocol illumina \
---mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
---hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--mature /store/lkemp/smrnaseq_hps/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/hairpin.fa.gz \
 --genome GRCh38 \
 --mirtrace_species hsa \
 --mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
@@ -1013,8 +1046,8 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
 -profile singularity \
 --protocol illumina \
---mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
---hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--mature /store/lkemp/smrnaseq_hps/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/hairpin.fa.gz \
 --genome GRCh38 \
 --mirtrace_species hsa \
 --mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
@@ -1034,8 +1067,8 @@ nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
 --input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
 -profile singularity \
 --protocol illumina \
---mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mature.fa.gz \
---hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/hairpin.fa.gz \
+--mature /store/lkemp/smrnaseq_hps/mature.fa.gz \
+--hairpin /store/lkemp/smrnaseq_hps/hairpin.fa.gz \
 --genome GRCh38 \
 --mirtrace_species hsa \
 --mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/hsa.gff3 \
@@ -1053,31 +1086,448 @@ Output:
 
 ```
 
-## Explore the outputs!
-
-### 1. Raw read QC - FastQC
-
-Get sequence lengths for all reads *before* trimming
+Having a look at the bowtie references that were created in the analysis Miles previously did:
 
 ```bash
-mkdir ./results/fastqc_unzipped/
+total 18M
+-rw-rw-r-- 1 lkemp lkemp 4.2M Oct 13 13:24 hairpin_idx.1.ebwt
+-rw-rw-r-- 1 lkemp lkemp  19K Oct 13 13:24 hairpin_idx.2.ebwt
+-rw-rw-r-- 1 lkemp lkemp  17K Oct 13 13:24 hairpin_idx.3.ebwt
+-rw-rw-r-- 1 lkemp lkemp  38K Oct 13 13:24 hairpin_idx.4.ebwt
+-rw-rw-r-- 1 lkemp lkemp 256K Oct 13 13:24 hairpin_idx.fa
+-rw-rw-r-- 1 lkemp lkemp 4.2M Oct 13 13:24 hairpin_idx.rev.1.ebwt
+-rw-rw-r-- 1 lkemp lkemp  19K Oct 13 13:24 hairpin_idx.rev.2.ebwt
+-rw-rw-r-- 1 lkemp lkemp 4.2M Oct 13 13:24 mature_idx.1.ebwt
+-rw-rw-r-- 1 lkemp lkemp 6.9K Oct 13 13:24 mature_idx.2.ebwt
+-rw-rw-r-- 1 lkemp lkemp  23K Oct 13 13:24 mature_idx.3.ebwt
+-rw-rw-r-- 1 lkemp lkemp  14K Oct 13 13:24 mature_idx.4.ebwt
+-rw-rw-r-- 1 lkemp lkemp 191K Oct 13 13:24 mature_idx.fa
+-rw-rw-r-- 1 lkemp lkemp 4.2M Oct 13 13:24 mature_idx.rev.1.ebwt
+-rw-rw-r-- 1 lkemp lkemp 6.9K Oct 13 13:24 mature_idx.rev.2.ebwt
+```
 
-# Unzip fastqc files
-for zip in ./results/fastqc/*_combined_fastqc.zip; do
-unzip $zip -d ./results/fastqc_unzipped/
+I think these were automatically generated by the pipeline when Miles ran it (I think he wouold have run [v1,0,0](https://github.com/nf-core/smrnaseq/releases/tag/1.0.0) which doesn't seem to require you to pass the hairpin and mature reference files), but those reference files are not compressed where mine are. I'll gunzip these reference mature and hairpin files and see if that helps. I also realised that I can get the whole ftp directory with reference genomes, genome coordinates (gff files) and everything else with:
+
+```bash
+wget -r ftp://mirbase.org:21/pub/mirbase/CURRENT/
+
+# Unzip
+for i in mirbase.org/pub/mirbase/CURRENT/*; do
+gunzip $i
 done
 
-# Get sequence lengths before trimming for all samples from fastqc summary files
-for summaryfile in ./results/fastqc_unzipped/HPS*_combined_fastqc/fastqc_data.txt; do
-grep -e 'Filename' -e 'Sequence length' $summaryfile
+for i in mirbase.org/pub/mirbase/CURRENT/database_files/*; do
+gunzip $i
+done
+```
+
+I also realised it was weird that I had specified `--protocol illumina` since I was directly passing it the adapter to trim (`--three_prime_adapter AGATCGGAAGAGCACACG`), so I'll remove that
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+--input '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
+-profile singularity \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mirbase.org/pub/mirbase/CURRENT/mature.fa \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/mirbase.org/pub/mirbase/CURRENT/hairpin.fa \
+--genome GRCh38 \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/mirbase.org/pub/mirbase/CURRENT/genomes/hsa.gff3 \
+--saveReference \
+-resume \
+--three_prime_adapter AGATCGGAAGAGCACACG \
+--min_length 17
+```
+
+Then I realised it doesn't seem to be grabbing the parameters I'm setting wiht the pipeline flags, such as `--protocol`. Looks to be getting them from the config file at `./smrnaseq/nextflow.config`. I'll configure my pipeline there and run again. My configuration file:
+
+```bash
+/*
+ * -------------------------------------------------
+ *  nf-core/smrnaseq Nextflow config file
+ * -------------------------------------------------
+ * Default config options for all environments.
+ */
+
+// Global default params, used in configs
+params {
+
+  // Workflow flags
+  input = "/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz"
+  outdir = './results'
+  protocol = ''
+  genome = "GRCh38"
+  clip_r1 = 0
+  three_prime_clip_r1 = 0
+  three_prime_adapter = "AGATCGGAAGAGCACACG"
+  min_length = 17
+  skip_qc = false
+  skip_fastqc = false
+  skip_multiqc = false
+  skip_mirdeep = false
+  save_reference = true
+  seq_center = ""
+  references_parsed = false
+
+  // Boilerplate options
+  name = false
+  multiqc_config = false
+  email = false
+  email_on_fail = false
+  max_multiqc_email_size = 25.MB
+  plaintext_email = false
+  monochrome_logs = false
+  help = false
+  igenomes_base = 's3://ngi-igenomes/igenomes/'
+  tracedir = "${params.outdir}/pipeline_info"
+  igenomes_ignore = false
+  custom_config_version = 'master'
+  custom_config_base = "https://raw.githubusercontent.com/nf-core/configs/${params.custom_config_version}"
+  hostnames = false
+  config_profile_description = false
+  config_profile_contact = false
+  config_profile_url = false
+  publish_dir_mode = 'copy'
+
+  // Defaults only, expecting to be overwritten
+  max_memory = 128.GB
+  max_cpus = 10
+  max_time = 240.h
+
+}
+```
+
+Then run:
+
+```bash
+nextflow run /store/lkemp/smrnaseq_hps/dev_branch_analysis/smrnaseq/main.nf \
+-profile singularity \
+--mature /store/lkemp/smrnaseq_hps/dev_branch_analysis/mirbase.org/pub/mirbase/CURRENT/mature.fa \
+--hairpin /store/lkemp/smrnaseq_hps/dev_branch_analysis/mirbase.org/pub/mirbase/CURRENT/hairpin.fa \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/dev_branch_analysis/mirbase.org/pub/mirbase/CURRENT/genomes/hsa.gff3 \
+-resume
+```
+
+Now I have even more problems related to the config file that is passed to mirtrace:
+
+```bash
+  ERROR: Invalid --protocol argument: --config
+```
+
+It still looks like it is overtrimming and setting a max length of 40. See the sequence lengths for all reads *after* trimming
+
+```bash
+mkdir ./results/fastqc_trimmed_unzipped/
+
+# Unzip fastqc files
+for zip in ./results/trim_galore/*_combined_trimmed_fastqc.zip; do
+unzip $zip -d ./results/fastqc_trimmed_unzipped/
+done
+
+# Get sequence lengths after trimming for all samples from fastqc summary files
+for summaryfile in ./results/fastqc_trimmed_unzipped/HPS*_combined_trimmed_fastqc/fastqc_data.txt; do
+grep -e 'Sequence length' $summaryfile
 done
 ```
 
 Output:
 
 ```bash
-
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
+Sequence length 17-40
 ```
+
+Screw this, I'm going back to the stable branch, [version 1.0.0 of the pipeline](https://github.com/nf-core/smrnaseq/releases/tag/1.0.0) (they mention the [dev branch might be failing the tests](https://github.com/nf-core/smrnaseq/issues/41#issuecomment-592744848)) and I'll just implement the hotfix for the trimming
+
+```bash
+cd /store/lkemp/smrnaseq_hps/master_branch_analysis/
+
+# Remove output from last run
+rm .nextflow.log
+rm -r work
+rm -r results
+rm -r .nextflow
+```
+
+Miles' notes on the trimming bug and hotfix:
+
+---
+
+After cloning the pipeline from github (`git clone https://github.com/nf-core/smrnaseq.git`) and examining the nextflow pipeline (`main.nf`), I discovered that there appears to be a bug in the current version that doesn't evaluate the user defined adapter argument (`--three_prime_adapter`). It instead seems to default to the illumina protocol (--protocol illumina) adapter, which isn't at all useful if your sequence doesn't contain that adapter! I didn't spend time on trying to 'squash' this bug, but I placed an [issue on their GitHub](https://github.com/nf-core/smrnaseq/issues/41). To get around this a quickly hacked the pipeline `main.nf` file and changed the illumina adapter (file location: `/store/mbenton/smrnaseq/main.nf`):
+
+```java
+// Define regular variables so that they can be overwritten
+clip_R1 = params.clip_R1
+three_prime_clip_R1 = params.three_prime_clip_R1
+three_prime_adapter = params.three_prime_adapter
+protocol = params.protocol
+// Presets
+if (params.protocol == "illumina"){
+    clip_R1 = 0
+    three_prime_clip_R1 = 0
+    // three_prime_adapter = "TGGAATTCTCGGGTGCCAAGG"  // commented out
+    three_prime_adapter = "AGATCGGAAGAGC"             // added custom adapter
+} else if (params.protocol == "nextflex"){
+    clip_R1 = 4
+    three_prime_clip_R1 = 4
+    three_prime_adapter = "TGGAATTCTCGGGTGCCAAGG"
+} else if (params.protocol == "qiaseq"){
+    clip_R1 = 0
+    three_prime_clip_R1 = 0
+    three_prime_adapter = "AACTGTAGGCACCATCAAT"
+} else if (params.protocol == "cats"){
+    clip_R1 = 3
+    three_prime_clip_R1 = 0
+    // three_prime_adapter = "GATCGGAAGAGCACACGTCTG"
+    three_prime_adapter = "AAAAAAAA"
+} else {
+    //custom protocol 
+    clip_R1 = params.clip_R1
+    three_prime_clip_R1 = params.three_prime_clip_R1
+    three_prime_adapter = params.three_prime_adapter
+    protocol = params.protocol
+}
+```
+
+---
+
+I implemented this hotfix in `./smrnaseq/main.nf` and ran again
+
+```bash
+# With the hotfix, --protocol illumina will pass the AGATCGGAAGAGCACACG adapter
+nextflow run /store/lkemp/smrnaseq_hps/master_branch_analysis/smrnaseq/main.nf \
+--reads '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
+-profile singularity \
+--mature /store/lkemp/smrnaseq_hps/mirbase.org/pub/mirbase/CURRENT/mature.fa \
+--hairpin /store/lkemp/smrnaseq_hps/mirbase.org/pub/mirbase/CURRENT/hairpin.fa \
+--genome GRCh38 \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/mirbase.org/pub/mirbase/CURRENT/genomes/hsa.gff3 \
+--saveReference \
+-resume \
+--min_length 17
+```
+
+Error:
+
+```bash
+The provided genome 'GRCh38' is not available in the iGenomes file. Currently the available genomes are GRCh37, GRCm38, TAIR10, UMD3.1, WBcel235, CanFam3.1, GRCz10, BDGP6, EquCab2, Galgal4, Gm01, Mmul_1, IRGSP-1.0, CHIMP2.1.4, Rnor_6.0, Sbi1, Sscrofa10.2, AGPv3
+```
+
+Fine, I'll use GRCh37
+
+```bash
+# With the hotfix, --protocol illumina will pass the AGATCGGAAGAGCACACG adapter
+nextflow run /store/lkemp/smrnaseq_hps/master_branch_analysis/smrnaseq/main.nf \
+--reads '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
+-profile singularity \
+--mature /store/lkemp/smrnaseq_hps/mirbase.org/pub/mirbase/CURRENT/mature.fa \
+--hairpin /store/lkemp/smrnaseq_hps/mirbase.org/pub/mirbase/CURRENT/hairpin.fa \
+--genome GRCh37 \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/mirbase.org/pub/mirbase/CURRENT/genomes/hsa.gff3 \
+--saveReference \
+-resume \
+--min_length 17
+```
+
+Error at trim galore:
+
+```bash
+Error executing process > 'trim_galore (HPS070_combined.fastq.gz)'
+
+Caused by:
+  Process `trim_galore (HPS070_combined.fastq.gz)` terminated with an error exit status (127)
+
+Command executed:
+
+  trim_galore --adapter AGATCGGAAGAGC --length 17   --max_length 40 --gzip HPS070_combined.fastq.gz --fastqc
+
+Command exit status:
+  127
+
+Command output:
+  (empty)
+
+Command error:
+  /bin/bash: line 0: cd: /store/lkemp/smrnaseq_hps/master_branch_analysis/work/fe/805c99b01c7341d6586c8948e17bc8: No such file or directory
+  /bin/bash: .command.run: No such file or directory
+
+Work dir:
+  /store/lkemp/smrnaseq_hps/master_branch_analysis/work/fe/805c99b01c7341d6586c8948e17bc8
+
+Tip: view the complete command output by changing to the process work dir and entering the command `cat .command.out`
+```
+
+Could be related to [this issue](https://github.com/nf-core/rnaseq/issues/113). I'll try running in conda instead of containers
+
+```bash
+# With the hotfix, --protocol illumina will pass the AGATCGGAAGAGCACACG adapter
+nextflow run /store/lkemp/smrnaseq_hps/master_branch_analysis/smrnaseq/main.nf \
+--reads '/store/lkemp/smrnaseq_hps/fastq/*_combined.fastq.gz' \
+-profile conda \
+--mature /store/lkemp/smrnaseq_hps/mirbase.org/pub/mirbase/CURRENT/mature.fa \
+--hairpin /store/lkemp/smrnaseq_hps/mirbase.org/pub/mirbase/CURRENT/hairpin.fa \
+--genome GRCh37 \
+--mirtrace_species hsa \
+--mirna_gtf /store/lkemp/smrnaseq_hps/mirbase.org/pub/mirbase/CURRENT/genomes/hsa.gff3 \
+--saveReference \
+-resume \
+--min_length 17
+```
+
+## Explore the outputs!
+
+### 1. Raw read QC - FastQC
+
+
+```bash
+mkdir ./results/fastqc_unzipped/
+
+# Unzip fastqc files
+for zip in ./results/fastqc/zips/*_combined_fastqc.zip; do
+unzip $zip -d ./results/fastqc_unzipped/
+done
+
+# Check for any sequences marked as poor quality for all samples from fastqc summary files
+for summaryfile in ./results/fastqc_unzipped/HPS*_combined_fastqc/fastqc_data.txt; do
+grep -e 'Filename' -e 'Sequences flagged as poor quality' $summaryfile
+done
+```
+
+No samples came back with sequences flagged as poor quality
+
+```bash
+# Let's have a look at the total number of sequences for all samples from fastqc summary files
+for summaryfile in ./results/fastqc_unzipped/HPS*_combined_fastqc/fastqc_data.txt; do
+grep 'Total Sequences' $summaryfile
+done
+```
+
+Output:
+
+```bash
+Total Sequences 6290535
+Total Sequences 5795326
+Total Sequences 6011739
+Total Sequences 5715283
+Total Sequences 6263463
+Total Sequences 6154449
+Total Sequences 6305309
+Total Sequences 6165368
+Total Sequences 5926981
+Total Sequences 6488082
+Total Sequences 6325204
+Total Sequences 6261236
+Total Sequences 10815731
+Total Sequences 10383501
+Total Sequences 9859832
+Total Sequences 9805769
+Total Sequences 9925922
+Total Sequences 9658375
+Total Sequences 10437364
+Total Sequences 11069005
+Total Sequences 10497298
+Total Sequences 10988917
+Total Sequences 11484857
+Total Sequences 11394965
+Total Sequences 10631813
+Total Sequences 9980637
+Total Sequences 10734315
+Total Sequences 10696549
+Total Sequences 10226483
+Total Sequences 11472092
+Total Sequences 10141778
+Total Sequences 11100062
+Total Sequences 8591493
+Total Sequences 10004142
+Total Sequences 9208162
+Total Sequences 9029088
+Total Sequences 9618569
+Total Sequences 10189334
+Total Sequences 9776877
+Total Sequences 11061862
+Total Sequences 9163860
+Total Sequences 10014342
+Total Sequences 9404203
+Total Sequences 9247279
+Total Sequences 9772579
+Total Sequences 10042005
+Total Sequences 10668601
+Total Sequences 10657901
+Total Sequences 6617857
+Total Sequences 7307426
+Total Sequences 6653457
+Total Sequences 6302706
+Total Sequences 6305531
+Total Sequences 6575473
+Total Sequences 5908598
+Total Sequences 6223643
+Total Sequences 6498891
+Total Sequences 6821935
+Total Sequences 7266841
+Total Sequences 6337230
+```
+
+Seems to range between roughly 5 million and 11 million reads per sample
 
 #### i. Insert Size calculation
 
@@ -1088,6 +1538,147 @@ Output:
 #### ii. Collapse reads seqcsluter
 
 ### 2. Adapter trimming - Trim Galore!
+
+Get sequence lengths for all reads *after* trimming
+
+```bash
+mkdir ./results/fastqc_trimmed_unzipped/
+
+# Unzip fastqc files
+for zip in ./results/trim_galore/*_combined_trimmed_fastqc.zip; do
+unzip $zip -d ./results/fastqc_trimmed_unzipped/
+done
+
+# Get sequence lengths after trimming for all samples from fastqc summary files
+for summaryfile in ./results/fastqc_trimmed_unzipped/HPS*_combined_trimmed_fastqc/fastqc_data.txt; do
+grep -e 'Filename' -e 'Sequence length' $summaryfile
+done
+```
+
+Output:
+
+```bash
+Filename        HPS004_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS022_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS030_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS033_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS041_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS048_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS061_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS064_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS070_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS071_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS072_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS080_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS081_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS083_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS086_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS100_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS108_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS114_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS116_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS119_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS121_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS123_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS124_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS130_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS139_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS145_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS146_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS147_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS150_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS152_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS155_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS163_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS172_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS175_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS183_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS184_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS186_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS193_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS199_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS200_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS203_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS208_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS210_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS217_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS223_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS227_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS230_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS234_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS240_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS255_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS257_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS259_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS263_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS267_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS269_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS270_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS281_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS283_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS286_combined_trimmed.fq.gz
+Sequence length 17-40
+Filename        HPS296_combined_trimmed.fq.gz
+Sequence length 17-40
+```
 
 ### 3. Alignment against miRBase mature miRNA - Bowtie1
 
@@ -1116,6 +1707,8 @@ Heatmap of sample similarities
 #### i. Post-alignment processing of alignment against host reference genome (SAMtools)
 
 ### 7. miRNA quality control (mirtrace)
+
+
 
 ### 8. Present QC for raw read, alignment, and expression results (MultiQC)
 
