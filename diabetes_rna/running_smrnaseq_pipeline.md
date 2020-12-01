@@ -1417,7 +1417,7 @@ Work dir:
 Tip: view the complete command output by changing to the process work dir and entering the command `cat .command.out`
 ```
 
-Could be related to [this issue](https://github.com/nf-core/rnaseq/issues/113). I'll try running in conda instead of containers
+Could be related to [this issue](https://github.com/nf-core/rnaseq/issues/113). I'll try running using conda instead of containers
 
 ```bash
 # With the hotfix, --protocol illumina will pass the AGATCGGAAGAGCACACG adapter
@@ -1433,6 +1433,35 @@ nextflow run /store/lkemp/smrnaseq_hps/master_branch_analysis/smrnaseq/main.nf \
 -resume \
 --min_length 17
 ```
+
+It worked!
+
+The mirtrace report at `./results/miRTrace/mirtrace/mirtrace-report.html` looks better! We're actually getting reads that are detected as miRNA's (6.9%), rRNA's (2.4%) and tRNA's (36.6%)
+ - The tRNA's coming through make sense from a length perspective since they are 76 to 90 bp in length and we started with reads that were 100bp in length
+ - It surprises me that there are quite a few rRNA's coming through, since rRNA's are about 1550 bp in length and our reads are 100bp in length, does this make any sense? Can your rRNA sequence come from several sequencing reads (like how a gene sequence can be obtained from many illumina reads)
+ - The majority of the reads are Unknown (53.1%)
+
+![rna_type](./images/rna_type.PNG)
+
+See the sequence lengths for all reads *after* trimming
+
+```bash
+mkdir ./results/fastqc_trimmed_unzipped/
+
+# Unzip fastqc files
+for zip in ./results/trim_galore/*_combined_trimmed_fastqc.zip; do
+unzip $zip -d ./results/fastqc_trimmed_unzipped/
+done
+
+# Get sequence lengths after trimming for all samples from fastqc summary files
+for summaryfile in ./results/fastqc_trimmed_unzipped/HPS*_combined_trimmed_fastqc/fastqc_data.txt; do
+grep -e 'Sequence length' $summaryfile
+done
+```
+
+Output:
+
+```bash
 
 ## Explore the outputs!
 
