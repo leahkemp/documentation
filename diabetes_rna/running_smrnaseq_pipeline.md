@@ -1297,6 +1297,9 @@ Sequence length 17-40
 
 Screw this, I'm going back to the stable branch, [version 1.0.0 of the pipeline](https://github.com/nf-core/smrnaseq/releases/tag/1.0.0) (they mention the [dev branch might be failing the tests](https://github.com/nf-core/smrnaseq/issues/41#issuecomment-592744848)) and I'll just implement the hotfix for the trimming
 
+
+## Abort! Go back to the original pipeline
+
 ```bash
 cd /store/lkemp/smrnaseq_hps/master_branch_analysis/
 
