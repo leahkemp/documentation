@@ -1,11 +1,13 @@
 # Update scout in production
 
 Created: 2020/12/16 09:45:00
-Last modified: 2020/12/16 10:09:25
+Last modified: 2020/12/16 10:15:14
 
-- **Aim:** Document how to update [scout](http://www.clinicalgenomics.se/scout/) while scout is being actively used in production
-- **Prerequisite software:** [Conda 4.8.2](https://docs.conda.io/projects/conda/en/latest/index.html), [singularity 2.5.2](https://singularity.lbl.gov/)
+- **Aim:** Document how to update [scout](http://www.clinicalgenomics.se/scout/) while scout is being actively used in production. This assumes you have scout already have installed in a conda environment (see [scout installation docs](./installation_scout.md)).
+- **Prerequisite software:** [Conda 4.9.0](https://docs.conda.io/projects/conda/en/latest/index.html), [git 2.7.4](https://git-scm.com/), [pip 20.1.1](https://pypi.org/project/pip/)
 - **OS:** Ubuntu 16.04 (Wintermute - research server)
+
+## Update scout
 
 - Check where scout is installed
 
