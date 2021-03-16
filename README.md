@@ -12,7 +12,6 @@ Projects:
 - [Scout](scout)
 - [Opentrons](opentrons)
 - [Graph genomes](graph_genomes)
-- [RNA pipelines](rna_pipelines)
 
 Other documentation:
 
