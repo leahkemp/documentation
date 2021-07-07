@@ -10,5 +10,6 @@ Projects:
 - [Benchmarking pipelines - quality](benchmarking_pipelines_quality)
 - [Benchmarking pipelines - resources](benchmarking_pipelines_resources)
 - [Scout](scout)
+- [Bug squashing](bug_squashing)
 - [Opentrons](opentrons)
 - [Graph genomes](graph_genomes)
