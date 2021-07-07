@@ -15,5 +15,4 @@ Projects:
 
 Other documentation:
 
-- [Setup singularity container](setup-singularityContainer)
 - [Setup VCF-DART](setup_VCF-DART)
