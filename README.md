@@ -12,7 +12,3 @@ Projects:
 - [Scout](scout)
 - [Opentrons](opentrons)
 - [Graph genomes](graph_genomes)
-
-Other documentation:
-
-- [Setup VCF-DART](setup_VCF-DART)
