@@ -1,7 +1,5 @@
 # Documentation
 
-Rendered github page at: https://leahkemp.github.io/documentation/
-
 Documentation for various projects at ESR
 
 **Please note that this documentation is often a work in progress**
